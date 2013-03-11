@@ -71,11 +71,14 @@ class OrderItem
     private $type;
 
     /**
-     * @var integer
+     * @var \Product
      *
-     * @ORM\Column(name="order_item_id", type="integer", nullable=true)
+     * @ORM\ManyToOne(targetEntity="Product")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="product_id", referencedColumnName="id")
+     * })
      */
-    private $orderItemId;
+    private $product;
 
     /**
      * @var \Order
@@ -86,6 +89,16 @@ class OrderItem
      * })
      */
     private $order;
+
+    /**
+     * @var \OrderItem
+     *
+     * @ORM\ManyToOne(targetEntity="OrderItem")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="order_item_id", referencedColumnName="id")
+     * })
+     */
+    private $orderItem;
 
 
 
@@ -261,26 +274,26 @@ class OrderItem
     }
 
     /**
-     * Set orderItemId
+     * Set product
      *
-     * @param integer $orderItemId
+     * @param \Zepluf\Bundle\StoreBundle\Entity\Product $product
      * @return OrderItem
      */
-    public function setOrderItemId($orderItemId)
+    public function setProduct(\Zepluf\Bundle\StoreBundle\Entity\Product $product = null)
     {
-        $this->orderItemId = $orderItemId;
+        $this->product = $product;
     
         return $this;
     }
 
     /**
-     * Get orderItemId
+     * Get product
      *
-     * @return integer 
+     * @return \Zepluf\Bundle\StoreBundle\Entity\Product 
      */
-    public function getOrderItemId()
+    public function getProduct()
     {
-        return $this->orderItemId;
+        return $this->product;
     }
 
     /**
@@ -304,5 +317,28 @@ class OrderItem
     public function getOrder()
     {
         return $this->order;
+    }
+
+    /**
+     * Set orderItem
+     *
+     * @param \Zepluf\Bundle\StoreBundle\Entity\OrderItem $orderItem
+     * @return OrderItem
+     */
+    public function setOrderItem(\Zepluf\Bundle\StoreBundle\Entity\OrderItem $orderItem = null)
+    {
+        $this->orderItem = $orderItem;
+    
+        return $this;
+    }
+
+    /**
+     * Get orderItem
+     *
+     * @return \Zepluf\Bundle\StoreBundle\Entity\OrderItem 
+     */
+    public function getOrderItem()
+    {
+        return $this->orderItem;
     }
 }

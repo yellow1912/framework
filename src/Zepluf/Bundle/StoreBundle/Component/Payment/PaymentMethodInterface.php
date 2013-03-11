@@ -20,5 +20,4 @@ interface PaymentMethodInterface
     public function isAvailable();
 
     public function process();
-
 }
