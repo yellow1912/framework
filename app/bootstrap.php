@@ -30,6 +30,17 @@ $kernel->boot();
 
 $container = $kernel->getContainer();
 
+
+
+var_dump($container->get('storebundle.payment'));
+
+
+die('DONE!');
+
+
+
+
+
 // set the environment
 // TODO: remove constants
 $container->get("environment")->setEnvironment($environment);

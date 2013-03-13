@@ -43,6 +43,21 @@ class Invoice
     private $description;
 
     /**
+     * @var \Doctrine\Common\Collections\Collection
+     *
+     * @ORM\ManyToMany(targetEntity="TermType", inversedBy="invoice")
+     * @ORM\JoinTable(name="invoice_term",
+     *   joinColumns={
+     *     @ORM\JoinColumn(name="invoice_id", referencedColumnName="id")
+     *   },
+     *   inverseJoinColumns={
+     *     @ORM\JoinColumn(name="term_type_id", referencedColumnName="id")
+     *   }
+     * )
+     */
+    private $termType;
+
+    /**
      * @var \Party
      *
      * @ORM\ManyToOne(targetEntity="Party")
@@ -82,7 +97,14 @@ class Invoice
      */
     private $sentTo;
 
-
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->termType = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+    
 
     /**
      * Get id
@@ -161,6 +183,39 @@ class Invoice
     public function getDescription()
     {
         return $this->description;
+    }
+
+    /**
+     * Add termType
+     *
+     * @param \Zepluf\Bundle\StoreBundle\Entity\TermType $termType
+     * @return Invoice
+     */
+    public function addTermType(\Zepluf\Bundle\StoreBundle\Entity\TermType $termType)
+    {
+        $this->termType[] = $termType;
+    
+        return $this;
+    }
+
+    /**
+     * Remove termType
+     *
+     * @param \Zepluf\Bundle\StoreBundle\Entity\TermType $termType
+     */
+    public function removeTermType(\Zepluf\Bundle\StoreBundle\Entity\TermType $termType)
+    {
+        $this->termType->removeElement($termType);
+    }
+
+    /**
+     * Get termType
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getTermType()
+    {
+        return $this->termType;
     }
 
     /**

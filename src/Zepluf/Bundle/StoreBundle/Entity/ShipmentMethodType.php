@@ -35,7 +35,29 @@ class ShipmentMethodType
      */
     private $description;
 
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     *
+     * @ORM\ManyToMany(targetEntity="Carrier", inversedBy="shipmentMethodType")
+     * @ORM\JoinTable(name="carrier_shipment_method",
+     *   joinColumns={
+     *     @ORM\JoinColumn(name="shipment_method_type_id", referencedColumnName="id")
+     *   },
+     *   inverseJoinColumns={
+     *     @ORM\JoinColumn(name="carrier_id", referencedColumnName="id")
+     *   }
+     * )
+     */
+    private $carrier;
 
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->carrier = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+    
 
     /**
      * Get id
@@ -91,5 +113,38 @@ class ShipmentMethodType
     public function getDescription()
     {
         return $this->description;
+    }
+
+    /**
+     * Add carrier
+     *
+     * @param \Zepluf\Bundle\StoreBundle\Entity\Carrier $carrier
+     * @return ShipmentMethodType
+     */
+    public function addCarrier(\Zepluf\Bundle\StoreBundle\Entity\Carrier $carrier)
+    {
+        $this->carrier[] = $carrier;
+    
+        return $this;
+    }
+
+    /**
+     * Remove carrier
+     *
+     * @param \Zepluf\Bundle\StoreBundle\Entity\Carrier $carrier
+     */
+    public function removeCarrier(\Zepluf\Bundle\StoreBundle\Entity\Carrier $carrier)
+    {
+        $this->carrier->removeElement($carrier);
+    }
+
+    /**
+     * Get carrier
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getCarrier()
+    {
+        return $this->carrier;
     }
 }

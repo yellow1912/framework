@@ -28,7 +28,21 @@ class Carrier
      */
     private $name;
 
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     *
+     * @ORM\ManyToMany(targetEntity="ShipmentMethodType", mappedBy="carrier")
+     */
+    private $shipmentMethodType;
 
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->shipmentMethodType = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+    
 
     /**
      * Get id
@@ -61,5 +75,38 @@ class Carrier
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * Add shipmentMethodType
+     *
+     * @param \Zepluf\Bundle\StoreBundle\Entity\ShipmentMethodType $shipmentMethodType
+     * @return Carrier
+     */
+    public function addShipmentMethodType(\Zepluf\Bundle\StoreBundle\Entity\ShipmentMethodType $shipmentMethodType)
+    {
+        $this->shipmentMethodType[] = $shipmentMethodType;
+    
+        return $this;
+    }
+
+    /**
+     * Remove shipmentMethodType
+     *
+     * @param \Zepluf\Bundle\StoreBundle\Entity\ShipmentMethodType $shipmentMethodType
+     */
+    public function removeShipmentMethodType(\Zepluf\Bundle\StoreBundle\Entity\ShipmentMethodType $shipmentMethodType)
+    {
+        $this->shipmentMethodType->removeElement($shipmentMethodType);
+    }
+
+    /**
+     * Get shipmentMethodType
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getShipmentMethodType()
+    {
+        return $this->shipmentMethodType;
     }
 }
