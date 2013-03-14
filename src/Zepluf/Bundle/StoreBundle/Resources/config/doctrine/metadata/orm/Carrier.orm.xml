@@ -5,6 +5,5 @@
       <generator strategy="IDENTITY"/>
     </id>
     <field name="name" type="string" column="name" length="255" nullable="false"/>
-    <many-to-many field="shipmentMethodType" target-entity="ShipmentMethodType" mapped-by="carrier"/>
   </entity>
 </doctrine-mapping>

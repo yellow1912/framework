@@ -32,14 +32,14 @@ $container = $kernel->getContainer();
 
 
 
-var_dump($container->get('storebundle.payment'));
+var_dump($container->get('storebundle.payment_methods'));
+
+
+
+
 
 
 die('DONE!');
-
-
-
-
 
 // set the environment
 // TODO: remove constants

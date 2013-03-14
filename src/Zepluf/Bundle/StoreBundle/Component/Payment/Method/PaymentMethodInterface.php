@@ -11,16 +11,10 @@
  * file of ZePLUF
  */
 
-namespace Zepluf\Bundle\StoreBundle\Component\Payment;
+namespace Zepluf\Bundle\StoreBundle\Component\Payment\Method;
 
-interface PaymentInterface
+interface PaymentMethodInterface
 {
-
-    /**
-     * check payment is available
-     *
-     * @return boolean
-     */
     public function isAvailable();
 
     public function checkCondition();

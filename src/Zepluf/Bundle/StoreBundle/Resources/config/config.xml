@@ -49,11 +49,11 @@
         <parameter key="storebundle.session_storage_handler.class">Zepluf\Bundle\StoreBundle\Component\Cart\StorageHandler\SessionStorageHandler</parameter>
 
         <!-- payment -->
-        <parameter key="storebundle.payment.class">Zepluf\Bundle\StoreBundle\Component\Payment\Payment</parameter>
+        <parameter key="storebundle.payment_methods.class">Zepluf\Bundle\StoreBundle\Component\Payment\PaymentMethods</parameter>
 
         <!-- payment methods -->
-        <parameter key="storebundle.payment.method.cheque.class">Zepluf\Bundle\StoreBundle\Component\Payment\Method\Cheque</parameter>
-        <parameter key="storebundle.payment.method.paypal_standard.class">Zepluf\Bundle\StoreBundle\Component\Payment\Method\PaypalStandard</parameter>
+        <parameter key="storebundle.payment_methods.cheque.class">Zepluf\Bundle\StoreBundle\Component\Payment\Method\Cheque</parameter>
+        <parameter key="storebundle.payment_methods.paypal_standard.class">Zepluf\Bundle\StoreBundle\Component\Payment\Method\PaypalStandard</parameter>
     </parameters>
 
     <services>
@@ -201,17 +201,17 @@
         </service>
 
         <!-- payment -->
-        <service id="storebundle.payment" class="%storebundle.payment.class%"/>
+        <service id="storebundle.payment_methods" class="%storebundle.payment_methods.class%"/>
 
         <!-- payment_methods -->
-        <service id="storebundle.payment.method.cheque" class="%storebundle.payment.method.cheque.class%">
+        <service id="storebundle.payment_methods.cheque" class="%storebundle.payment_methods.cheque.class%">
             <argument type="service" id="event_dispatcher" />
-            <tag name="storebundle.payment.payment_method" alias="cheque" />
+            <tag name="storebundle.payment_methods.method" alias="cheque" />
         </service>
 
-        <service id="storebundle.payment.method.paypal_standard" class="%storebundle.payment.method.paypal_standard.class%">
+        <service id="storebundle.payment_methods.paypal_standard" class="%storebundle.payment_methods.paypal_standard.class%">
             <argument type="service" id="event_dispatcher" />
-            <tag name="storebundle.payment.payment_method" alias="paypal_standard" />
+            <tag name="storebundle.payment_methods.method" alias="paypal_standard" />
         </service>
     </services>
 </container>

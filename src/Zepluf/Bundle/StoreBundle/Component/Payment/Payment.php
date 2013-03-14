@@ -10,27 +10,73 @@
 
 namespace Zepluf\Bundle\StoreBundle\Component\Payment;
 
+use \Doctrine\ORM\EntityManager;
+use Zepluf\Bundle\StoreBundle\Entity\Payment as PaymentEntity;
+
 /**
 *
 */
-class Payment {
+class Payment
+{
+    protected $entityManager;
+
     /**
-     * @var list of available payment methods
+     * payment entity
+     * @var PaymentEntity
      */
-    protected $paymentMethods = array();
-    // protected $storageHandlers;
+    protected $payment = false;
 
-    public function __construct()
+    /**
+     * constructor
+     * @param EntityManager $entityManager
+     */
+    public function __construct($entityManager)
     {
-
+        $this->entityManager = $entityManager;
     }
 
-    public function addPaymentMethod(PaymentInterface $paymentMethod)
+    /**
+     * @param array $data ('payment_method' => array(), 'invoice_items' => array(). ...)
+     * @throws \Exception
+     */
+    public function create($data)
     {
-        if (true === $paymentMethod->isAvailable()) {
-            // print_r($paymentMethod);
+        $this->payment = new PaymentEntity();
 
-            $this->paymentMethods[] = $paymentMethod;
+        // set payment effective date
+        $this->payment->setEffectiveDate(new \DateTime());
+
+        //If ship from address is empty, it's shopkeeper contact by default
+        if (isset($data['ShippedFromContactMechanism'])) {
+            $payment->setShippedFromContactMechanism($data['ship_from']);
+        }
+        if (isset($data['ship_from'])) {
+            $payment->setShippedToContactMechanism($data['ship_to']);
+        }
+
+
+        //set payment Item
+        foreach ($data['items'] as $item) {
+            $paymentItem = new paymentItem();
+
+            //logical code to set info for paymentItem
+
+            $paymentItem->setpayment($payment);
+            $payment->addpaymentItem($paymentItem);
+        }
+
+        if (!$error) {
+            $this->payment = $payment;
+        }
+
+        if ($this->payment) {
+            // persists the payment
+            $this->entityManager->persist($this->payment);
+            try {
+                $this->entityManager->flush();
+            } catch (\Exception $e) {
+                throw $e;
+            }
         }
     }
 }

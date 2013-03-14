@@ -1,32 +1,27 @@
 <?php
 /**
- * Created by Rubikin Team.
- * Date: 3/4/13
- * Time: 5:41 PM
+ * Created by RubikIntegration Team.
+ *
+ * Date: 9/30/12
+ * Time: 4:31 PM
  * Question? Come to our website at http://rubikin.com
+ *
  * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * file that was distributed with this source code or refer to the LICENSE
+ * file of ZePLUF
  */
 
 namespace Zepluf\Bundle\StoreBundle\Component\Payment\Method;
 
-use Zepluf\Bundle\StoreBundle\Component\Payment\PaymentAbstract;
-use Zepluf\Bundle\StoreBundle\Component\Payment\PaymentInterface;
-
 /**
 *
 */
-class PaypalStandard extends PaymentAbstract implements PaymentInterface
+class PaypalStandard extends PaymentMethodAbstract implements PaymentMethodInterface
 {
     /**
      * @var [type]
      */
     protected $settings;
-
-    /**
-     * @var [type]
-     */
-    // protected $storateHandler;
 
     function __construct()
     {
@@ -44,20 +39,11 @@ class PaypalStandard extends PaymentAbstract implements PaymentInterface
          * @todo get current payment method settings from this storage handler
          */
         return array(
+            'code' => 'paypal_standard',
             'status' => 1,
             'sort_order' => 10
         );
     }
-
-    /**
-     * set payment storate handler
-     *
-     * @param PaymentStorageHandlerInterface $storateHandler
-     */
-    // public function setStorateHandler(PaymentStorageHandlerInterface $storateHandler)
-    // {
-    //     $this->storateHandler = $storateHandler;
-    // }
 
     /**
      * check current payment method is active or inactive

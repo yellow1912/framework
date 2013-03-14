@@ -390,20 +390,20 @@ class appProdProjectContainer extends Container
     {
         return $this->services['storebundle.logger.zencart_handler'] = new \Zepluf\Bundle\StoreBundle\Logger\Handler\ZencartHandler($this->get('environment'));
     }
-    protected function getStorebundle_PaymentService()
+    protected function getStorebundle_PaymentMethodsService()
     {
-        $this->services['storebundle.payment'] = $instance = new \Zepluf\Bundle\StoreBundle\Component\Payment\Payment();
-        $instance->addPaymentMethod($this->get('storebundle.payment.method.cheque'), 'cheque');
-        $instance->addPaymentMethod($this->get('storebundle.payment.method.paypal_standard'), 'paypal_standard');
+        $this->services['storebundle.payment_methods'] = $instance = new \Zepluf\Bundle\StoreBundle\Component\Payment\PaymentMethods();
+        $instance->addMethod($this->get('storebundle.payment_methods.cheque'), 'cheque');
+        $instance->addMethod($this->get('storebundle.payment_methods.paypal_standard'), 'paypal_standard');
         return $instance;
     }
-    protected function getStorebundle_Payment_Method_ChequeService()
+    protected function getStorebundle_PaymentMethods_ChequeService()
     {
-        return $this->services['storebundle.payment.method.cheque'] = new \Zepluf\Bundle\StoreBundle\Component\Payment\Method\Cheque($this->get('event_dispatcher'));
+        return $this->services['storebundle.payment_methods.cheque'] = new \Zepluf\Bundle\StoreBundle\Component\Payment\Method\Cheque($this->get('event_dispatcher'));
     }
-    protected function getStorebundle_Payment_Method_PaypalStandardService()
+    protected function getStorebundle_PaymentMethods_PaypalStandardService()
     {
-        return $this->services['storebundle.payment.method.paypal_standard'] = new \Zepluf\Bundle\StoreBundle\Component\Payment\Method\PaypalStandard($this->get('event_dispatcher'));
+        return $this->services['storebundle.payment_methods.paypal_standard'] = new \Zepluf\Bundle\StoreBundle\Component\Payment\Method\PaypalStandard($this->get('event_dispatcher'));
     }
     protected function getStorebundle_SessionStorageHandlerService()
     {
@@ -1107,9 +1107,9 @@ class appProdProjectContainer extends Container
             'storebundle.cart_factory.class' => 'Zepluf\\Bundle\\StoreBundle\\Component\\Cart\\CartFactory',
             'storebundle.array_storage_handler.class' => 'Zepluf\\Bundle\\StoreBundle\\Component\\Cart\\StorageHandler\\ArrayStorageHandler',
             'storebundle.session_storage_handler.class' => 'Zepluf\\Bundle\\StoreBundle\\Component\\Cart\\StorageHandler\\SessionStorageHandler',
-            'storebundle.payment.class' => 'Zepluf\\Bundle\\StoreBundle\\Component\\Payment\\Payment',
-            'storebundle.payment.method.cheque.class' => 'Zepluf\\Bundle\\StoreBundle\\Component\\Payment\\Method\\Cheque',
-            'storebundle.payment.method.paypal_standard.class' => 'Zepluf\\Bundle\\StoreBundle\\Component\\Payment\\Method\\PaypalStandard',
+            'storebundle.payment_methods.class' => 'Zepluf\\Bundle\\StoreBundle\\Component\\Payment\\PaymentMethods',
+            'storebundle.payment_methods.cheque.class' => 'Zepluf\\Bundle\\StoreBundle\\Component\\Payment\\Method\\Cheque',
+            'storebundle.payment_methods.paypal_standard.class' => 'Zepluf\\Bundle\\StoreBundle\\Component\\Payment\\Method\\PaypalStandard',
             'monolog.logger.class' => 'Symfony\\Bridge\\Monolog\\Logger',
             'monolog.gelf.publisher.class' => 'Gelf\\MessagePublisher',
             'monolog.handler.stream.class' => 'Monolog\\Handler\\StreamHandler',

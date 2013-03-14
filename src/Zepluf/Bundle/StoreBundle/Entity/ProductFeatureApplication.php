@@ -5,12 +5,12 @@ namespace Zepluf\Bundle\StoreBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * ProductFeatureApplicability
+ * ProductFeatureApplication
  *
- * @ORM\Table(name="product_feature_applicability")
+ * @ORM\Table(name="product_feature_application")
  * @ORM\Entity
  */
-class ProductFeatureApplicability
+class ProductFeatureApplication
 {
     /**
      * @var integer
@@ -53,14 +53,14 @@ class ProductFeatureApplicability
     private $product;
 
     /**
-     * @var \ProductFeature
+     * @var \ProductFeatureValue
      *
-     * @ORM\ManyToOne(targetEntity="ProductFeature")
+     * @ORM\ManyToOne(targetEntity="ProductFeatureValue")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="product_feature_id", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="product_feature_value_id", referencedColumnName="id")
      * })
      */
-    private $productFeature;
+    private $productFeatureValue;
 
 
 
@@ -78,7 +78,7 @@ class ProductFeatureApplicability
      * Set type
      *
      * @param integer $type
-     * @return ProductFeatureApplicability
+     * @return ProductFeatureApplication
      */
     public function setType($type)
     {
@@ -101,7 +101,7 @@ class ProductFeatureApplicability
      * Set fromDate
      *
      * @param \DateTime $fromDate
-     * @return ProductFeatureApplicability
+     * @return ProductFeatureApplication
      */
     public function setFromDate($fromDate)
     {
@@ -124,7 +124,7 @@ class ProductFeatureApplicability
      * Set throughDate
      *
      * @param \DateTime $throughDate
-     * @return ProductFeatureApplicability
+     * @return ProductFeatureApplication
      */
     public function setThroughDate($throughDate)
     {
@@ -147,7 +147,7 @@ class ProductFeatureApplicability
      * Set product
      *
      * @param \Zepluf\Bundle\StoreBundle\Entity\Product $product
-     * @return ProductFeatureApplicability
+     * @return ProductFeatureApplication
      */
     public function setProduct(\Zepluf\Bundle\StoreBundle\Entity\Product $product = null)
     {
@@ -167,25 +167,25 @@ class ProductFeatureApplicability
     }
 
     /**
-     * Set productFeature
+     * Set productFeatureValue
      *
-     * @param \Zepluf\Bundle\StoreBundle\Entity\ProductFeature $productFeature
-     * @return ProductFeatureApplicability
+     * @param \Zepluf\Bundle\StoreBundle\Entity\ProductFeatureValue $productFeatureValue
+     * @return ProductFeatureApplication
      */
-    public function setProductFeature(\Zepluf\Bundle\StoreBundle\Entity\ProductFeature $productFeature = null)
+    public function setProductFeatureValue(\Zepluf\Bundle\StoreBundle\Entity\ProductFeatureValue $productFeatureValue = null)
     {
-        $this->productFeature = $productFeature;
+        $this->productFeatureValue = $productFeatureValue;
     
         return $this;
     }
 
     /**
-     * Get productFeature
+     * Get productFeatureValue
      *
-     * @return \Zepluf\Bundle\StoreBundle\Entity\ProductFeature 
+     * @return \Zepluf\Bundle\StoreBundle\Entity\ProductFeatureValue 
      */
-    public function getProductFeature()
+    public function getProductFeatureValue()
     {
-        return $this->productFeature;
+        return $this->productFeatureValue;
     }
 }

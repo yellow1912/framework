@@ -29,32 +29,11 @@ class Shipment
     private $incrementId;
 
     /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="estimated_ship_date", type="datetime", nullable=true)
-     */
-    private $estimatedShipDate;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="estimated_ready_date", type="datetime", nullable=true)
-     */
-    private $estimatedReadyDate;
-
-    /**
      * @var float
      *
-     * @ORM\Column(name="estimated_ship_cost", type="decimal", nullable=true)
+     * @ORM\Column(name="ship_cost", type="decimal", nullable=true)
      */
-    private $estimatedShipCost;
-
-    /**
-     * @var float
-     *
-     * @ORM\Column(name="actual_ship_cost", type="decimal", nullable=true)
-     */
-    private $actualShipCost;
+    private $shipCost;
 
     /**
      * @var float
@@ -170,95 +149,26 @@ class Shipment
     }
 
     /**
-     * Set estimatedShipDate
+     * Set shipCost
      *
-     * @param \DateTime $estimatedShipDate
+     * @param float $shipCost
      * @return Shipment
      */
-    public function setEstimatedShipDate($estimatedShipDate)
+    public function setShipCost($shipCost)
     {
-        $this->estimatedShipDate = $estimatedShipDate;
+        $this->shipCost = $shipCost;
     
         return $this;
     }
 
     /**
-     * Get estimatedShipDate
-     *
-     * @return \DateTime 
-     */
-    public function getEstimatedShipDate()
-    {
-        return $this->estimatedShipDate;
-    }
-
-    /**
-     * Set estimatedReadyDate
-     *
-     * @param \DateTime $estimatedReadyDate
-     * @return Shipment
-     */
-    public function setEstimatedReadyDate($estimatedReadyDate)
-    {
-        $this->estimatedReadyDate = $estimatedReadyDate;
-    
-        return $this;
-    }
-
-    /**
-     * Get estimatedReadyDate
-     *
-     * @return \DateTime 
-     */
-    public function getEstimatedReadyDate()
-    {
-        return $this->estimatedReadyDate;
-    }
-
-    /**
-     * Set estimatedShipCost
-     *
-     * @param float $estimatedShipCost
-     * @return Shipment
-     */
-    public function setEstimatedShipCost($estimatedShipCost)
-    {
-        $this->estimatedShipCost = $estimatedShipCost;
-    
-        return $this;
-    }
-
-    /**
-     * Get estimatedShipCost
+     * Get shipCost
      *
      * @return float 
      */
-    public function getEstimatedShipCost()
+    public function getShipCost()
     {
-        return $this->estimatedShipCost;
-    }
-
-    /**
-     * Set actualShipCost
-     *
-     * @param float $actualShipCost
-     * @return Shipment
-     */
-    public function setActualShipCost($actualShipCost)
-    {
-        $this->actualShipCost = $actualShipCost;
-    
-        return $this;
-    }
-
-    /**
-     * Get actualShipCost
-     *
-     * @return float 
-     */
-    public function getActualShipCost()
-    {
-        return $this->actualShipCost;
+        return $this->shipCost;
     }
 
     /**

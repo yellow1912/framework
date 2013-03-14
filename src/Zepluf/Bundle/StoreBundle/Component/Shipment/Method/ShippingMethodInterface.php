@@ -10,9 +10,12 @@
  * file that was distributed with this source code or refer to the LICENSE
  * file of ZePLUF
  */
+namespace Zepluf\Bundle\StoreBundle\Component\Shipment\Carrier;
 
 interface ShippingMethodInterface
 {
+    public function getInfo();
+
     public function isAvailable();
 
     public function checkCondition();
@@ -25,5 +28,7 @@ interface ShippingMethodInterface
 
     public function renderForm();
 
-    public function getPrice();
+    public function getAllowMethods();
+
+    public function getRate();
 }
