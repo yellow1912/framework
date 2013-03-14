@@ -37,7 +37,7 @@ class Invoice
     /**
      * create new invoice
      *
-     * @param  array  $invoice_items array of invoice item, includes:
+     * @param  array  $invoice_items array of invoice item, includes: id, name, quantity, features
      * @return [type]                [description]
      */
     public function create($invoice_items = array())
@@ -67,21 +67,40 @@ class Invoice
     {
         $invoiceId = $this->invoice->getId();
 
+        /**
+         * @var array
+         * 'id' => integer
+         */
+        $item;
         foreach ($invoice_items as $item) {
+            // find inventory item by id \Zepluf\Bundle\StoreBundle\Entity\InventoryItem
+            $inventoryItem = $this->entityManager->find('\Zepluf\Bundle\StoreBundle\Entity\InventoryItem', $item['id']);
 
-            $invoiceItemEntity = new InvoiceItemEntity();
+            if ($inventoryIte) {
+                $invoiceItem = new InvoiceItemEntity();
 
+                // link to invoice
+                $invoiceItem->setInvoice($this->invoice);
 
-            $invoiceItemEntity->setInvoice($this->invoice);
+                // link to inventory item
+                $invoiceItem->setInventoryItem($inventoryIte);
 
-            // set adjustment type \Zepluf\Bundle\StoreBundle\Entity\AdjustmentType
-            $invoiceItemEntity->setAdjustmentType(1);
+                // link to adjustment type \Zepluf\Bundle\StoreBundle\Entity\AdjustmentType
+                $invoiceItem->setAdjustmentType(1);
 
-            // set invoice item type \Zepluf\Bundle\StoreBundle\Entity\InvoiceItemType
-            $invoiceItemEntity->setInvoiceItemType(1);
+                // link to invoice item type \Zepluf\Bundle\StoreBundle\Entity\InvoiceItemType
+                $invoiceItem->setInvoiceItemType(1);
 
-            // set inventory item \Zepluf\Bundle\StoreBundle\Entity\InventoryItem
-            $invoiceItemEntity->setInventoryItem(1);
+                // set quantity
+                $invoiceItem->setQuantity(1);
+
+                // set amount
+                $invoiceItem->setAmount(9.75);
+
+                // set taxable
+                $invoiceItem->setIsTaxable(1);
+            }
+
         }
     }
 }
