@@ -54,6 +54,11 @@
         <!-- payment methods -->
         <parameter key="storebundle.payment_methods.cheque.class">Zepluf\Bundle\StoreBundle\Component\Payment\Method\Cheque</parameter>
         <parameter key="storebundle.payment_methods.paypal_standard.class">Zepluf\Bundle\StoreBundle\Component\Payment\Method\PaypalStandard</parameter>
+
+        <!-- shipment -->
+        <parameter key="storebundle.shipment.class">Zepluf\Bundle\StoreBundle\Component\Shipment\Shipment</parameter>
+        <!-- carrier -->
+        <parameter key="storebundle.shipment.freeshipping.class">Zepluf\Bundle\StoreBundle\Component\Shipment\Carrier\FreeShipping</parameter>
     </parameters>
 
     <services>
@@ -187,17 +192,28 @@
         </service>
 
         <!-- cart -->
-        <service id="storebundle.array_storage_handler" class="%storebundle.array_storage_handler.class%" />
+        <service id="storebundle.array_storage_handler" class="%storebundle.array_storage_handler.class%"/>
         <service id="storebundle.session_storage_handler" class="%storebundle.session_storage_handler.class%">
-            <argument type="service" id="session" />
+            <argument type="service" id="session"/>
         </service>
-        <service id="storebundle.cart_factory" class="%storebundle.cart_factory.class%" />
+        <service id="storebundle.cart_factory" class="%storebundle.cart_factory.class%"/>
+
         <service id="storebundle.cart" class="%storebundle.cart.class%"
                  factory-service="storebundle.cart_factory"
                  factory-method="get"
                 >
-            <argument type="service" id="storebundle.array_storage_handler" />
-            <argument type="service" id="storebundle.session_storage_handler" />
+            <argument type="service" id="storebundle.array_storage_handler"/>
+            <argument type="service" id="storebundle.session_storage_handler"/>
+        </service>
+
+        <!-- shipment -->
+        <service id="storebundle.shipment" class="%storebundle.shipment.class%">
+            <argument type="service" id="doctrine"/>
+        </service>
+
+        <!-- carrier -->
+        <service id="storebundle.shipment.freeshipping" class="%storebundle.shipment.freeshipping.class%">
+            <tag name="storebundle.shipment.carrier" alias="freeshipping" />
         </service>
 
         <!-- payment -->

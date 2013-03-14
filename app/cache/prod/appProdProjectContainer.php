@@ -67,21 +67,19 @@ class appProdProjectContainer extends Container
         $b->setNamespace('sf2orm_default_05ca0276c85be6dc12af3d9201209fe0');
         $c = new \Doctrine\Common\Cache\ArrayCache();
         $c->setNamespace('sf2orm_default_05ca0276c85be6dc12af3d9201209fe0');
-        $d = new \Doctrine\ORM\Mapping\Driver\DriverChain();
-        $d->addDriver(new \Doctrine\ORM\Mapping\Driver\AnnotationDriver($this->get('annotation_reader'), array(0 => 'D:\\xampp\\htdocs\\framework\\src\\Zepluf\\Bundle\\StoreBundle\\Entity')), 'Zepluf\\Bundle\\StoreBundle\\Entity');
-        $e = new \Doctrine\ORM\Configuration();
-        $e->setEntityNamespaces(array('StoreBundle' => 'Zepluf\\Bundle\\StoreBundle\\Entity'));
-        $e->setMetadataCacheImpl($a);
-        $e->setQueryCacheImpl($b);
-        $e->setResultCacheImpl($c);
-        $e->setMetadataDriverImpl($d);
-        $e->setProxyDir('D:/xampp/htdocs/framework/app/cache/doctrine/orm/Proxies');
-        $e->setProxyNamespace('Proxies');
-        $e->setAutoGenerateProxyClasses(false);
-        $e->setClassMetadataFactoryName('Doctrine\\ORM\\Mapping\\ClassMetadataFactory');
-        $e->setDefaultRepositoryClassName('Doctrine\\ORM\\EntityRepository');
-        $e->setNamingStrategy(new \Doctrine\ORM\Mapping\DefaultNamingStrategy());
-        $this->services['doctrine.orm.default_entity_manager'] = $instance = call_user_func(array('Doctrine\\ORM\\EntityManager', 'create'), $this->get('doctrine.dbal.default_connection'), $e);
+        $d = new \Doctrine\ORM\Configuration();
+        $d->setEntityNamespaces(array());
+        $d->setMetadataCacheImpl($a);
+        $d->setQueryCacheImpl($b);
+        $d->setResultCacheImpl($c);
+        $d->setMetadataDriverImpl(new \Doctrine\ORM\Mapping\Driver\DriverChain());
+        $d->setProxyDir('D:/xampp/htdocs/framework/app/cache/doctrine/orm/Proxies');
+        $d->setProxyNamespace('Proxies');
+        $d->setAutoGenerateProxyClasses(false);
+        $d->setClassMetadataFactoryName('Doctrine\\ORM\\Mapping\\ClassMetadataFactory');
+        $d->setDefaultRepositoryClassName('Doctrine\\ORM\\EntityRepository');
+        $d->setNamingStrategy(new \Doctrine\ORM\Mapping\DefaultNamingStrategy());
+        $this->services['doctrine.orm.default_entity_manager'] = $instance = call_user_func(array('Doctrine\\ORM\\EntityManager', 'create'), $this->get('doctrine.dbal.default_connection'), $d);
         $this->get('doctrine.orm.default_manager_configurator')->configure($instance);
         return $instance;
     }
@@ -392,9 +390,13 @@ class appProdProjectContainer extends Container
     }
     protected function getStorebundle_PaymentMethodsService()
     {
+        $a = $this->get('storebundle.payment_methods.cheque');
+        $b = $this->get('storebundle.payment_methods.paypal_standard');
         $this->services['storebundle.payment_methods'] = $instance = new \Zepluf\Bundle\StoreBundle\Component\Payment\PaymentMethods();
-        $instance->addMethod($this->get('storebundle.payment_methods.cheque'), 'cheque');
-        $instance->addMethod($this->get('storebundle.payment_methods.paypal_standard'), 'paypal_standard');
+        $instance->addMethod($a, 'cheque');
+        $instance->addMethod($b, 'paypal_standard');
+        $instance->addMethod($a, 'cheque');
+        $instance->addMethod($b, 'paypal_standard');
         return $instance;
     }
     protected function getStorebundle_PaymentMethods_ChequeService()
@@ -408,6 +410,18 @@ class appProdProjectContainer extends Container
     protected function getStorebundle_SessionStorageHandlerService()
     {
         return $this->services['storebundle.session_storage_handler'] = new \Zepluf\Bundle\StoreBundle\Component\Cart\StorageHandler\SessionStorageHandler($this->get('session'));
+    }
+    protected function getStorebundle_ShipmentService()
+    {
+        $a = $this->get('storebundle.shipment.freeshipping');
+        $this->services['storebundle.shipment'] = $instance = new \Zepluf\Bundle\StoreBundle\Component\Shipment\Shipment($this->get('doctrine'));
+        $instance->addCarriers($a, 'freeshipping');
+        $instance->addCarriers($a, 'freeshipping');
+        return $instance;
+    }
+    protected function getStorebundle_Shipment_FreeshippingService()
+    {
+        return $this->services['storebundle.shipment.freeshipping'] = new \Zepluf\Bundle\StoreBundle\Component\Shipment\Carrier\FreeShipping();
     }
     protected function getStorebundle_Templating_BundleLoaderService()
     {
@@ -1110,6 +1124,8 @@ class appProdProjectContainer extends Container
             'storebundle.payment_methods.class' => 'Zepluf\\Bundle\\StoreBundle\\Component\\Payment\\PaymentMethods',
             'storebundle.payment_methods.cheque.class' => 'Zepluf\\Bundle\\StoreBundle\\Component\\Payment\\Method\\Cheque',
             'storebundle.payment_methods.paypal_standard.class' => 'Zepluf\\Bundle\\StoreBundle\\Component\\Payment\\Method\\PaypalStandard',
+            'storebundle.shipment.class' => 'Zepluf\\Bundle\\StoreBundle\\Component\\Shipment\\Shipment',
+            'storebundle.shipment.freeshipping.class' => 'Zepluf\\Bundle\\StoreBundle\\Component\\Shipment\\Carrier\\FreeShipping',
             'monolog.logger.class' => 'Symfony\\Bridge\\Monolog\\Logger',
             'monolog.gelf.publisher.class' => 'Gelf\\MessagePublisher',
             'monolog.handler.stream.class' => 'Monolog\\Handler\\StreamHandler',

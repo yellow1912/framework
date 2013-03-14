@@ -104,7 +104,7 @@ class Invoice
     {
         $this->termType = new \Doctrine\Common\Collections\ArrayCollection();
     }
-    
+
 
     /**
      * Get id

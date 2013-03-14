@@ -22,7 +22,6 @@ class StorePass implements CompilerPassInterface
             }
         }
 
-
         if (!$container->hasDefinition('storebundle.shipment')) {
             return;
         }
