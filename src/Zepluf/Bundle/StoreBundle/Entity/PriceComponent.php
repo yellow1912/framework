@@ -64,6 +64,13 @@ class PriceComponent
     private $comment;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="handler", type="string", length=255, nullable=false)
+     */
+    private $handler;
+
+    /**
      * @var \Doctrine\Common\Collections\Collection
      *
      * @ORM\ManyToMany(targetEntity="ProductFeature", inversedBy="priceComponent")
@@ -241,6 +248,29 @@ class PriceComponent
     public function getComment()
     {
         return $this->comment;
+    }
+
+    /**
+     * Set handler
+     *
+     * @param string $handler
+     * @return PriceComponent
+     */
+    public function setHandler($handler)
+    {
+        $this->handler = $handler;
+
+        return $this;
+    }
+
+    /**
+     * Get handler
+     *
+     * @return string
+     */
+    public function getHandler()
+    {
+        return $this->handler;
     }
 
     /**
