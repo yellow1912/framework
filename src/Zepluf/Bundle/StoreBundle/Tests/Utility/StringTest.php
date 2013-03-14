@@ -15,7 +15,7 @@ namespace Zepluf\Bundle\StoreBundle\Tests\Utility;
 
 use \Zepluf\Bundle\StoreBundle\Utility\String;
 
-class StringTest extends \Zepluf\Bundle\StoreBundle\Tests\BaseTestCase
+class StringTest extends \PHPUnit_Framework_TestCase
 {
     protected $object;
 

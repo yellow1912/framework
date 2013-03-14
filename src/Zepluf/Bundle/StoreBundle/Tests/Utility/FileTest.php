@@ -15,7 +15,7 @@ namespace Zepluf\Bundle\StoreBundle\Tests\Utility;
 
 use Zepluf\Bundle\StoreBundle\Utility\File;
 
-class FileTest extends \Zepluf\Bundle\StoreBundle\Tests\BaseTestCase
+class FileTest extends \PHPUnit_Framework_TestCase
 {
     protected $object;
 
@@ -114,8 +114,11 @@ class FileTest extends \Zepluf\Bundle\StoreBundle\Tests\BaseTestCase
     /**
      * test sanitizeFilename()
      */
-    public function testsanitizeFilename()
+    public function testSanitizeFilename()
     {
+        $stringUtility = $this->getMock('Zepluf\Bundle\StoreBundle\Utility\String');
+        $this->object = new File($stringUtility);
+
         $this->assertEquals('logo_orange.gif', $this->object->sanitizeFilename('--logö  _  __   ___   ora@@ñ--~gé--.gif'), '::sanitizeFilename() handles complex filename with specials chars');
         $this->assertEquals('coilstack', $this->object->sanitizeFilename('cOiLsTaCk'), '::sanitizeFilename() converts all characters to lower case');
         $this->assertEquals('cOiLsTaCk', $this->object->sanitizeFilename('cOiLsTaCk', 'default', '_', false), '::sanitizeFilename() lower case can be desactivated, passing false as the 4th argument');
@@ -134,12 +137,6 @@ class FileTest extends \Zepluf\Bundle\StoreBundle\Tests\BaseTestCase
         $this->assertEquals('logo_edition_1314352521.jpg', $this->object->sanitizeFilename('logo_edition_1314352521.jpg'), '::sanitizeFilename() returns the filename untouched if it does not need to be modified');
         $userId = rand(1, 10);
         $this->assertEquals('user_doc_'. $userId. '.doc', $this->object->sanitizeFilename('亐亐亐亐亐.doc', 'user_doc_'. $userId), '::sanitizeFilename() returns the default string (the 2nd argument) if it can\'t be sanitized');
-    }
-
-    public function setUp()
-    {
-        $stringUtility = $this->getMock('Zepluf\Bundle\StoreBundle\Utility\String');
-        $this->object = new File($stringUtility);
     }
 
     public function tearDown()

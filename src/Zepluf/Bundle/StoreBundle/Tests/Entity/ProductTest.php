@@ -23,6 +23,10 @@ class ProductTest extends BaseTestCase
     {
         $em = $this->_container->get('doctrine.orm.entity_manager');
         $product = $em->find('Zepluf\Bundle\StoreBundle\Entity\Product', 1);
+        foreach($product->getProductFeatureApplication() as $productFeatureApplication) {
+            var_dump($productFeatureApplication->getProductFeatureValue()->getDescription());
+        }
+            ;die();
         $pricing = new \Zepluf\Bundle\StoreBundle\Component\Price\Pricing();
         $pricing->addHandler(new \Zepluf\Bundle\StoreBundle\Component\Price\DefaultPriceHandler());
         echo $pricing->getProductPrice($product);

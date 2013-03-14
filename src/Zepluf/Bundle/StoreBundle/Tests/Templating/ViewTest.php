@@ -44,7 +44,7 @@ class ViewTest extends BaseTestCase
     public function testFindRenderPathTemplate()
     {
         // put the template into the current template
-        $filePath = $this->defaultTemplateDir . '/templates/tpl_test_template.html.php';
+        $filePath = $this->defaultTemplateDir . '/tpl_test_template.html.php';
         $fp = fopen($filePath, 'w');
         fwrite($fp, 'sample template file');
 
@@ -52,7 +52,7 @@ class ViewTest extends BaseTestCase
 
         $filePath = realpath($filePath);
 
-        $renderedPath = $this->view->findRenderPath('templates/tpl_test_template.html.php');
+        $renderedPath = $this->view->findRenderPath('tpl_test_template.html.php');
 
         $this->assertTrue(is_string($renderedPath));
 

@@ -45,12 +45,13 @@ class SettingsTest extends BaseTestCase
         //Reset specific cache
         $this->object->resetCache('a');
         //Assertion: no a cache existed
-        $this->assertTrue(!file_exists($this->cacheDir . "/ZePLUF/a_" . $this->environment . "cache"));
+        $this->assertTrue(!file_exists($this->cacheDir . "/" . $this->environment . "a.cache"));
 
         //Reset all cache
         $this->object->resetCache();
+        $cacheFiles = glob($this->cacheDir . "/" . $this->environment . "*.cache");
         //Assertion: no cache existed
-        $this->assertTrue($this->dir_is_empty($this->cacheDir . "/ZePLUF"));
+        $this->assertEmpty($cacheFiles);
     }
 
     public function testInitialize()
@@ -66,9 +67,9 @@ class SettingsTest extends BaseTestCase
         $testPlugin = 'riFooBar';
 
         //Remove cache folder if existed
-        if (file_exists($this->object->getCacheRoot())) {
-            $this->delete_directory($this->object->getCacheRoot());
-        }
+//        if (file_exists($this->object->getCacheRoot())) {
+//            $this->delete_directory($this->object->getCacheRoot());
+//        }
 
         $this->object->load($testPlugin);
 
@@ -113,7 +114,7 @@ class SettingsTest extends BaseTestCase
         $this->object->set('local', ($this->object->loadFile('', $this->configDir . '/', 'local.yml')));
 
         //Assertion
-        $this->assertFalse($this->object->get('local.ricjloader.settings.cache'));
+        $this->assertFalse($this->object->get('local.rifoo.cache'));
     }
 
 
@@ -125,7 +126,7 @@ class SettingsTest extends BaseTestCase
         //Save cache
         $this->object->saveCache('plugins', $local_config);
 
-        $cache_content = @file_get_contents($this->cacheDir . '/ZePLUF/' . 'plugins_' . $this->environment . '.cache');
+        $cache_content = @file_get_contents($this->cacheDir . "/" . $this->environment . '/plugins.cache');
 
         //Assertion
         $this->assertEquals($cache_content, serialize($local_config));
@@ -153,35 +154,5 @@ class SettingsTest extends BaseTestCase
     public function tearDown()
     {
         unset($this->object);
-    }
-
-    private function delete_directory($dir)
-    {
-        if ($handle = opendir($dir)) {
-            $array = array();
-
-            while (false !== ($file = readdir($handle))) {
-                if ($file != "." && $file != "..") {
-
-                    if (is_dir($dir . $file)) {
-                        if (!@rmdir($dir . $file)) // Empty directory? Remove it
-                        {
-                            $this->delete_directory($dir . $file . '/'); // Not empty? Delete the files inside it
-                        }
-                    } else {
-                        @unlink($dir . $file);
-                    }
-                }
-            }
-            closedir($handle);
-
-            @rmdir($dir);
-        }
-    }
-
-    private function dir_is_empty($dir)
-    {
-        if (!is_readable($dir)) return NULL;
-        return (count(scandir($dir)) == 2);
     }
 }

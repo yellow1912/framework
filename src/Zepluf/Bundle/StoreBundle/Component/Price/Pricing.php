@@ -41,6 +41,13 @@ class Pricing extends \Symfony\Component\DependencyInjection\ContainerAware
         }
 
         // get the total of features price
+        foreach ($product->getProductFeatureApplication() as $productFeatureApplication) {
+
+            $handlerCode = $priceComponent->getHandler();
+            if (isset($this->handlers[$handlerCode])) {
+                $productPrice = $this->handlers[$handlerCode]->getPrice($productPrice, $priceComponent);
+            }
+        }
 
         // loop through the additional price component
 

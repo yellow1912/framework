@@ -1,3 +1,5 @@
+cache: false
+
 routes:
   test:
     pattern:  /manager/

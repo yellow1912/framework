@@ -1,7 +1,7 @@
 initialized: false
 installed: {  }
-activated: {  }
-core:
-    - riCjLoader
+activated:
+    - riFoo
+core: {  }
 backend: {  }
 frontend: {  }

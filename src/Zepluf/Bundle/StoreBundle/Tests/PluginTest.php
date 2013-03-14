@@ -63,11 +63,8 @@ class PluginTest extends BaseTestCase
     public function testLoadPluginSettingsNoCache()
     {
         $this->settings->resetCache();
-
         $this->object->loadPluginsSettings();
-
-        $local_file = Yaml::parse($this->cacheDir . '/ZePLUF/plugins_' . $this->environment->getEnvironment() . '.cache');
-
+        $local_file = file_get_contents($this->cacheDir . '/' . $this->environment->getEnvironment() . '/plugins.cache');
         $this->assertEquals($local_file, serialize($this->settings->get('plugins')));
     }
 
@@ -83,7 +80,7 @@ class PluginTest extends BaseTestCase
         $this->object->loadPlugins($this->_container);
 
         //Assertion: getLoader, test event dispatcher
-        $this->assertEquals(array('riFooBar'), $this->object->getLoaded());
+        $this->assertEquals(array('riFoo', 'riFooBar'), $this->object->getLoaded());
         $this->assertEquals("OK", $this->listenerResult);
 
         //reset System setting file

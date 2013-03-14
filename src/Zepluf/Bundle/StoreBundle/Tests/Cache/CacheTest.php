@@ -64,9 +64,13 @@ class CacheTest extends BaseTestCase
 
     public function testRemoveFolder()
     {
+        $utilityFile = new \Zepluf\Bundle\StoreBundle\Utility\File(new \Zepluf\Bundle\StoreBundle\Utility\String());
+        $object = new Cache(true, $utilityFile, $this->getParameter('kernel.cache_dir'));
+
         mkdir($this->getParameter('kernel.cache_dir') . "/rm");
         $this->assertFileExists($this->getParameter('kernel.cache_dir') . "/rm");
-        $this->object->remove("", $this->getParameter('kernel.cache_dir') . "/rm", true);
-        $this->assertFileExists($this->getParameter('kernel.cache_dir') . "/rm");
+        $object->remove('', $this->getParameter('kernel.cache_dir') . '/rm', true);
+        $this->assertFileNotExists($this->getParameter('kernel.cache_dir') . "/rm");
+
     }
 }

@@ -25,7 +25,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
         $config = $processor->processConfiguration(new Configuration(false), array(array('plugins' => array('one', 'two'))));
 
         $this->assertEquals(
-            array_merge(array('plugins' => array('one', 'two')), self::getDefaultConfig()),
+            array_merge(self::getDefaultConfig(), array('plugins' => array('one', 'two'))),
             $config
         );
     }
