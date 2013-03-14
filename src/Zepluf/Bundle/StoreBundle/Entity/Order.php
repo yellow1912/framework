@@ -22,13 +22,6 @@ class Order
     private $id;
 
     /**
-     * @var OrderItem|array
-     *
-     * @ORM\OneToMany(targetEntity="OrderItem", mappedBy="order")
-     */
-    private $orderItems;
-
-    /**
      * @var integer
      *
      * @ORM\Column(name="type", type="smallint", nullable=false)
@@ -50,18 +43,7 @@ class Order
     private $entryDate;
 
 
-<<<<<<< HEAD
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->orderItems = new \Doctrine\Common\Collections\ArrayCollection();
-    }
-    
-=======
 
->>>>>>> 9cda9ba8825f6f9dbff13b0b3726e1d596b3262c
     /**
      * Get id
      *
@@ -139,38 +121,5 @@ class Order
     public function getEntryDate()
     {
         return $this->entryDate;
-    }
-
-    /**
-     * Add orderItems
-     *
-     * @param \Zepluf\Bundle\StoreBundle\Entity\OrderItem $orderItems
-     * @return Order
-     */
-    public function addOrderItem(\Zepluf\Bundle\StoreBundle\Entity\OrderItem $orderItems)
-    {
-        $this->orderItems[] = $orderItems;
-    
-        return $this;
-    }
-
-    /**
-     * Remove orderItems
-     *
-     * @param \Zepluf\Bundle\StoreBundle\Entity\OrderItem $orderItems
-     */
-    public function removeOrderItem(\Zepluf\Bundle\StoreBundle\Entity\OrderItem $orderItems)
-    {
-        $this->orderItems->removeElement($orderItems);
-    }
-
-    /**
-     * Get orderItems
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getOrderItems()
-    {
-        return $this->orderItems;
     }
 }

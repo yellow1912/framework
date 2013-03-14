@@ -45,24 +45,6 @@ class ProductFeature
     /**
      * @var \Doctrine\Common\Collections\Collection
      *
-<<<<<<< HEAD
-     * @ORM\ManyToMany(targetEntity="ProductFeatureValue", inversedBy="productFeature")
-     * @ORM\JoinTable(name="product_feature_comprise",
-     *   joinColumns={
-     *     @ORM\JoinColumn(name="product_feature_id", referencedColumnName="id")
-     *   },
-     *   inverseJoinColumns={
-     *     @ORM\JoinColumn(name="product_feature_value_id", referencedColumnName="id")
-     *   }
-     * )
-     */
-    private $productFeatureValue;
-
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     *
-=======
->>>>>>> 9cda9ba8825f6f9dbff13b0b3726e1d596b3262c
      * @ORM\ManyToMany(targetEntity="PriceComponent", mappedBy="feature")
      */
     private $priceComponent;
@@ -92,10 +74,6 @@ class ProductFeature
      */
     public function __construct()
     {
-<<<<<<< HEAD
-        $this->productFeatureValue = new \Doctrine\Common\Collections\ArrayCollection();
-=======
->>>>>>> 9cda9ba8825f6f9dbff13b0b3726e1d596b3262c
         $this->priceComponent = new \Doctrine\Common\Collections\ArrayCollection();
     }
     
@@ -180,42 +158,6 @@ class ProductFeature
     }
 
     /**
-<<<<<<< HEAD
-     * Add productFeatureValue
-     *
-     * @param \Zepluf\Bundle\StoreBundle\Entity\ProductFeatureValue $productFeatureValue
-     * @return ProductFeature
-     */
-    public function addProductFeatureValue(\Zepluf\Bundle\StoreBundle\Entity\ProductFeatureValue $productFeatureValue)
-    {
-        $this->productFeatureValue[] = $productFeatureValue;
-    
-        return $this;
-    }
-
-    /**
-     * Remove productFeatureValue
-     *
-     * @param \Zepluf\Bundle\StoreBundle\Entity\ProductFeatureValue $productFeatureValue
-     */
-    public function removeProductFeatureValue(\Zepluf\Bundle\StoreBundle\Entity\ProductFeatureValue $productFeatureValue)
-    {
-        $this->productFeatureValue->removeElement($productFeatureValue);
-    }
-
-    /**
-     * Get productFeatureValue
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getProductFeatureValue()
-    {
-        return $this->productFeatureValue;
-    }
-
-    /**
-=======
->>>>>>> 9cda9ba8825f6f9dbff13b0b3726e1d596b3262c
      * Add priceComponent
      *
      * @param \Zepluf\Bundle\StoreBundle\Entity\PriceComponent $priceComponent

@@ -34,6 +34,12 @@ class Invoice
         $this->invoice = new InvoiceEntity();
     }
 
+    /**
+     * create new invoice
+     *
+     * @param  array  $invoice_items array of invoice item, includes:
+     * @return [type]                [description]
+     */
     public function create($invoice_items = array())
     {
         // set billed to \Zepluf\Bundle\StoreBundle\Entity\Party
@@ -62,7 +68,11 @@ class Invoice
         $invoiceId = $this->invoice->getId();
 
         foreach ($invoice_items as $item) {
+
             $invoiceItemEntity = new InvoiceItemEntity();
+
+
+            $invoiceItemEntity->setInvoice($this->invoice);
 
             // set adjustment type \Zepluf\Bundle\StoreBundle\Entity\AdjustmentType
             $invoiceItemEntity->setAdjustmentType(1);
@@ -70,6 +80,8 @@ class Invoice
             // set invoice item type \Zepluf\Bundle\StoreBundle\Entity\InvoiceItemType
             $invoiceItemEntity->setInvoiceItemType(1);
 
+            // set inventory item \Zepluf\Bundle\StoreBundle\Entity\InventoryItem
+            $invoiceItemEntity->setInventoryItem(1);
         }
     }
 }

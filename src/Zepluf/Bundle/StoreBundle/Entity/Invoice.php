@@ -22,13 +22,6 @@ class Invoice
     private $id;
 
     /**
-     * @var InvoiceItem|array
-     *
-     * @ORM\OneToMany(targetEntity="InvoiceItem", mappedBy="invoice")
-     */
-    private $invoiceItems;
-
-    /**
      * @var \DateTime
      *
      * @ORM\Column(name="entry_date", type="datetime", nullable=false)
@@ -111,7 +104,7 @@ class Invoice
     {
         $this->termType = new \Doctrine\Common\Collections\ArrayCollection();
     }
-    
+
 
     /**
      * Get id
@@ -193,42 +186,6 @@ class Invoice
     }
 
     /**
-<<<<<<< HEAD
-     * Add invoiceItems
-     *
-     * @param \Zepluf\Bundle\StoreBundle\Entity\InvoiceItem $invoiceItems
-     * @return Invoice
-     */
-    public function addInvoiceItem(\Zepluf\Bundle\StoreBundle\Entity\InvoiceItem $invoiceItems)
-    {
-        $this->invoiceItems[] = $invoiceItems;
-    
-        return $this;
-    }
-
-    /**
-     * Remove invoiceItems
-     *
-     * @param \Zepluf\Bundle\StoreBundle\Entity\InvoiceItem $invoiceItems
-     */
-    public function removeInvoiceItem(\Zepluf\Bundle\StoreBundle\Entity\InvoiceItem $invoiceItems)
-    {
-        $this->invoiceItems->removeElement($invoiceItems);
-    }
-
-    /**
-     * Get invoiceItems
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getInvoiceItems()
-    {
-        return $this->invoiceItems;
-    }
-
-    /**
-=======
->>>>>>> 9cda9ba8825f6f9dbff13b0b3726e1d596b3262c
      * Add termType
      *
      * @param \Zepluf\Bundle\StoreBundle\Entity\TermType $termType

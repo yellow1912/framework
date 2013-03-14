@@ -29,16 +29,6 @@ class Shipment
     private $incrementId;
 
     /**
-<<<<<<< HEAD
-     * @var ShipmentItem|array
-     *
-     * @ORM\OneToMany(targetEntity="ShipmentItem", mappedBy="shipment")
-     */
-    private $shipmentItems;
-
-    /**
-=======
->>>>>>> 9cda9ba8825f6f9dbff13b0b3726e1d596b3262c
      * @var float
      *
      * @ORM\Column(name="ship_cost", type="decimal", nullable=true)
@@ -124,14 +114,7 @@ class Shipment
     private $shippedToContactMechanism;
 
 
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->shipmentItems = new \Doctrine\Common\Collections\ArrayCollection();
-    }
-    
+
     /**
      * Get id
      *
@@ -278,39 +261,6 @@ class Shipment
     public function getUpdatedAt()
     {
         return $this->updatedAt;
-    }
-
-    /**
-     * Add shipmentItems
-     *
-     * @param \Zepluf\Bundle\StoreBundle\Entity\ShipmentItem $shipmentItems
-     * @return Shipment
-     */
-    public function addShipmentItem(\Zepluf\Bundle\StoreBundle\Entity\ShipmentItem $shipmentItems)
-    {
-        $this->shipmentItems[] = $shipmentItems;
-    
-        return $this;
-    }
-
-    /**
-     * Remove shipmentItems
-     *
-     * @param \Zepluf\Bundle\StoreBundle\Entity\ShipmentItem $shipmentItems
-     */
-    public function removeShipmentItem(\Zepluf\Bundle\StoreBundle\Entity\ShipmentItem $shipmentItems)
-    {
-        $this->shipmentItems->removeElement($shipmentItems);
-    }
-
-    /**
-     * Get shipmentItems
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getShipmentItems()
-    {
-        return $this->shipmentItems;
     }
 
     /**
