@@ -36,11 +36,23 @@ class ProductFeatureValue
     private $description;
 
     /**
+<<<<<<< HEAD
      * @var \Doctrine\Common\Collections\Collection
      *
      * @ORM\ManyToMany(targetEntity="ProductFeature", mappedBy="productFeatureValue")
      */
     private $productFeature;
+=======
+     * @var \ProductFeature
+     *
+     * @ORM\ManyToOne(targetEntity="ProductFeature")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="product_feature_id", referencedColumnName="id")
+     * })
+     */
+    private $productFeature;
+
+>>>>>>> 9cda9ba8825f6f9dbff13b0b3726e1d596b3262c
 
     /**
      * Constructor
@@ -108,19 +120,30 @@ class ProductFeatureValue
     }
 
     /**
+<<<<<<< HEAD
      * Add productFeature
+=======
+     * Set productFeature
+>>>>>>> 9cda9ba8825f6f9dbff13b0b3726e1d596b3262c
      *
      * @param \Zepluf\Bundle\StoreBundle\Entity\ProductFeature $productFeature
      * @return ProductFeatureValue
      */
+<<<<<<< HEAD
     public function addProductFeature(\Zepluf\Bundle\StoreBundle\Entity\ProductFeature $productFeature)
     {
         $this->productFeature[] = $productFeature;
+=======
+    public function setProductFeature(\Zepluf\Bundle\StoreBundle\Entity\ProductFeature $productFeature = null)
+    {
+        $this->productFeature = $productFeature;
+>>>>>>> 9cda9ba8825f6f9dbff13b0b3726e1d596b3262c
     
         return $this;
     }
 
     /**
+<<<<<<< HEAD
      * Remove productFeature
      *
      * @param \Zepluf\Bundle\StoreBundle\Entity\ProductFeature $productFeature
@@ -134,6 +157,11 @@ class ProductFeatureValue
      * Get productFeature
      *
      * @return \Doctrine\Common\Collections\Collection 
+=======
+     * Get productFeature
+     *
+     * @return \Zepluf\Bundle\StoreBundle\Entity\ProductFeature 
+>>>>>>> 9cda9ba8825f6f9dbff13b0b3726e1d596b3262c
      */
     public function getProductFeature()
     {

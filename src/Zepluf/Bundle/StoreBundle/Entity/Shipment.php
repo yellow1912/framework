@@ -29,6 +29,7 @@ class Shipment
     private $incrementId;
 
     /**
+<<<<<<< HEAD
      * @var ShipmentItem|array
      *
      * @ORM\OneToMany(targetEntity="ShipmentItem", mappedBy="shipment")
@@ -36,6 +37,8 @@ class Shipment
     private $shipmentItems;
 
     /**
+=======
+>>>>>>> 9cda9ba8825f6f9dbff13b0b3726e1d596b3262c
      * @var float
      *
      * @ORM\Column(name="ship_cost", type="decimal", nullable=true)

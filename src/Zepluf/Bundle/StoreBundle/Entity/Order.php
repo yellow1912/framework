@@ -50,6 +50,7 @@ class Order
     private $entryDate;
 
 
+<<<<<<< HEAD
     /**
      * Constructor
      */
@@ -58,6 +59,9 @@ class Order
         $this->orderItems = new \Doctrine\Common\Collections\ArrayCollection();
     }
     
+=======
+
+>>>>>>> 9cda9ba8825f6f9dbff13b0b3726e1d596b3262c
     /**
      * Get id
      *

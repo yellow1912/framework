@@ -193,6 +193,7 @@ class Invoice
     }
 
     /**
+<<<<<<< HEAD
      * Add invoiceItems
      *
      * @param \Zepluf\Bundle\StoreBundle\Entity\InvoiceItem $invoiceItems
@@ -226,6 +227,8 @@ class Invoice
     }
 
     /**
+=======
+>>>>>>> 9cda9ba8825f6f9dbff13b0b3726e1d596b3262c
      * Add termType
      *
      * @param \Zepluf\Bundle\StoreBundle\Entity\TermType $termType

@@ -59,6 +59,14 @@ class Order
         $this->addItems($productCollection);
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * description
+     *
+     * @param ProductCollection $productCollection [description]
+     */
+>>>>>>> 9cda9ba8825f6f9dbff13b0b3726e1d596b3262c
     public function addItems(ProductCollection $productCollection)
     {
         if (false !== ($products = $productCollection->get())) {
@@ -82,6 +90,27 @@ class Order
         }
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * remove order item from order
+     *
+     * @param  integer $orderItemId
+     * @return Order
+     */
+    public function removeItems($orderItemId)
+    {
+        $orderItemEntity = $this->entityManager->findBy(array('id' => $orderItemId, 'order_id' => $this->order->getId()));
+
+        if (false !== $orderItemEntity && !empty($orderItemEntity)) {
+            $this->EntityManager->remove($orderItemEntity);
+            $this->EntityManager->flush();
+        }
+
+        return $this;
+    }
+
+>>>>>>> 9cda9ba8825f6f9dbff13b0b3726e1d596b3262c
     public function addInvoice()
     {
 

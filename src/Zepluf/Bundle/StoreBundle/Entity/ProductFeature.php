@@ -45,6 +45,7 @@ class ProductFeature
     /**
      * @var \Doctrine\Common\Collections\Collection
      *
+<<<<<<< HEAD
      * @ORM\ManyToMany(targetEntity="ProductFeatureValue", inversedBy="productFeature")
      * @ORM\JoinTable(name="product_feature_comprise",
      *   joinColumns={
@@ -60,6 +61,8 @@ class ProductFeature
     /**
      * @var \Doctrine\Common\Collections\Collection
      *
+=======
+>>>>>>> 9cda9ba8825f6f9dbff13b0b3726e1d596b3262c
      * @ORM\ManyToMany(targetEntity="PriceComponent", mappedBy="feature")
      */
     private $priceComponent;
@@ -89,7 +92,10 @@ class ProductFeature
      */
     public function __construct()
     {
+<<<<<<< HEAD
         $this->productFeatureValue = new \Doctrine\Common\Collections\ArrayCollection();
+=======
+>>>>>>> 9cda9ba8825f6f9dbff13b0b3726e1d596b3262c
         $this->priceComponent = new \Doctrine\Common\Collections\ArrayCollection();
     }
     
@@ -174,6 +180,7 @@ class ProductFeature
     }
 
     /**
+<<<<<<< HEAD
      * Add productFeatureValue
      *
      * @param \Zepluf\Bundle\StoreBundle\Entity\ProductFeatureValue $productFeatureValue
@@ -207,6 +214,8 @@ class ProductFeature
     }
 
     /**
+=======
+>>>>>>> 9cda9ba8825f6f9dbff13b0b3726e1d596b3262c
      * Add priceComponent
      *
      * @param \Zepluf\Bundle\StoreBundle\Entity\PriceComponent $priceComponent
