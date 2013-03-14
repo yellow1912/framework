@@ -8,9 +8,21 @@
  * file that was distributed with this source code.
  */
 
-namespace Zepluf\Bundle\StoreBundle\Component\Order;
+namespace Zepluf\Bundle\StoreBundle\Component\Price;
 
 interface PriceHandlerInterface
 {
+    /**
+     * Get handler unique code name
+     * @return string
+     */
+    public function getCode();
 
+    /**
+     * Calculate the price
+     *
+     * @param \Zepluf\Bundle\StoreBundle\Entity\PriceComponent $priceComponent
+     * @return decimal
+     */
+    public function getPrice($currentPrice, \Zepluf\Bundle\StoreBundle\Entity\PriceComponent $priceComponent);
 }
