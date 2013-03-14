@@ -43,6 +43,13 @@ class ProductFeatureApplication
     private $throughDate;
 
     /**
+     * @var \Doctrine\Common\Collections\Collection
+     *
+     * @ORM\ManyToMany(targetEntity="PriceComponent", mappedBy="productFeatureApplication")
+     */
+    private $priceComponent;
+
+    /**
      * @var \Product
      *
      * @ORM\ManyToOne(targetEntity="Product")
@@ -62,7 +69,14 @@ class ProductFeatureApplication
      */
     private $productFeatureValue;
 
-
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->priceComponent = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+    
 
     /**
      * Get id
@@ -141,6 +155,39 @@ class ProductFeatureApplication
     public function getThroughDate()
     {
         return $this->throughDate;
+    }
+
+    /**
+     * Add priceComponent
+     *
+     * @param \Zepluf\Bundle\StoreBundle\Entity\PriceComponent $priceComponent
+     * @return ProductFeatureApplication
+     */
+    public function addPriceComponent(\Zepluf\Bundle\StoreBundle\Entity\PriceComponent $priceComponent)
+    {
+        $this->priceComponent[] = $priceComponent;
+    
+        return $this;
+    }
+
+    /**
+     * Remove priceComponent
+     *
+     * @param \Zepluf\Bundle\StoreBundle\Entity\PriceComponent $priceComponent
+     */
+    public function removePriceComponent(\Zepluf\Bundle\StoreBundle\Entity\PriceComponent $priceComponent)
+    {
+        $this->priceComponent->removeElement($priceComponent);
+    }
+
+    /**
+     * Get priceComponent
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getPriceComponent()
+    {
+        return $this->priceComponent;
     }
 
     /**

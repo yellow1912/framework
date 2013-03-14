@@ -73,17 +73,17 @@ class PriceComponent
     /**
      * @var \Doctrine\Common\Collections\Collection
      *
-     * @ORM\ManyToMany(targetEntity="ProductFeature", inversedBy="priceComponent")
-     * @ORM\JoinTable(name="product_feature_price_component",
+     * @ORM\ManyToMany(targetEntity="ProductFeatureApplication", inversedBy="priceComponent")
+     * @ORM\JoinTable(name="product_feature_application_price_component",
      *   joinColumns={
      *     @ORM\JoinColumn(name="price_component_id", referencedColumnName="id")
      *   },
      *   inverseJoinColumns={
-     *     @ORM\JoinColumn(name="feature_id", referencedColumnName="id")
+     *     @ORM\JoinColumn(name="product_feature_application_id", referencedColumnName="id")
      *   }
      * )
      */
-    private $feature;
+    private $productFeatureApplication;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
@@ -97,7 +97,7 @@ class PriceComponent
      */
     public function __construct()
     {
-        $this->feature = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->productFeatureApplication = new \Doctrine\Common\Collections\ArrayCollection();
         $this->product = new \Doctrine\Common\Collections\ArrayCollection();
     }
     
@@ -259,14 +259,14 @@ class PriceComponent
     public function setHandler($handler)
     {
         $this->handler = $handler;
-
+    
         return $this;
     }
 
     /**
      * Get handler
      *
-     * @return string
+     * @return string 
      */
     public function getHandler()
     {
@@ -274,36 +274,36 @@ class PriceComponent
     }
 
     /**
-     * Add feature
+     * Add productFeatureApplication
      *
-     * @param \Zepluf\Bundle\StoreBundle\Entity\ProductFeature $feature
+     * @param \Zepluf\Bundle\StoreBundle\Entity\ProductFeatureApplication $productFeatureApplication
      * @return PriceComponent
      */
-    public function addFeature(\Zepluf\Bundle\StoreBundle\Entity\ProductFeature $feature)
+    public function addProductFeatureApplication(\Zepluf\Bundle\StoreBundle\Entity\ProductFeatureApplication $productFeatureApplication)
     {
-        $this->feature[] = $feature;
+        $this->productFeatureApplication[] = $productFeatureApplication;
     
         return $this;
     }
 
     /**
-     * Remove feature
+     * Remove productFeatureApplication
      *
-     * @param \Zepluf\Bundle\StoreBundle\Entity\ProductFeature $feature
+     * @param \Zepluf\Bundle\StoreBundle\Entity\ProductFeatureApplication $productFeatureApplication
      */
-    public function removeFeature(\Zepluf\Bundle\StoreBundle\Entity\ProductFeature $feature)
+    public function removeProductFeatureApplication(\Zepluf\Bundle\StoreBundle\Entity\ProductFeatureApplication $productFeatureApplication)
     {
-        $this->feature->removeElement($feature);
+        $this->productFeatureApplication->removeElement($productFeatureApplication);
     }
 
     /**
-     * Get feature
+     * Get productFeatureApplication
      *
      * @return \Doctrine\Common\Collections\Collection 
      */
-    public function getFeature()
+    public function getProductFeatureApplication()
     {
-        return $this->feature;
+        return $this->productFeatureApplication;
     }
 
     /**

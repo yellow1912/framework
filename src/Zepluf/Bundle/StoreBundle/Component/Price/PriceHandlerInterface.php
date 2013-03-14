@@ -14,9 +14,17 @@ interface PriceHandlerInterface
 {
     /**
      * Get handler unique code name
+     *
      * @return string
      */
     public function getCode();
+
+    /**
+     * Get the handler tag
+     *
+     * @return mixed
+     */
+    public function getTag();
 
     /**
      * Calculate the price

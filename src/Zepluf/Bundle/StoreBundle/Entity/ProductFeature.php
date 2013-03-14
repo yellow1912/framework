@@ -43,13 +43,6 @@ class ProductFeature
     private $order;
 
     /**
-     * @var \Doctrine\Common\Collections\Collection
-     *
-     * @ORM\ManyToMany(targetEntity="PriceComponent", mappedBy="feature")
-     */
-    private $priceComponent;
-
-    /**
      * @var \UnitOfMeasurement
      *
      * @ORM\ManyToOne(targetEntity="UnitOfMeasurement")
@@ -69,14 +62,7 @@ class ProductFeature
      */
     private $productFeatureCategory;
 
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->priceComponent = new \Doctrine\Common\Collections\ArrayCollection();
-    }
-    
+
 
     /**
      * Get id
@@ -155,39 +141,6 @@ class ProductFeature
     public function getOrder()
     {
         return $this->order;
-    }
-
-    /**
-     * Add priceComponent
-     *
-     * @param \Zepluf\Bundle\StoreBundle\Entity\PriceComponent $priceComponent
-     * @return ProductFeature
-     */
-    public function addPriceComponent(\Zepluf\Bundle\StoreBundle\Entity\PriceComponent $priceComponent)
-    {
-        $this->priceComponent[] = $priceComponent;
-    
-        return $this;
-    }
-
-    /**
-     * Remove priceComponent
-     *
-     * @param \Zepluf\Bundle\StoreBundle\Entity\PriceComponent $priceComponent
-     */
-    public function removePriceComponent(\Zepluf\Bundle\StoreBundle\Entity\PriceComponent $priceComponent)
-    {
-        $this->priceComponent->removeElement($priceComponent);
-    }
-
-    /**
-     * Get priceComponent
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getPriceComponent()
-    {
-        return $this->priceComponent;
     }
 
     /**
