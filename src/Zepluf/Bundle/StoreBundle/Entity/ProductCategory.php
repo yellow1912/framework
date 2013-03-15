@@ -2,13 +2,16 @@
 
 namespace Zepluf\Bundle\StoreBundle\Entity;
 
+use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * ProductCategory
+ * use repository for handy tree functions
  *
+ * @Gedmo\Tree(type="nested")
  * @ORM\Table(name="product_category")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\NestedTreeRepository")
  */
 class ProductCategory
 {
@@ -31,37 +34,66 @@ class ProductCategory
     /**
      * @var string
      *
-     * @ORM\Column(name="description", type="string", length=255, nullable=true)
+     * @ORM\Column(name="description", type="text", nullable=true)
      */
     private $description;
 
     /**
      * @var integer
      *
-     * @ORM\Column(name="left", type="integer", nullable=false)
+     * @Gedmo\TreeLeft
+     * @ORM\Column(name="lft", type="integer", nullable=true)
      */
-    private $left;
+    private $lft;
 
     /**
      * @var integer
      *
-     * @ORM\Column(name="right", type="integer", nullable=false)
+     * @Gedmo\TreeRight
+     * @ORM\Column(name="rgt", type="integer", nullable=true)
      */
-    private $right;
+    private $rgt;
 
     /**
      * @var integer
      *
-     * @ORM\Column(name="level", type="integer", nullable=false)
+     * @Gedmo\TreeLevel
+     * @ORM\Column(name="level", type="integer", nullable=true)
      */
     private $level;
 
     /**
      * @var integer
      *
-     * @ORM\Column(name="order", type="integer", nullable=false)
+     * @Gedmo\TreeRoot
+     * @ORM\Column(name="root", type="integer", nullable=true)
      */
-    private $order;
+    private $root;
+
+    /**
+     * @var integer
+     *
+     * @Gedmo\TreeParent
+     *
+     * @ORM\ManyToOne(targetEntity="productCategory", inversedBy="children")
+     * @ORM\JoinColumn(name="parent", referencedColumnName="id", onDelete="SET NULL")
+     */
+    private $parent;
+
+    /**
+     * @var integer
+     *
+     * @ORM\OneToMany(targetEntity="productCategory", mappedBy="parent")
+     * @ORM\OrderBy({"lft" = "ASC"})
+     */
+    private $children;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="sort", type="integer", nullable=false)
+     */
+    private $sort;
 
     /**
      * @var boolean
@@ -70,12 +102,10 @@ class ProductCategory
      */
     private $status;
 
-
-
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -91,14 +121,14 @@ class ProductCategory
     public function setName($name)
     {
         $this->name = $name;
-    
+
         return $this;
     }
 
     /**
      * Get name
      *
-     * @return string 
+     * @return string
      */
     public function getName()
     {
@@ -114,14 +144,14 @@ class ProductCategory
     public function setDescription($description)
     {
         $this->description = $description;
-    
+
         return $this;
     }
 
     /**
      * Get description
      *
-     * @return string 
+     * @return string
      */
     public function getDescription()
     {
@@ -129,49 +159,49 @@ class ProductCategory
     }
 
     /**
-     * Set left
+     * Set lft
      *
-     * @param integer $left
+     * @param integer $lft
      * @return ProductCategory
      */
-    public function setLeft($left)
+    public function setLft($lft)
     {
-        $this->left = $left;
-    
+        $this->lft = $lft;
+
         return $this;
     }
 
     /**
-     * Get left
+     * Get lft
      *
-     * @return integer 
+     * @return integer
      */
-    public function getLeft()
+    public function getLft()
     {
-        return $this->left;
+        return $this->lft;
     }
 
     /**
-     * Set right
+     * Set rgt
      *
-     * @param integer $right
+     * @param integer $rgt
      * @return ProductCategory
      */
-    public function setRight($right)
+    public function setRgt($rgt)
     {
-        $this->right = $right;
-    
+        $this->rgt = $rgt;
+
         return $this;
     }
 
     /**
-     * Get right
+     * Get rgt
      *
-     * @return integer 
+     * @return integer
      */
-    public function getRight()
+    public function getRgt()
     {
-        return $this->right;
+        return $this->rgt;
     }
 
     /**
@@ -198,26 +228,72 @@ class ProductCategory
     }
 
     /**
-     * Set order
+     * Set root
      *
-     * @param integer $order
+     * @param integer $root
      * @return ProductCategory
      */
-    public function setOrder($order)
+    public function setRoot($root)
     {
-        $this->order = $order;
+        $this->root = $root;
     
         return $this;
     }
 
     /**
-     * Get order
+     * Get root
      *
      * @return integer 
      */
-    public function getOrder()
+    public function getRoot()
     {
-        return $this->order;
+        return $this->root;
+    }
+
+    /**
+     * Set children
+     *
+     * @param integer $children
+     * @return ProductCategory
+     */
+    public function setChildren($children)
+    {
+        $this->children = $children;
+    
+        return $this;
+    }
+
+    /**
+     * Get children
+     *
+     * @return integer 
+     */
+    public function getChildren()
+    {
+        return $this->children;
+    }
+
+    /**
+     * Set sort
+     *
+     * @param integer $sort
+     * @return ProductCategory
+     */
+    public function setSort($sort)
+    {
+        $this->sort = $sort;
+    
+        return $this;
+    }
+
+    /**
+     * Get sort
+     *
+     * @return integer 
+     */
+    public function getSort()
+    {
+        return $this->sort;
     }
 
     /**
@@ -241,5 +317,28 @@ class ProductCategory
     public function getStatus()
     {
         return $this->status;
+    }
+
+    /**
+     * Set parent
+     *
+     * @param \Zepluf\Bundle\StoreBundle\Entity\ProductCategory $parent
+     * @return ProductCategory
+     */
+    public function setParent(\Zepluf\Bundle\StoreBundle\Entity\ProductCategory $parent = null)
+    {
+        $this->parent = $parent;
+    
+        return $this;
+    }
+
+    /**
+     * Get parent
+     *
+     * @return \Zepluf\Bundle\StoreBundle\Entity\ProductCategory 
+     */
+    public function getParent()
+    {
+        return $this->parent;
     }
 }
