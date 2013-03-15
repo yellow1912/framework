@@ -70,6 +70,9 @@ class PriceComponent
      */
     private $handler;
 
+    /** @ORM\Column(type="array") */
+    private $settings = array();
+
     /**
      * @var \Doctrine\Common\Collections\Collection
      *
@@ -337,5 +340,37 @@ class PriceComponent
     public function getProduct()
     {
         return $this->product;
+    }
+
+    /**
+     * Set setting
+     *
+     * @param $name
+     * @param $value
+     */
+    public function setSetting($name, $value)
+    {
+        $this->settings[$name] = $value;
+    }
+
+    /**
+     * Get setting
+     *
+     * @param $name
+     * @return mixed
+     */
+    public function getSetting($name)
+    {
+        return $this->settings[$name];
+    }
+
+    /**
+     * Get settings
+     *
+     * @return array
+     */
+    public function getSettings()
+    {
+        return $this->settings;
     }
 }
