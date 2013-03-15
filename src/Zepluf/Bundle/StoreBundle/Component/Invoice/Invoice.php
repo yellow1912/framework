@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Zepluf\Bundle\StoreBundle\Component\Payment;
+namespace Zepluf\Bundle\StoreBundle\Component\Invoice;
 
 use \Doctrine\ORM\EntityManager;
 use Zepluf\Bundle\StoreBundle\Entity\Invoice as InvoiceEntity;
@@ -67,23 +67,18 @@ class Invoice
     {
         $invoiceId = $this->invoice->getId();
 
-        /**
-         * @var array
-         * 'id' => integer
-         */
-        $item;
         foreach ($invoice_items as $item) {
             // find inventory item by id \Zepluf\Bundle\StoreBundle\Entity\InventoryItem
             $inventoryItem = $this->entityManager->find('\Zepluf\Bundle\StoreBundle\Entity\InventoryItem', $item['id']);
 
-            if ($inventoryIte) {
+            if ($inventoryItem) {
                 $invoiceItem = new InvoiceItemEntity();
 
                 // link to invoice
                 $invoiceItem->setInvoice($this->invoice);
 
                 // link to inventory item
-                $invoiceItem->setInventoryItem($inventoryIte);
+                $invoiceItem->setInventoryItem($inventoryItem);
 
                 // link to adjustment type \Zepluf\Bundle\StoreBundle\Entity\AdjustmentType
                 $invoiceItem->setAdjustmentType(1);
@@ -99,8 +94,9 @@ class Invoice
 
                 // set taxable
                 $invoiceItem->setIsTaxable(1);
-            }
 
+                $this->entityManager->persist($invoiceItem);
+            }
         }
     }
 }

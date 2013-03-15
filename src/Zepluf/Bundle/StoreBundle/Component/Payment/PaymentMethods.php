@@ -21,7 +21,6 @@ class PaymentMethods
      * @var list of available payment methods
      */
     protected $paymentMethods = array();
-    // protected $storageHandlers;
 
     public function __construct()
     {

@@ -10,8 +10,13 @@
 
 namespace Zepluf\Bundle\StoreBundle\Component\Payment;
 
-use \Doctrine\ORM\EntityManager;
+use Zepluf\Bundle\StoreBundle\Component\Payment\PaymentMethodInterface;
+use Zepluf\Bundle\StoreBundle\Component\Invoice\Invoice;
+
 use Zepluf\Bundle\StoreBundle\Entity\Payment as PaymentEntity;
+use Zepluf\Bundle\StoreBundle\Entity\PaymentApplication as PaymentApplicationEntity;
+use Zepluf\Bundle\StoreBundle\Entity\Invoice as InvoiceEntity;
+use Zepluf\Bundle\StoreBundle\Entity\InvoiceItem as InvoiceItemEntity;
 
 /**
 *
@@ -30,53 +35,43 @@ class Payment
      * constructor
      * @param EntityManager $entityManager
      */
-    public function __construct($entityManager)
+    public function __construct()
     {
-        $this->entityManager = $entityManager;
+        die('abc');
+        $this->entityManager = $doctrine->getEntityManager();
+
+        print_r($this->entityManager);
+        exit();
     }
 
     /**
      * @param array $data ('payment_method' => array(), 'invoice_items' => array(). ...)
      * @throws \Exception
      */
-    public function create($data)
+    public function create(PaymentMethodInterface $paymentMethod, InvoiceEntity $invoice)
     {
         $this->payment = new PaymentEntity();
 
-        // set payment effective date
+        // set payment method type Zepluf\Bundle\StoreBundle\Entity\PaymentMethodType
+        $this->payment->setPaymentMethodType(1);
+
+        // set effective date
         $this->payment->setEffectiveDate(new \DateTime());
 
-        //If ship from address is empty, it's shopkeeper contact by default
-        if (isset($data['ShippedFromContactMechanism'])) {
-            $payment->setShippedFromContactMechanism($data['ship_from']);
-        }
-        if (isset($data['ship_from'])) {
-            $payment->setShippedToContactMechanism($data['ship_to']);
-        }
+        // set payment type: receipt, disbursement
+        $this->payment->setType(1);
 
 
-        //set payment Item
-        foreach ($data['items'] as $item) {
-            $paymentItem = new paymentItem();
+        // get all invoice items
+        $invoiceItems = $invoice->getInvoiceItems();
 
-            //logical code to set info for paymentItem
+        foreach ($invoiceItems as $invoiceItem) {
+            $paymentApplication = new PaymentApplicationEntity();
 
-            $paymentItem->setpayment($payment);
-            $payment->addpaymentItem($paymentItem);
-        }
-
-        if (!$error) {
-            $this->payment = $payment;
-        }
-
-        if ($this->payment) {
-            // persists the payment
-            $this->entityManager->persist($this->payment);
-            try {
-                $this->entityManager->flush();
-            } catch (\Exception $e) {
-                throw $e;
-            }
+            $paymentApplication->setPayment($this->payment);
+            $paymentApplication->setInvoiceItem($invoiceItem);
         }
     }
+
+// cai inventory, invoice_status_type, product_association_type, inventory_item_variance, inventory_item_variance_reason, inventory_item_status_type, container, facility, container_type, party_type thieu auto increment
 }
