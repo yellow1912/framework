@@ -3,6 +3,7 @@ imports:
 
 parameters:
   kernel.debug: true
+  web_profiler.debug_toolbar.class: Zepluf\Bundle\StoreBundle\EventListener\WebDebugToolbarListener
 
 framework:
   profiler: { only_exceptions: false }

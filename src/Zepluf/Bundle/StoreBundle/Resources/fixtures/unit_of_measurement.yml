@@ -1,7 +1,6 @@
 model: Zepluf\Bundle\StoreBundle\Entity\UnitOfMeasurement
 tags: [ test, dev ] # optional parameter
-persistence: orm
 fixtures:
-  default:
+  default_unit:
     description: unit
     abbreviation: unit
