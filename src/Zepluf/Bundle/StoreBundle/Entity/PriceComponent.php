@@ -343,6 +343,29 @@ class PriceComponent
     }
 
     /**
+     * Set unitOfMeasurement
+     *
+     * @param \Zepluf\Bundle\StoreBundle\Entity\UnitOfMeasurement $unitOfMeasurement
+     * @return PriceComponent
+     */
+    public function setUnitOfMeasurement(\Zepluf\Bundle\StoreBundle\Entity\UnitOfMeasurement $unitOfMeasurement = null)
+    {
+        $this->unitOfMeasurement = $unitOfMeasurement;
+
+        return $this;
+    }
+
+    /**
+     * Get unitOfMeasurement
+     *
+     * @return \Zepluf\Bundle\StoreBundle\Entity\UnitOfMeasurement
+     */
+    public function getUnitOfMeasurement()
+    {
+        return $this->unitOfMeasurement;
+    }
+
+    /**
      * Set setting
      *
      * @param $name

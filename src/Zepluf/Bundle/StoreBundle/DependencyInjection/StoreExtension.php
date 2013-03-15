@@ -78,7 +78,7 @@ class StoreExtension extends Extension
             }
         }
 
-        // register shipment configurations
+        // register payment configurations
         $this->registerPaymentConfiguration(array(), $container, $loader);
     }
 
@@ -106,7 +106,7 @@ class StoreExtension extends Extension
     }
 
     /**
-     * Loads the router proxy configuration.
+     * Loads the payment configuration.
      *
      * @param array         $config A proxy configuration array
      * @param XmlFileLoader $loader An XmlFileLoader instance
