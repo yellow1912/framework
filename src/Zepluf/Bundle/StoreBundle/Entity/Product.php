@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Product
  *
  * @ORM\Table(name="product")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Zepluf\Bundle\StoreBundle\Entity\ProductRepository")
  */
 class Product
 {
@@ -121,6 +121,21 @@ class Product
     private $productFeatureApplication;
 
     /**
+     * @var \Doctrine\Common\Collections\Collection
+     *
+     * @ORM\ManyToMany(targetEntity="ProductCategory", inversedBy="product")
+     * @ORM\JoinTable(name="product_category_classification",
+     *   joinColumns={
+     *     @ORM\JoinColumn(name="product_id", referencedColumnName="id")
+     *   },
+     *   inverseJoinColumns={
+     *     @ORM\JoinColumn(name="product_category_id", referencedColumnName="id")
+     *   }
+     * )
+     */
+    private $productCategory;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -128,6 +143,7 @@ class Product
         $this->priceComponent = new \Doctrine\Common\Collections\ArrayCollection();
         $this->termType = new \Doctrine\Common\Collections\ArrayCollection();
         $this->productFeatureApplication = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->productCategory = new \Doctrine\Common\Collections\ArrayCollection();
     }
     
 
@@ -399,5 +415,15 @@ class Product
     public function getProductFeatureApplication()
     {
         return $this->productFeatureApplication;
+    }
+
+    /**
+     * Get productCategory
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getProductCategory()
+    {
+        return $this->productCategory;
     }
 }

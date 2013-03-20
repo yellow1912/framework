@@ -25,12 +25,4 @@ interface PriceHandlerInterface
      * @return mixed
      */
     public function getTag();
-
-    /**
-     * Calculate the price
-     *
-     * @param \Zepluf\Bundle\StoreBundle\Entity\PriceComponent $priceComponent
-     * @return decimal
-     */
-    public function getPrice($currentPrice, \Zepluf\Bundle\StoreBundle\Entity\PriceComponent $priceComponent);
 }
