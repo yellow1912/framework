@@ -48,13 +48,6 @@
         <parameter key="storebundle.array_storage_handler.class">Zepluf\Bundle\StoreBundle\Component\Cart\StorageHandler\ArrayStorageHandler</parameter>
         <parameter key="storebundle.session_storage_handler.class">Zepluf\Bundle\StoreBundle\Component\Cart\StorageHandler\SessionStorageHandler</parameter>
 
-        <!-- payment -->
-        <parameter key="storebundle.payment_methods.class">Zepluf\Bundle\StoreBundle\Component\Payment\PaymentMethods</parameter>
-
-        <!-- payment methods -->
-        <parameter key="storebundle.payment_methods.cheque.class">Zepluf\Bundle\StoreBundle\Component\Payment\Method\Cheque</parameter>
-        <parameter key="storebundle.payment_methods.paypal_standard.class">Zepluf\Bundle\StoreBundle\Component\Payment\Method\PaypalStandard</parameter>
-
         <!-- shipment -->
         <parameter key="storebundle.shipment.class">Zepluf\Bundle\StoreBundle\Component\Shipment\Shipment</parameter>
         <!-- carrier -->
@@ -216,18 +209,5 @@
             <tag name="storebundle.shipment.carrier" alias="freeshipping" />
         </service>
 
-        <!-- payment -->
-        <service id="storebundle.payment_methods" class="%storebundle.payment_methods.class%"/>
-
-        <!-- payment_methods -->
-        <service id="storebundle.payment_methods.cheque" class="%storebundle.payment_methods.cheque.class%">
-            <argument type="service" id="event_dispatcher" />
-            <tag name="storebundle.payment_methods.method" alias="cheque" />
-        </service>
-
-        <service id="storebundle.payment_methods.paypal_standard" class="%storebundle.payment_methods.paypal_standard.class%">
-            <argument type="service" id="event_dispatcher" />
-            <tag name="storebundle.payment_methods.method" alias="paypal_standard" />
-        </service>
     </services>
 </container>

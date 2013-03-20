@@ -36,16 +36,14 @@ parameters:
   web.cache_dir: "%web.dir%/cache"
   web.images_dir: "%web.dir%/images"
 
-  web_profiler.debug_toolbar.class: Zepluf\Bundle\StoreBundle\EventListener\WebDebugToolbarListener
-
   locale: en
   database_driver:   pdo_mysql
   database_host:     localhost
   database_port:     ~
-  database_name:     demo
+  database_name:     zeni
   database_user:     simple_shop
   database_password: simple_shop
-  table_prefix:      zen_
+  table_prefix:
 
   mailer_transport:  smtp
   mailer_host:       localhost

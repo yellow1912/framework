@@ -30,6 +30,9 @@ $kernel->boot();
 
 $container = $kernel->getContainer();
 
+$container->get('storebundle.invoice');
+exit('<span style="color: green; font: normal 12px Verdana;";>Passed!</span>');
+
 // set the environment
 // TODO: remove constants
 $container->get("environment")->setEnvironment($environment);

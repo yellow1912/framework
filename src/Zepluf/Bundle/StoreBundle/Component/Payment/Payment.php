@@ -11,9 +11,12 @@
 namespace Zepluf\Bundle\StoreBundle\Component\Payment;
 
 use Zepluf\Bundle\StoreBundle\Component\Payment\PaymentMethodInterface;
+use Zepluf\Bundle\StoreBundle\Component\Payment\Method\Cheque;
+
 use Zepluf\Bundle\StoreBundle\Component\Invoice\Invoice;
 
 use Zepluf\Bundle\StoreBundle\Entity\Payment as PaymentEntity;
+use Zepluf\Bundle\StoreBundle\Entity\PaymentMethodType as PaymentMethodTypeEntity;
 use Zepluf\Bundle\StoreBundle\Entity\PaymentApplication as PaymentApplicationEntity;
 use Zepluf\Bundle\StoreBundle\Entity\Invoice as InvoiceEntity;
 use Zepluf\Bundle\StoreBundle\Entity\InvoiceItem as InvoiceItemEntity;
@@ -35,13 +38,13 @@ class Payment
      * constructor
      * @param EntityManager $entityManager
      */
-    public function __construct()
+    public function __construct($doctrine)
     {
-        die('abc');
         $this->entityManager = $doctrine->getEntityManager();
 
-        print_r($this->entityManager);
-        exit();
+        // $this->create(new Cheque(),
+        //     $this->entityManager->find('Zepluf\Bundle\StoreBundle\Component\Invoice\Invoice', 1)
+        // );
     }
 
     /**
@@ -52,8 +55,12 @@ class Payment
     {
         $this->payment = new PaymentEntity();
 
-        // set payment method type Zepluf\Bundle\StoreBundle\Entity\PaymentMethodType
-        $this->payment->setPaymentMethodType(1);
+        /**
+         * @todo set payment method type for current payment
+         * @var Zepluf\Bundle\StoreBundle\Entity\PaymentMethodType
+         */
+        $paymentMethodType = $this->entityManager->find('Zepluf\Bundle\StoreBundle\Entity\PaymentMethodType', mt_rand(1, 5));
+        $this->payment->setPaymentMethodType($paymentMethodType);
 
         // set effective date
         $this->payment->setEffectiveDate(new \DateTime());
@@ -61,6 +68,9 @@ class Payment
         // set payment type: receipt, disbursement
         $this->payment->setType(1);
 
+        // persist payment and new payment method type
+        $this->entityManager->persist($this->payment);
+        $this->entityManager->persist($paymentMethodType);
 
         // get all invoice items
         $invoiceItems = $invoice->getInvoiceItems();
@@ -70,8 +80,11 @@ class Payment
 
             $paymentApplication->setPayment($this->payment);
             $paymentApplication->setInvoiceItem($invoiceItem);
-        }
-    }
+            $paymentApplication->setAmountApplied(mt_rand(1, 5));
 
-// cai inventory, invoice_status_type, product_association_type, inventory_item_variance, inventory_item_variance_reason, inventory_item_status_type, container, facility, container_type, party_type thieu auto increment
+            $this->entityManager->persist($paymentApplication);
+        }
+
+        $this->entityManager->flush();
+    }
 }

@@ -10,6 +10,9 @@
 
 namespace Zepluf\Bundle\StoreBundle\Component\Price;
 
+/**
+ * This class is responsible for calculating price for anything that uses priceComponent
+ */
 class Pricing extends \Symfony\Component\DependencyInjection\ContainerAware
 {
     /**
@@ -20,42 +23,99 @@ class Pricing extends \Symfony\Component\DependencyInjection\ContainerAware
     protected $handlers;
 
     /**
-     * add handler
+     * Get the product price
      *
-     * @param \Zepluf\Bundle\StoreBundle\Component\Order\PriceHandlerInterface $handler
+     * @param \Zepluf\Bundle\StoreBundle\Entity\Product $product
+     * @param array $features
+     * @return float
+     */
+    public function getProductPrice(\Zepluf\Bundle\StoreBundle\Entity\Product $product, $features = array())
+    {
+        $productPrice = new Price();
+        // loop through the base price component
+        $productPrice = $this->getPrice($productPrice, $product->getPriceComponent());
+
+        // get the total of features price
+        foreach ($product->getProductFeatureApplication() as $productFeatureApplication) {
+            $productPrice = $this->getPrice($productPrice, $productFeatureApplication->getPriceComponent());
+        }
+
+        // loop through the additional price component
+        $productPrice = $this->getPrice($productPrice, $this->findTaggedHandlers('product_global'));
+
+        return $productPrice;
+    }
+
+    /**
+     * Get Product's Feature Price
+     *
+     * @param \Zepluf\Bundle\StoreBundle\Entity\ProductFeatureApplication $productFeatureApplication
+     * @return float
+     */
+    public function getProductFeatureApplicationPrice(\Zepluf\Bundle\StoreBundle\Entity\ProductFeatureApplication $productFeatureApplication)
+    {
+        return $this->getPrice(new Price(), $productFeatureApplication->getPriceComponent());
+    }
+
+    /**
+     * Get Order Price
+     *
+     * @param \Zepluf\Bundle\StoreBundle\Entity\Order $order
+     * @return float
+     */
+    public function getOrderPrice(\Zepluf\Bundle\StoreBundle\Entity\Order $order)
+    {
+        return $this->getPrice(new Price(), $this->findTaggedHandlers('order_global'));
+    }
+
+    /**
+     * Add handler
+     *
+     * @param \Zepluf\Bundle\StoreBundle\Component\Price\PriceHandlerInterface $handler
      */
     public function addHandler(\Zepluf\Bundle\StoreBundle\Component\Price\PriceHandlerInterface $handler)
     {
         $this->handlers[$handler->getCode()] = $handler;
     }
 
-    public function getProductPrice(\Zepluf\Bundle\StoreBundle\Entity\Product $product, $features = array())
+    /**
+     * Return an array of handler with specific tag
+     *
+     * @param $tag
+     * @return array
+     */
+    public function findTaggedHandlers($tag)
     {
-        $productPrice = 0;
-        // loop through the base price component
-        foreach ($product->getPriceComponent() as $priceComponent) {
-            $handlerCode = $priceComponent->getHandler();
-            if (isset($this->handlers[$handlerCode])) {
-                $productPrice = $this->handlers[$handlerCode]->getPrice($productPrice, $priceComponent);
+        $tags = array();
+        foreach ($this->handlers as $id => $handler) {
+            if ($handler->getTag() == $tag) {
+                $tags[$id] = $handler;
             }
         }
 
-        // get the total of features price
-        foreach ($product->getProductFeatureApplication() as $productFeatureApplication) {
-
-            $handlerCode = $priceComponent->getHandler();
-            if (isset($this->handlers[$handlerCode])) {
-                $productPrice = $this->handlers[$handlerCode]->getPrice($productPrice, $priceComponent);
-            }
-        }
-
-        // loop through the additional price component
-
-        return $productPrice;
+        return $tags;
     }
 
-    public function getFeaturePrice()
+    /**
+     * Loop through the list of priceComponents to get the price
+     *
+     * @param $price
+     * @param $priceComponents
+     * @return \Zepluf\Bundle\StoreBundle\Component\Price\Price
+     */
+    public function getPrice(\Zepluf\Bundle\StoreBundle\Component\Price\Price $price, $priceComponents)
     {
+        foreach ($priceComponents as $priceComponent) {
+            $handlerCode = $priceComponent->getHandler();
+            if (isset($this->handlers[$handlerCode])) {
+                $price->addComponent(
+                    $this->handlers[$handlerCode]->getCode(),
+                    $this->handlers[$handlerCode]->getTag(),
+                    $priceComponent->getName(),
+                    $this->handlers[$handlerCode]->getPrice($price->getTotal(), $priceComponent));
+            }
+        }
 
+        return $price;
     }
 }

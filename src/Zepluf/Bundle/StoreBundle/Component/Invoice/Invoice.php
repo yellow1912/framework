@@ -11,8 +11,14 @@
 namespace Zepluf\Bundle\StoreBundle\Component\Invoice;
 
 use \Doctrine\ORM\EntityManager;
+use \Doctrine\Common\Collections\ArrayCollection;
+
+use Zepluf\Bundle\StoreBundle\Entity\Party;
+use Zepluf\Bundle\StoreBundle\Entity\ContactMechanism;
 use Zepluf\Bundle\StoreBundle\Entity\Invoice as InvoiceEntity;
 use Zepluf\Bundle\StoreBundle\Entity\InvoiceItem as InvoiceItemEntity;
+
+use Zepluf\Bundle\StoreBundle\Component\Payment\Fixtures;
 
 class Invoice
 {
@@ -28,31 +34,41 @@ class Invoice
      */
     protected $invoice;
 
-    public function __construct(EntityManager $entityManager)
+    public function __construct($doctrine)
     {
-        $this->entityManager = $entityManager;
-        $this->invoice = new InvoiceEntity();
+        $this->entityManager = $doctrine->getEntityManager();
+
+        $fixtures = new Fixtures($doctrine);
+
+        $this->create();
     }
 
     /**
      * create new invoice
      *
-     * @param  array  $invoice_items array of invoice item, includes: id, name, quantity, features
+     * @param  ArrayCollection  $invoiceItems array of invoice item, includes: id, name, quantity, features
      * @return [type]                [description]
      */
-    public function create($invoice_items = array())
+    public function create(ArrayCollection $invoiceItems)
     {
+        $this->invoice = new InvoiceEntity();
+        $billedTo = $this->entityManager->find('Zepluf\Bundle\StoreBundle\Entity\Party', mt_rand(1, 5));
+        $billedFrom = $this->entityManager->find('Zepluf\Bundle\StoreBundle\Entity\Party', mt_rand(1, 5));
+
+        $addressedTo = $this->entityManager->find('Zepluf\Bundle\StoreBundle\Entity\ContactMechanism', mt_rand(1, 5));
+        $sendTo = $this->entityManager->find('Zepluf\Bundle\StoreBundle\Entity\ContactMechanism', mt_rand(1, 5));
+
         // set billed to \Zepluf\Bundle\StoreBundle\Entity\Party
-        $this->invoice->setBilledTo(1);
+        $this->invoice->setBilledTo($billedTo);
 
         // set billed from \Zepluf\Bundle\StoreBundle\Entity\Party
-        $this->invoice->setBilledFrom(1);
+        $this->invoice->setBilledFrom($billedFrom);
 
         // set addessed to \Zepluf\Bundle\StoreBundle\Entity\ContactMechanism
-        $this->invoice->setAddressedTo(1);
+        $this->invoice->setAddressedTo($addressedTo);
 
         // set send to \Zepluf\Bundle\StoreBundle\Entity\ContactMechanism
-        $this->invoice->setSentTo(1);
+        $this->invoice->setSentTo($sendTo);
 
         // set entry date
         $this->invoice->setEntryDate(new \DateTime());
@@ -60,10 +76,15 @@ class Invoice
         $this->entityManager->persist($this->invoice);
         $this->entityManager->flush();
 
-        $this->addInvoiceItems($invoice_items);
+        //$this->addInvoiceItems($invoice_items);
     }
 
-    public function addInvoiceItems($invoice_items = array())
+    /**
+     * create invoice items from ArrayCollection
+     *
+     * @param ArrayCollection $invoiceItems [description]
+     */
+    public function addInvoiceItems(ArrayCollection $invoiceItems)
     {
         $invoiceId = $this->invoice->getId();
 
