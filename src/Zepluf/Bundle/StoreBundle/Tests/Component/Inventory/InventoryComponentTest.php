@@ -10,6 +10,8 @@
 
 namespace Zepluf\Bundle\StoreBundle\Tests\Component\Inventory;
 
+use Zepluf\Bundle\StoreBundle\Component\Inventory\Strategy\DefaultStrategy;
+
 class InventoryComponentTest extends \Zepluf\Bundle\StoreBundle\Tests\BaseTestCase
 {
     public function testGetProductQuantity()
@@ -17,5 +19,9 @@ class InventoryComponentTest extends \Zepluf\Bundle\StoreBundle\Tests\BaseTestCa
         // TODO: setup the fixtures to test?
         $inventoryComponent = new \Zepluf\Bundle\StoreBundle\Component\Inventory\InventoryComponent($this->_container->get('doctrine'));
         $this->assertEquals(0, $inventoryComponent->getProductQuantity(1, array(1,2,3)));
+
+        $strategy = new DefaultStrategy();
+        $strategy->getInventories($this->_container->get('doctrine')->getEntityManager(), 1, array(1,2,3), 15);
+        die();
     }
 }

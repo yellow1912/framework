@@ -5,12 +5,12 @@ namespace Zepluf\Bundle\StoreBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * ItemIssuance
+ * InventoryAdjustment
  *
- * @ORM\Table(name="item_issuance")
+ * @ORM\Table(name="inventory_adjustment")
  * @ORM\Entity
  */
-class ItemIssuance
+class InventoryAdjustment
 {
     /**
      * @var integer
@@ -38,9 +38,9 @@ class ItemIssuance
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="issued_date", type="datetime", nullable=true)
+     * @ORM\Column(name="date", type="datetime", nullable=true)
      */
-    private $issuedDate;
+    private $date;
 
     /**
      * @var \ShipmentItem
@@ -62,6 +62,16 @@ class ItemIssuance
      */
     private $inventoryItem;
 
+    /**
+     * @var \PicklistItem
+     *
+     * @ORM\ManyToOne(targetEntity="PicklistItem")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="picklist_item_id", referencedColumnName="id")
+     * })
+     */
+    private $picklistItem;
+
 
 
     /**
@@ -78,7 +88,7 @@ class ItemIssuance
      * Set incrementId
      *
      * @param integer $incrementId
-     * @return ItemIssuance
+     * @return InventoryAdjustment
      */
     public function setIncrementId($incrementId)
     {
@@ -101,7 +111,7 @@ class ItemIssuance
      * Set quantity
      *
      * @param integer $quantity
-     * @return ItemIssuance
+     * @return InventoryAdjustment
      */
     public function setQuantity($quantity)
     {
@@ -121,33 +131,33 @@ class ItemIssuance
     }
 
     /**
-     * Set issuedDate
+     * Set date
      *
-     * @param \DateTime $issuedDate
-     * @return ItemIssuance
+     * @param \DateTime $date
+     * @return InventoryAdjustment
      */
-    public function setIssuedDate($issuedDate)
+    public function setDate($date)
     {
-        $this->issuedDate = $issuedDate;
+        $this->date = $date;
     
         return $this;
     }
 
     /**
-     * Get issuedDate
+     * Get date
      *
      * @return \DateTime 
      */
-    public function getIssuedDate()
+    public function getDate()
     {
-        return $this->issuedDate;
+        return $this->date;
     }
 
     /**
      * Set shipmentItem
      *
      * @param \Zepluf\Bundle\StoreBundle\Entity\ShipmentItem $shipmentItem
-     * @return ItemIssuance
+     * @return InventoryAdjustment
      */
     public function setShipmentItem(\Zepluf\Bundle\StoreBundle\Entity\ShipmentItem $shipmentItem = null)
     {
@@ -170,7 +180,7 @@ class ItemIssuance
      * Set inventoryItem
      *
      * @param \Zepluf\Bundle\StoreBundle\Entity\InventoryItem $inventoryItem
-     * @return ItemIssuance
+     * @return InventoryAdjustment
      */
     public function setInventoryItem(\Zepluf\Bundle\StoreBundle\Entity\InventoryItem $inventoryItem = null)
     {
@@ -187,5 +197,28 @@ class ItemIssuance
     public function getInventoryItem()
     {
         return $this->inventoryItem;
+    }
+
+    /**
+     * Set picklistItem
+     *
+     * @param \Zepluf\Bundle\StoreBundle\Entity\PicklistItem $picklistItem
+     * @return InventoryAdjustment
+     */
+    public function setPicklistItem(\Zepluf\Bundle\StoreBundle\Entity\PicklistItem $picklistItem = null)
+    {
+        $this->picklistItem = $picklistItem;
+    
+        return $this;
+    }
+
+    /**
+     * Get picklistItem
+     *
+     * @return \Zepluf\Bundle\StoreBundle\Entity\PicklistItem 
+     */
+    public function getPicklistItem()
+    {
+        return $this->picklistItem;
     }
 }

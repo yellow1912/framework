@@ -96,6 +96,16 @@ class PriceComponent
     private $product;
 
     /**
+     * @var \UnitOfMeasurement
+     *
+     * @ORM\ManyToOne(targetEntity="UnitOfMeasurement")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="unit_of_measurement_id", referencedColumnName="id")
+     * })
+     */
+    private $unitOfMeasurement;
+
+    /**
      * Constructor
      */
     public function __construct()

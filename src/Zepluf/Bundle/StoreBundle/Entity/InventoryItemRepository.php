@@ -22,14 +22,14 @@ class InventoryItemRepository extends \Doctrine\ORM\EntityRepository
                 'SELECT i.quantityOnhand, length(i.featureValueIds) fvl FROM Zepluf\Bundle\StoreBundle\Entity\InventoryItem i
                  WHERE i.product = :productId AND i.inventoryItemStatusType = :inventoryItemStatusType
                  ORDER BY fvl DESC')
-                ->setParameters(array('productId' => $productId, 'inventoryItemStatusType' => $inventoryItemStatusType))->getResult();
+                ->setParameters(array('productId' => $productId, 'inventoryItemStatusType' => $inventoryItemStatusType))->getOneOrNullResult();
         }
         else {
             $inventory = $this->_em->createQuery(
                 'SELECT i.quantityOnhand, length(i.featureValueIds) fvl FROM Zepluf\Bundle\StoreBundle\Entity\InventoryItem i
                  WHERE i.product = :productId AND i.inventoryItemStatusType = :inventoryItemStatusType AND i.featureValueIds LIKE :featureValueIds
                  ORDER BY fvl DESC')
-                ->setParameters(array('productId' => $productId, 'inventoryItemStatusType' => $inventoryItemStatusType, 'featureValueIds' => $featureValueIds . '%'))->getResult();
+                ->setParameters(array('productId' => $productId, 'inventoryItemStatusType' => $inventoryItemStatusType, 'featureValueIds' => $featureValueIds . '%'))->getOneOrNullResult();
         }
         return $inventory;
     }

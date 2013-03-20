@@ -11,6 +11,7 @@
 namespace Zepluf\Bundle\StoreBundle\Component\Inventory\Strategy;
 
 
+use Doctrine\ORM\EntityManager;
 use Zepluf\Bundle\StoreBundle\Entity\Product;
 
 interface InventoryStrategyInterface {
@@ -20,9 +21,12 @@ interface InventoryStrategyInterface {
      * It is possible that we will get an array of inventory if 1 single inventory item
      * does not satisfy the required quantity
      *
-     * @param Product $product
-     * @param $quantity
-     * @return mixed
+     * @param \Doctrine\ORM\EntityManager $entityManager
+     * @param int $productId
+     * @param string $featureValueIds
+     * @param int $quantity
+     * @param int $inventoryItemStatusType
+     * @return array
      */
-    public function getInventories(Product $product, $featureValueIds, $quantity);
+    public function getInventories(EntityManager $entityManager, $productId, $featureValueIds, $quantity, $inventoryItemStatusType);
 }

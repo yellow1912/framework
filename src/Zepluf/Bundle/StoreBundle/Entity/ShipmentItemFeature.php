@@ -5,12 +5,12 @@ namespace Zepluf\Bundle\StoreBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * OrderItemFeature
+ * ShipmentItemFeature
  *
- * @ORM\Table(name="order_item_feature")
+ * @ORM\Table(name="shipment_item_feature")
  * @ORM\Entity
  */
-class OrderItemFeature
+class ShipmentItemFeature
 {
     /**
      * @var integer
@@ -36,14 +36,14 @@ class OrderItemFeature
     private $value;
 
     /**
-     * @var \OrderItem
+     * @var \ShipmentItem
      *
-     * @ORM\ManyToOne(targetEntity="OrderItem")
+     * @ORM\ManyToOne(targetEntity="ShipmentItem")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="order_item_id", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="shipment_item_id", referencedColumnName="id")
      * })
      */
-    private $orderItem;
+    private $shipmentItem;
 
     /**
      * @var \ProductFeatureApplication
@@ -71,7 +71,7 @@ class OrderItemFeature
      * Set name
      *
      * @param string $name
-     * @return OrderItemFeature
+     * @return ShipmentItemFeature
      */
     public function setName($name)
     {
@@ -94,7 +94,7 @@ class OrderItemFeature
      * Set value
      *
      * @param string $value
-     * @return OrderItemFeature
+     * @return ShipmentItemFeature
      */
     public function setValue($value)
     {
@@ -114,33 +114,33 @@ class OrderItemFeature
     }
 
     /**
-     * Set orderItem
+     * Set shipmentItem
      *
-     * @param \Zepluf\Bundle\StoreBundle\Entity\OrderItem $orderItem
-     * @return OrderItemFeature
+     * @param \Zepluf\Bundle\StoreBundle\Entity\ShipmentItem $shipmentItem
+     * @return ShipmentItemFeature
      */
-    public function setOrderItem(\Zepluf\Bundle\StoreBundle\Entity\OrderItem $orderItem = null)
+    public function setShipmentItem(\Zepluf\Bundle\StoreBundle\Entity\ShipmentItem $shipmentItem = null)
     {
-        $this->orderItem = $orderItem;
+        $this->shipmentItem = $shipmentItem;
     
         return $this;
     }
 
     /**
-     * Get orderItem
+     * Get shipmentItem
      *
-     * @return \Zepluf\Bundle\StoreBundle\Entity\OrderItem 
+     * @return \Zepluf\Bundle\StoreBundle\Entity\ShipmentItem 
      */
-    public function getOrderItem()
+    public function getShipmentItem()
     {
-        return $this->orderItem;
+        return $this->shipmentItem;
     }
 
     /**
      * Set productFeatureApplication
      *
      * @param \Zepluf\Bundle\StoreBundle\Entity\ProductFeatureApplication $productFeatureApplication
-     * @return OrderItemFeature
+     * @return ShipmentItemFeature
      */
     public function setProductFeatureApplication(\Zepluf\Bundle\StoreBundle\Entity\ProductFeatureApplication $productFeatureApplication = null)
     {
