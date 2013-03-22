@@ -10,17 +10,27 @@
 
 namespace Zepluf\Bundle\StoreBundle\Component\Inventory;
 
+use Zepluf\Bundle\StoreBundle\Component\Inventory\Strategy\InventoryStrategyInterface;
+use Zepluf\Bundle\StoreBundle\Entity\InventoryAdjustment;
 use Zepluf\Bundle\StoreBundle\Entity\InventoryItem;
 
 class InventoryComponent
 {
-    protected $doctrine;
+    protected $entityManager;
 
+    protected $doctrine;
+    
     protected $inventoryStrategy;
 
     public function __construct($doctrine)
     {
         $this->doctrine = $doctrine;
+        $this->entityManager = $doctrine->getEntityManager();
+    }
+
+    public function setInventoryStrategy(InventoryStrategyInterface $inventoryStrategy)
+    {
+        $this->inventoryStrategy = $inventoryStrategy;
     }
 
     /**
@@ -47,7 +57,59 @@ class InventoryComponent
      * TODO: allow store owners to use different strategy to select
      * the inventory item they want
      */
-    public function getProductInventory()
+    public function getInventoryAdjustments($productId, $featureValueIds, $quantity, $inventoryItemStatusType = 1)
+    {
+        $featureValueIds = $this->getFeatureValueIdsString($featureValueIds);
+
+        return $this->inventoryStrategy->getInventoryAdjustments($this->entityManager, $productId, $featureValueIds, $quantity, $inventoryItemStatusType);
+    }
+
+    /**
+     * @param array $inventories
+     */
+    public function adjustInventory($inventoryAdjustments)
+    {
+        // begin a transaction
+        $this->entityManager->getConnection()->beginTransaction(); // suspend auto-commit
+        try {
+            foreach ($inventoryAdjustments as $inventoryAdjustment)
+            {
+                // update inventory
+                $inventoryAdjustment['inventoryItem']->setQuantityOnhand($inventoryAdjustment['inventoryItem']->setQuantityOnhand() - $inventoryAdjustment['quantity']);
+                $this->entityManager->persist($inventoryAdjustment['inventoryItem']);
+
+                // update adjustment table
+                $this->entityManager->persist($inventoryAdjustment);
+
+                $inventoryAdjustmentEntity = new InventoryAdjustment();
+
+                $inventoryAdjustmentEntity->setDate(new \DateTime());
+
+                $inventoryAdjustmentEntity->setInventoryItem($inventoryAdjustment['inventoryItem']);
+
+                $inventoryAdjustmentEntity->setQuantity($inventoryAdjustment['quantity']);
+
+                // $inventoryAdjustmentEntity->setPicklistItem($inventorieAdjustment['picklistItem']);
+
+                // $inventoryAdjustmentEntity->setShipmentItem($inventoryAdjustment['shipmentItem']);
+
+                $this->entityManager->persist($inventoryAdjustmentEntity);
+
+            }
+
+            $this->entityManager->flush();
+            $this->entityManager->getConnection()->commit();
+
+            // dispatch an event
+
+        } catch (Exception $e) {
+            $this->entityManager->getConnection()->rollback();
+            $this->entityManager->close();
+            throw $e;
+        }
+    }
+
+    public function generatePicklist()
     {
 
     }

@@ -6,7 +6,7 @@ use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\Reference;
 
 
-class StorePass implements CompilerPassInterface
+class ShipmentPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {

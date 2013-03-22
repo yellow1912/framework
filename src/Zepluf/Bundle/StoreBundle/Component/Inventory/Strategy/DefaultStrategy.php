@@ -26,7 +26,7 @@ class DefaultStrategy implements InventoryStrategyInterface
     /**
      * {@inheritdoc}
      */
-    public function getInventories(EntityManager $entityManager, $productId, $featureValueIds, $quantity, $inventoryItemStatusType = 1)
+    public function getInventoryAdjustments(EntityManager $entityManager, $productId, $featureValueIds, $quantity, $inventoryItemStatusType = 1)
     {
         $inventoryStack = array();
 
@@ -47,14 +47,27 @@ class DefaultStrategy implements InventoryStrategyInterface
                 ->setParameters(array('productId' => $productId, 'inventoryItemStatusType' => $inventoryItemStatusType, 'featureValueIds' => $featureValueIds))->getResult();
 
             foreach ($inventories as $inventory) {
-                $stackQuantity += $inventory->getQuantityOnhand();
-                $inventoryStack[] = $inventory;
-                if ($stackQuantity >= $quantity) {
+                if($quantity > $inventory->getQuantityOnhand()) {
+                    $quantityToPick = $inventory->getQuantityOnhand();
+                }
+                else {
+                    $quantityToPick = $quantity;
+                }
+
+                $inventoryStack[] = array(
+                    'inventoryItem' => $quantityToPick,
+                    'quantity' => $inventory->getQuantityOnhand());
+
+                $quantity = $quantity - $quantityToPick;
+
+                if(0 == $quantity) {
                     break;
                 }
             }
         } else {
-            $inventoryStack[] = $inventory;
+            $inventoryStack[] = array(
+                'inventoryItem' => $inventory,
+                'quantity' => $inventory->getQuantityOnhand());
         }
 
         return $inventoryStack;
