@@ -19,7 +19,7 @@ use Symfony\Bundle\FrameworkBundle\DependencyInjection\Compiler\TemplatingPass;
 use Symfony\Component\Yaml\Yaml;
 use Zepluf\Bundle\StoreBundle\DependencyInjection\Compiler\ZeplufPass;
 use Zepluf\Bundle\StoreBundle\DependencyInjection\Compiler\StorePass;
-
+use Zepluf\Bundle\StoreBundle\DependencyInjection\Compiler\PaymentPass;
 /**
  * Bundle.
  *
@@ -33,7 +33,7 @@ class StoreBundle extends Bundle
         $container->addCompilerPass(new ZeplufPass());
         $container->addCompilerPass(new StorePass());
         $container->addCompilerPass(new TemplatingPass());
-        $container->addCompilerPass(new StorePass());
+        $container->addCompilerPass(new PaymentPass());
 
         // allow plugins to have their own compiler passes
         $appDir = $container->getParameter("kernel.root_dir");

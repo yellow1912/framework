@@ -13,6 +13,8 @@
 
 namespace Zepluf\Bundle\StoreBundle\Component\Payment\Method;
 
+use \Doctrine\Common\Collections\Collection;
+
 /**
 *
 */
@@ -23,26 +25,46 @@ class PaypalStandard extends PaymentMethodAbstract implements PaymentMethodInter
      */
     protected $settings;
 
-    function __construct()
+
+    protected $templating;
+
+    function __construct($templating)
     {
         parent::__construct();
-    }
 
-    /**
-     * get current settings from this payment method
-     *
-     * @return array
-     */
-    public function getSettings()
-    {
         /**
          * @todo get current payment method settings from this storage handler
          */
-        return array(
+        $this->settings = array(
             'code' => 'paypal_standard',
+            'sandbox_mode' => 0,
+            'email' => 'seller.1314@yahoo.com',
             'status' => 1,
-            'sort_order' => 10
+            'sort_order' => 20
         );
+
+        $this->templating = $templating;
+
+        // echo '<strong>Paypal Standard</strong> loaded!<br />';
+
+        // $this->renderForm();
+    }
+
+    /**
+     * get settings from this payment method
+     *
+     * @param   string|null  $key  setting key | null
+     * @return  mixed              setting values | false
+     */
+    public function getSettings($key = null)
+    {
+        if (null === $key) {
+            return $this->settings;
+        } else if (isset($this->settings[$key])) {
+            return $this->settings[$key];
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -87,9 +109,45 @@ class PaypalStandard extends PaymentMethodAbstract implements PaymentMethodInter
      *
      * @return [type] [description]
      */
-    public function renderForm()
+    public function renderForm(Collection $invoiceItems)
     {
-        return null;
+        exit('OK');
+        if ($invoiceItems->isEmpty()) {
+            // TODO: redirect to home page
+            echo 'No items available..';
+            return;
+        }
+
+        $data['sandbox_mode'] = $this->settings['sandbox_mode'];
+        $data['sandbox_notify'] = 'Sandbox notify';
+
+        if ($data['sandbox_mode']) {
+            $data['action'] = 'https://www.sandbox.paypal.com/cgi-bin/webscr';
+        } else {
+            $data['action'] = 'https://www.paypal.com/cgi-bin/webscr';
+        }
+
+        $data['business'] = $this->settings['email'];
+
+        $data['products'] = array();
+        while (false !== ($invoiceItem = $invoiceItems->next())) {
+            $featuresId = $invoiceItem->getInventoryItem()->getFeatureValueIds();
+            $features = $this->entityManager->createQueryBuilder()
+               ->select(array('pf.name', 'pfv.value'))
+               ->from('Zepluf\Bundle\StoreBundle\Entity\ProductFeatureValue', 'pfv')
+               ->leftJoin('Zepluf\Bundle\StoreBundle\Entity\ProductFeature', 'pf', 'WITH', 'pfv.product_feature_id = pf.id')
+               ->where('pfv.id IN (' . $featuresId . ')');
+
+            $data['products'][] = array(
+                'name'       => $invoiceItem->getItemDescription(),
+                'price'      => $invoiceItem->getAmount(),
+                'quantity'   => $invoiceItem->getQuantity(),
+                'features'   => $features
+            );
+        }
+
+        return $this->templating->render('StoreBundle:fontend/component/payment/paypal_standard.html.php', $data);
+
     }
 
     /**
@@ -112,8 +170,19 @@ class PaypalStandard extends PaymentMethodAbstract implements PaymentMethodInter
         return true;
     }
 
-    public function process()
+    public function process($data, $amount, Collection $invoiceItems)
     {
+        $invoice = $this->entityManager->find('', $invoiceId);
 
+        $request = array(
+            'cmd' => '',
+            'business' => $this->settings['email'],
+            'notify_url' => '',
+            'return' => '',
+            'cancel_return' => '',
+            'paymentaction' => 'authorization'
+        );
+
+        $request = array_merge($request, $data);
     }
 }

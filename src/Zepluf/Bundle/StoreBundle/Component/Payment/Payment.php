@@ -51,7 +51,7 @@ class Payment
      * @param array $data ('payment_method' => array(), 'invoice_items' => array(). ...)
      * @throws \Exception
      */
-    public function create(PaymentMethodInterface $paymentMethod, InvoiceEntity $invoice)
+    public function create(PaymentMethodInterface $paymentMethod, InvoiceEntity $invoice, $amount = 0)
     {
         $this->payment = new PaymentEntity();
 

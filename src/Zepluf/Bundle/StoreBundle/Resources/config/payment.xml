@@ -40,6 +40,8 @@
 
         <service id="storebundle.payment_methods.paypal_standard" class="%storebundle.payment_methods.paypal_standard.class%">
             <argument type="service" id="event_dispatcher" />
+            <argument type="service" id="templating" />
+
             <tag name="storebundle.payment_methods.method" alias="paypal_standard" />
         </service>
     </services>

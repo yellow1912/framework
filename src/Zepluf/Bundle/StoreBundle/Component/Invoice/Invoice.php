@@ -11,7 +11,7 @@
 namespace Zepluf\Bundle\StoreBundle\Component\Invoice;
 
 use \Doctrine\ORM\EntityManager;
-use \Doctrine\Common\Collections\ArrayCollection;
+use \Doctrine\Common\Collections\Collection;
 
 use Zepluf\Bundle\StoreBundle\Entity\Party;
 use Zepluf\Bundle\StoreBundle\Entity\ContactMechanism;
@@ -19,6 +19,7 @@ use Zepluf\Bundle\StoreBundle\Entity\Invoice as InvoiceEntity;
 use Zepluf\Bundle\StoreBundle\Entity\InvoiceItem as InvoiceItemEntity;
 
 use Zepluf\Bundle\StoreBundle\Component\Payment\Fixtures;
+use Zepluf\Bundle\StoreBundle\Component\Payment\Method\PaypalStandard;
 
 class Invoice
 {
@@ -28,28 +29,36 @@ class Invoice
      */
     protected $entityManager;
 
+    protected $templating;
+
     /**
      * invoice entity
      * @var InvoiceEntity
      */
     protected $invoice;
 
-    public function __construct($doctrine)
+    public function __construct($doctrine, $templating)
     {
         $this->entityManager = $doctrine->getEntityManager();
 
-        $fixtures = new Fixtures($doctrine);
+        $this->templating = $templating;
 
-        $this->create();
+        // $fixtures = new Fixtures($doctrine);
+
+        $paypalStandard = new PaypalStandard();
+
+        // $paypalStandard->renderForm(null, array());
+
+        // $this->create();
     }
 
     /**
-     * create new invoice
+     * create new invoice from order items collection
      *
-     * @param  ArrayCollection  $invoiceItems array of invoice item, includes: id, name, quantity, features
-     * @return [type]                [description]
+     * @param  Collection $orderItems [description]
+     * @return [type]                 [description]
      */
-    public function create(ArrayCollection $invoiceItems)
+    public function create(Collection $orderItems)
     {
         $this->invoice = new InvoiceEntity();
         $billedTo = $this->entityManager->find('Zepluf\Bundle\StoreBundle\Entity\Party', mt_rand(1, 5));
@@ -76,15 +85,15 @@ class Invoice
         $this->entityManager->persist($this->invoice);
         $this->entityManager->flush();
 
-        //$this->addInvoiceItems($invoice_items);
+        //$this->addInvoiceItems($orderItems);
     }
 
     /**
-     * create invoice items from ArrayCollection
+     * create invoice items from order items collection
      *
-     * @param ArrayCollection $invoiceItems [description]
+     * @param Collection $orderItems [description]
      */
-    public function addInvoiceItems(ArrayCollection $invoiceItems)
+    public function addInvoiceItems(Collection $orderItems)
     {
         $invoiceId = $this->invoice->getId();
 

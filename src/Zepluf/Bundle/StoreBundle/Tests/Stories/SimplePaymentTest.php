@@ -10,25 +10,28 @@
 
 namespace Zepluf\Bundle\StoreBundle\Tests\Stories;
 
-class SimpleCheckoutTest extends \PHPUnit_Framework_TestCase
+class SimplePaymentTest extends \PHPUnit_Framework_TestCase
 {
 
     protected $cart;
 
     public function setUp()
     {
-        $this->cart = new \Zepluf\Bundle\StoreBundle\Component\Cart\Cart();
+        echo 'jkMedia';
+        // $this->cart = new \Zepluf\Bundle\StoreBundle\Component\Cart\Cart();
     }
 
     public function testProductCollection()
     {
     }
 
-    public function testSimpleCheckout()
+    public function testSimplePayment()
     {
+        echo 'jkMedia';
+
         // add product to cart
-        $productCollection = $this->getProductCollection();
-        $productCollection->expects($this->once())->method('add');
+        // $productCollection = $this->getProductCollection();
+        // $productCollection->expects($this->once())->method('add');
 
         // save cart
 
@@ -70,11 +73,11 @@ class SimpleCheckoutTest extends \PHPUnit_Framework_TestCase
 
     public function tearDown()
     {
-        unset($this->cart);
+        // unset($this->cart);
     }
 
     protected function getProductCollection()
     {
-        return $this->getMock('Zepluf\Bundle\StoreBundle\Component\Product\ProductCollection');
+        // return $this->getMock('Zepluf\Bundle\StoreBundle\Component\Product\ProductCollection');
     }
 }
