@@ -13,7 +13,12 @@
 
 namespace Zepluf\Bundle\StoreBundle\Component\Payment\Method;
 
+use \Doctrine\ORM\EntityManager;
 use \Doctrine\Common\Collections\Collection;
+
+use Zepluf\Bundle\StoreBundle\Events\PaymentEvents;
+
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 use Zepluf\Bundle\StoreBundle\Entity\Payment as PaymentEntity;
 
@@ -29,12 +34,12 @@ class PaypalStandard extends PaymentMethodAbstract implements PaymentMethodInter
 
     protected $templating;
 
+    protected $entityManager;
+
     protected $eventDispatcher;
 
-    function __construct($templating, $entityManager, $eventDispatcher)
+    function __construct($templating, EntityManager $entityManager, EventDispatcherInterface $eventDispatcher)
     {
-        parent::__construct();
-
         $this->templating = $templating;
 
         $this->entityManager = $entityManager;
@@ -42,7 +47,7 @@ class PaypalStandard extends PaymentMethodAbstract implements PaymentMethodInter
         $this->eventDispatcher = $eventDispatcher;
 
         /**
-         * @todo get current payment method settings from this storage handler
+         * @todo get current payment method settings from it's storage handler
          */
         $this->settings = array(
             'code' => 'paypal_standard',
@@ -63,10 +68,6 @@ class PaypalStandard extends PaymentMethodAbstract implements PaymentMethodInter
                 'Voided'            => 1
             )
         );
-
-        // echo '<strong>Paypal Standard</strong> loaded!<br />';
-
-        // $this->renderForm();
     }
 
     /**
@@ -186,19 +187,16 @@ class PaypalStandard extends PaymentMethodAbstract implements PaymentMethodInter
         return true;
     }
 
+    /**
+     * [callback description]
+     * @param  [type]   $data [description]
+     * @return function       [description]
+     */
     public function callback($data)
     {
-        // TODO: dispatch start "Paypal Standard Callback" event
+        $this->eventDispatcher->dispatch(PaymentEvents::onPaypalStandardCallbackStart, $orderStatusId);
 
-        if (true === isset($data['custom'])) {
-            $paymentId = $data['custom'];
-        } else {
-            $paymentId = 0;
-        }
-
-        $paymentEntity = $this->entityManager->find('Zepluf\Bundle\StoreBundle\Entity\Payment', $paymentId);
-
-        if ($paymentEntity) {
+        if (true === isset($data['custom']) && true === ($paymentEntity = $this->entityManager->find('Zepluf\Bundle\StoreBundle\Entity\Payment', $data['custom']))) {
             $request['cmd'] = '_notify-validate';
 
             foreach ($data as $key => $value) {
@@ -228,43 +226,16 @@ class PaypalStandard extends PaymentMethodAbstract implements PaymentMethodInter
 
 
             if ((0 === strcmp($response, 'VERIFIED') || 0 === strcmp($response, 'UNVERIFIED')) && true === isset($this->request->post['payment_status'])) {
-                $orderStatusId = 1;
+                if (true === in_array($data['payment_status'], array_keys($this->settings['order_status']))) {
+                    $orderStatusId = $this->settings['order_status'][$data['payment_status']];
+                } else {
+                    $orderStatusId = 1;
+                }
 
-                switch($data['payment_status']) {
-                    case 'Canceled_Reversal':
-                        $orderStatusId = $this->settings['order_status']['pp_standard_canceled_reversal_status_id'];
-                        break;
-                    case 'Completed':
-                        // if ((strtolower($this->request->post['receiver_email']) == strtolower($this->config->get('pp_standard_email'))) && ((float)$this->request->post['mc_gross'] == $this->currency->format($order_info['total'], $order_info['currency_code'], $order_info['currency_value'], false))) {
-                        //     $orderStatusId = $this->config->get('pp_standard_completed_status_id');
-                        // } else {
-                        //     $this->log->write('PP_STANDARD :: RECEIVER EMAIL MISMATCH! ' . strtolower($this->request->post['receiver_email']));
-                        // }
-                        break;
-                    case 'Denied':
-                        $orderStatusId = $this->settings['order_status']['pp_standard_denied_status_id'];
-                        break;
-                    case 'Expired':
-                        $orderStatusId = $this->settings['order_status']['pp_standard_expired_status_id'];
-                        break;
-                    case 'Failed':
-                        $orderStatusId = $this->settings['order_status']['pp_standard_failed_status_id'];
-                        break;
-                    case 'Pending':
-                        $orderStatusId = $this->settings['order_status']['pp_standard_pending_status_id'];
-                        break;
-                    case 'Processed':
-                        $orderStatusId = $this->settings['order_status']['pp_standard_processed_status_id'];
-                        break;
-                    case 'Refunded':
-                        $orderStatusId = $this->settings['order_status']['pp_standard_refunded_status_id'];
-                        break;
-                    case 'Reversed':
-                        $orderStatusId = $this->settings['order_status']['pp_standard_reversed_status_id'];
-                        break;
-                    case 'Voided':
-                        $orderStatusId = $this->settings['order_status']['pp_standard_voided_status_id'];
-                        break;
+                // if payment status is completed, recheck receiver email and amount
+                // to make sure everything completely matched
+                if (strtolower(trim($data['receiver_email'])) !== strtolower(trim($this->settings['email'])) || (float)$data['mc_gross'] !== $paymentEntity->getAmount()) {
+                    throw new Exception('Paypal Standard :: Receiver email mismatch!');
                 }
 
                 // if (!$order_info['order_status_id']) {
@@ -277,7 +248,7 @@ class PaypalStandard extends PaymentMethodAbstract implements PaymentMethodInter
             }
 
             // TODO: dispatch end "Paypal Standard Callback" event
-            $this->eventDispatcher->dispatch(ComponentEvents::onInventoryAdjust, $orderStatusId);
+            $this->eventDispatcher->dispatch(PaymentEvents::onPaypalStandardCallbackEnd, $orderStatusId);
         }
     }
 }
