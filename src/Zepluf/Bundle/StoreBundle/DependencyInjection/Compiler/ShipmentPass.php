@@ -10,22 +10,22 @@ class ShipmentPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
-        if (!$container->hasDefinition('storebundle.shipment')) {
+        if (!$container->hasDefinition('storebundle.shipping_methods')) {
             return;
         }
 
         $definition = $container->getDefinition(
-            'storebundle.shipment'
+            'storebundle.shipping_methods'
         );
 
         $taggedServices = $container->findTaggedServiceIds(
-            'storebundle.shipment.carrier'
+            'storebundle.carrier'
         );
 
         foreach ($taggedServices as $id => $tagAttributes) {
             foreach ($tagAttributes as $attributes) {
                 $definition->addMethodCall(
-                    'addCarriers',
+                    'addCarrier',
                     array(new Reference($id), $attributes["alias"])
                 );
             }
