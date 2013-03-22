@@ -2,4 +2,4 @@ app/cache/
 app/logs/
 vendor/
 web/
-composer.lock
+src/Zepluf/Bundle/StoreBundle/Resources/config/doctrine/metadata/orm

@@ -38,7 +38,7 @@ class PaymentApplication
     /**
      * @var \Payment
      *
-     * @ORM\ManyToOne(targetEntity="Payment")
+     * @ORM\ManyToOne(targetEntity="Payment", inversedBy="paymentApplication")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="payment_id", referencedColumnName="id")
      * })
@@ -60,7 +60,7 @@ class PaymentApplication
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -76,14 +76,14 @@ class PaymentApplication
     public function setSequenceId($sequenceId)
     {
         $this->sequenceId = $sequenceId;
-    
+
         return $this;
     }
 
     /**
      * Get sequenceId
      *
-     * @return string 
+     * @return string
      */
     public function getSequenceId()
     {
@@ -99,14 +99,14 @@ class PaymentApplication
     public function setAmountApplied($amountApplied)
     {
         $this->amountApplied = $amountApplied;
-    
+
         return $this;
     }
 
     /**
      * Get amountApplied
      *
-     * @return float 
+     * @return float
      */
     public function getAmountApplied()
     {
@@ -122,14 +122,14 @@ class PaymentApplication
     public function setPayment(\Zepluf\Bundle\StoreBundle\Entity\Payment $payment = null)
     {
         $this->payment = $payment;
-    
+
         return $this;
     }
 
     /**
      * Get payment
      *
-     * @return \Zepluf\Bundle\StoreBundle\Entity\Payment 
+     * @return \Zepluf\Bundle\StoreBundle\Entity\Payment
      */
     public function getPayment()
     {
@@ -145,14 +145,14 @@ class PaymentApplication
     public function setInvoiceItem(\Zepluf\Bundle\StoreBundle\Entity\InvoiceItem $invoiceItem = null)
     {
         $this->invoiceItem = $invoiceItem;
-    
+
         return $this;
     }
 
     /**
      * Get invoiceItem
      *
-     * @return \Zepluf\Bundle\StoreBundle\Entity\InvoiceItem 
+     * @return \Zepluf\Bundle\StoreBundle\Entity\InvoiceItem
      */
     public function getInvoiceItem()
     {

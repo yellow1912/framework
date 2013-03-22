@@ -10,6 +10,9 @@
 
 namespace Zepluf\Bundle\StoreBundle\Component\Payment;
 
+use Doctrine\ORM\EntityManager;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+
 use Zepluf\Bundle\StoreBundle\Component\Payment\PaymentMethodInterface;
 use Zepluf\Bundle\StoreBundle\Component\Payment\Method\Cheque;
 
@@ -28,63 +31,80 @@ class Payment
 {
     protected $entityManager;
 
+    protected $dispatcher;
+
     /**
      * payment entity
      * @var PaymentEntity
      */
-    protected $payment = false;
+    protected $payment;
 
     /**
      * constructor
      * @param EntityManager $entityManager
      */
-    public function __construct($doctrine)
+    public function __construct(EntityManager $entityManager, EventDispatcherInterface $dispatcher)
     {
-        $this->entityManager = $doctrine->getEntityManager();
+        $this->entityManager = $entityManager;
 
-        // $this->create(new Cheque(),
-        //     $this->entityManager->find('Zepluf\Bundle\StoreBundle\Component\Invoice\Invoice', 1)
-        // );
+        $this->dispatcher = $dispatcher;
     }
 
     /**
      * @param array $data ('payment_method' => array(), 'invoice_items' => array(). ...)
      * @throws \Exception
      */
-    public function create(PaymentMethodInterface $paymentMethod, InvoiceEntity $invoice, $amount = 0)
+    public function create($data = array())
     {
         $this->payment = new PaymentEntity();
 
-        /**
-         * @todo set payment method type for current payment
-         * @var Zepluf\Bundle\StoreBundle\Entity\PaymentMethodType
-         */
-        $paymentMethodType = $this->entityManager->find('Zepluf\Bundle\StoreBundle\Entity\PaymentMethodType', mt_rand(1, 5));
-        $this->payment->setPaymentMethodType($paymentMethodType);
+        $this->payment
+            ->setPaymentMethodType()
+            ->setEffectiveDate(new \DateTime())
+            ->setSequenceId($data['sequenceId'])
+            ->setReferenceNumber($data['referenceNumber'])
+            ->setAmount($data['amount'])
+            ->setComment($data['comment'])
+            ->setType($data['type']);
 
-        // set effective date
-        $this->payment->setEffectiveDate(new \DateTime());
+        return $this->addPaymentApplication($data['invoiceItems']);
+    }
 
-        // set payment type: receipt, disbursement
-        $this->payment->setType(1);
 
-        // persist payment and new payment method type
-        $this->entityManager->persist($this->payment);
-        $this->entityManager->persist($paymentMethodType);
-
-        // get all invoice items
-        $invoiceItems = $invoice->getInvoiceItems();
-
-        foreach ($invoiceItems as $invoiceItem) {
+    /**
+     * create payment application from invoice items collection
+     *
+     * @param ArrayCollection $invoiceItems [description]
+     */
+    public function addPaymentApplication(ArrayCollection $invoiceItems)
+    {
+        foreach ($invoiceItems->getIterator() as $item) {
             $paymentApplication = new PaymentApplicationEntity();
 
-            $paymentApplication->setPayment($this->payment);
-            $paymentApplication->setInvoiceItem($invoiceItem);
-            $paymentApplication->setAmountApplied(mt_rand(1, 5));
+            $paymentApplication
+                ->setAmountApplied($item['amountApplied'])
+                ->setSequenceId($item['sequenceId'])
+                ->setPayment($this->payment)
+                ->setInvoiceItem($this->entityManager->getReference('StoreBundle:InvoiceItem'), (int)$item['invoiceItemId']);
+
+            $this->payment->addPaymentApplication($paymentApplication);
 
             $this->entityManager->persist($paymentApplication);
         }
 
-        $this->entityManager->flush();
+        // begin transaction before flush anything into database
+        $this->entityManager->getConnection()->beginTransaction();
+        try {
+            $this->entityManager->flush();
+            $this->entityManager->getConnection()->commit();
+
+            return true;
+        } catch (\Exception $e) {
+            $this->entityManager->getConnection()->rollback();
+
+            throw $e;
+        }
+
+        return false;
     }
 }

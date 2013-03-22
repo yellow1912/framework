@@ -426,4 +426,50 @@ class Product
     {
         return $this->productCategory;
     }
+
+    /**
+     * Add productFeatureApplication
+     *
+     * @param \Zepluf\Bundle\StoreBundle\Entity\ProductFeatureApplication $productFeatureApplication
+     * @return Product
+     */
+    public function addProductFeatureApplication(\Zepluf\Bundle\StoreBundle\Entity\ProductFeatureApplication $productFeatureApplication)
+    {
+        $this->productFeatureApplication[] = $productFeatureApplication;
+    
+        return $this;
+    }
+
+    /**
+     * Remove productFeatureApplication
+     *
+     * @param \Zepluf\Bundle\StoreBundle\Entity\ProductFeatureApplication $productFeatureApplication
+     */
+    public function removeProductFeatureApplication(\Zepluf\Bundle\StoreBundle\Entity\ProductFeatureApplication $productFeatureApplication)
+    {
+        $this->productFeatureApplication->removeElement($productFeatureApplication);
+    }
+
+    /**
+     * Add productCategory
+     *
+     * @param \Zepluf\Bundle\StoreBundle\Entity\ProductCategory $productCategory
+     * @return Product
+     */
+    public function addProductCategory(\Zepluf\Bundle\StoreBundle\Entity\ProductCategory $productCategory)
+    {
+        $this->productCategory[] = $productCategory;
+    
+        return $this;
+    }
+
+    /**
+     * Remove productCategory
+     *
+     * @param \Zepluf\Bundle\StoreBundle\Entity\ProductCategory $productCategory
+     */
+    public function removeProductCategory(\Zepluf\Bundle\StoreBundle\Entity\ProductCategory $productCategory)
+    {
+        $this->productCategory->removeElement($productCategory);
+    }
 }

@@ -20,12 +20,14 @@
     <services>
         <!-- invoice -->
         <service id="storebundle.invoice" class="%storebundle.invoice.class%">
-            <argument type="service" id="doctrine" />
+            <argument type="service" id="doctrine.orm.entity_manager"/>
+            <argument type="service" id="event_dispatcher"/>
         </service>
 
         <!-- payment -->
         <service id="storebundle.payment" class="%storebundle.payment.class%">
-            <argument type="service" id="doctrine" />
+            <argument type="service" id="doctrine.orm.entity_manager"/>
+            <argument type="service" id="event_dispatcher"/>
         </service>
 
         <service id="storebundle.payment_methods" class="%storebundle.payment_methods.class%">

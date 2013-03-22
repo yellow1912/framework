@@ -14,6 +14,9 @@
 namespace Zepluf\Bundle\StoreBundle\Component\Payment\Method;
 
 use \Doctrine\Common\Collections\Collection;
+
+use Zepluf\Bundle\StoreBundle\Entity\Payment as PaymentEntity;
+
 /**
 *
 */
@@ -26,9 +29,17 @@ class PaypalStandard extends PaymentMethodAbstract implements PaymentMethodInter
 
     protected $templating;
 
-    function __construct($templating)
+    protected $eventDispatcher;
+
+    function __construct($templating, $entityManager, $eventDispatcher)
     {
         parent::__construct();
+
+        $this->templating = $templating;
+
+        $this->entityManager = $entityManager;
+
+        $this->eventDispatcher = $eventDispatcher;
 
         /**
          * @todo get current payment method settings from this storage handler
@@ -38,7 +49,19 @@ class PaypalStandard extends PaymentMethodAbstract implements PaymentMethodInter
             'sandbox_mode' => 0,
             'email' => 'seller.1314@yahoo.com',
             'status' => 1,
-            'sort_order' => 20
+            'sort_order' => 20,
+            'order_status' => array(
+                'pp_standard_canceled_reversal_status_id' => 9,
+                'pp_standard_completed_status_id'         => 5,
+                'pp_standard_denied_status_id'            => 8,
+                'pp_standard_expired_status_id'           => 14,
+                'pp_standard_failed_status_id'            => 10,
+                'pp_standard_pending_status_id'           => 1,
+                'pp_standard_processed_status_id'         => 15,
+                'pp_standard_refunded_status_id'          => 11,
+                'pp_standard_reversed_status_id'          => 12,
+                'pp_standard_voided_status_id'            => 16
+            )
         );
 
         $this->templating = $templating;
@@ -109,11 +132,9 @@ class PaypalStandard extends PaymentMethodAbstract implements PaymentMethodInter
      */
     public function renderForm(Collection $invoiceItems)
     {
-        exit('OK');
         if ($invoiceItems->isEmpty()) {
             // TODO: redirect to home page
-            echo 'No items available..';
-            return;
+            throw new Exception('No items available..', 1);
         }
 
         $data['sandbox_mode'] = $this->settings['sandbox_mode'];
@@ -167,19 +188,94 @@ class PaypalStandard extends PaymentMethodAbstract implements PaymentMethodInter
         return true;
     }
 
-    public function process($data, $amount, Collection $invoiceItems)
+    public function callback($data)
     {
-        $invoice = $this->entityManager->find('', $invoiceId);
+        if (true === isset($data['custom'])) {
+            $paymentId = $data['custom'];
+        } else {
+            $paymentId = 0;
+        }
 
-        $request = array(
-            'cmd' => '',
-            'business' => $this->settings['email'],
-            'notify_url' => '',
-            'return' => '',
-            'cancel_return' => '',
-            'paymentaction' => 'authorization'
-        );
+        $paymentEntity = $this->entityManager->find('Zepluf\Bundle\StoreBundle\Entity\Payment', $paymentId);
 
-        $request = array_merge($request, $data);
+        if ($paymentEntity) {
+            $request['cmd'] = '_notify-validate';
+
+            foreach ($data as $key => $value) {
+                $request[$key] = $value;
+            }
+
+            if ($data['sandbox_mode']) {
+                $curl = curl_init('https://www.sandbox.paypal.com/cgi-bin/webscr');
+            } else {
+                $curl = curl_init('https://www.paypal.com/cgi-bin/webscr');
+            }
+
+            curl_setopt($curl, CURLOPT_POST, true);
+            curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($request));
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($curl, CURLOPT_HEADER, false);
+            curl_setopt($curl, CURLOPT_TIMEOUT, 30);
+            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+
+            try {
+                $response = curl_exec($curl);
+            } catch (\Exception $e) {
+                throw $e;
+            }
+
+            curl_close($curl);
+
+
+            if ((0 === strcmp($response, 'VERIFIED') || 0 === strcmp($response, 'UNVERIFIED')) && true === isset($this->request->post['payment_status'])) {
+                $orderStatusId = 1;
+
+                switch($data['payment_status']) {
+                    case 'Canceled_Reversal':
+                        $orderStatusId = $this->settings['order_status']['pp_standard_canceled_reversal_status_id'];
+                        break;
+                    case 'Completed':
+                        // if ((strtolower($this->request->post['receiver_email']) == strtolower($this->config->get('pp_standard_email'))) && ((float)$this->request->post['mc_gross'] == $this->currency->format($order_info['total'], $order_info['currency_code'], $order_info['currency_value'], false))) {
+                        //     $orderStatusId = $this->config->get('pp_standard_completed_status_id');
+                        // } else {
+                        //     $this->log->write('PP_STANDARD :: RECEIVER EMAIL MISMATCH! ' . strtolower($this->request->post['receiver_email']));
+                        // }
+                        break;
+                    case 'Denied':
+                        $orderStatusId = $this->settings['order_status']['pp_standard_denied_status_id'];
+                        break;
+                    case 'Expired':
+                        $orderStatusId = $this->settings['order_status']['pp_standard_expired_status_id'];
+                        break;
+                    case 'Failed':
+                        $orderStatusId = $this->settings['order_status']['pp_standard_failed_status_id'];
+                        break;
+                    case 'Pending':
+                        $orderStatusId = $this->settings['order_status']['pp_standard_pending_status_id'];
+                        break;
+                    case 'Processed':
+                        $orderStatusId = $this->settings['order_status']['pp_standard_processed_status_id'];
+                        break;
+                    case 'Refunded':
+                        $orderStatusId = $this->settings['order_status']['pp_standard_refunded_status_id'];
+                        break;
+                    case 'Reversed':
+                        $orderStatusId = $this->settings['order_status']['pp_standard_reversed_status_id'];
+                        break;
+                    case 'Voided':
+                        $orderStatusId = $this->settings['order_status']['pp_standard_voided_status_id'];
+                        break;
+                }
+
+                // if (!$order_info['order_status_id']) {
+                //     $this->model_checkout_order->confirm($order_id, $orderStatusId);
+                // } else {
+                //     $this->model_checkout_order->update($order_id, $orderStatusId);
+                // }
+            } else {
+                // $this->model_checkout_order->confirm($order_id, $this->config->get('config_order_status_id'));
+            }
+
+        }
     }
 }
