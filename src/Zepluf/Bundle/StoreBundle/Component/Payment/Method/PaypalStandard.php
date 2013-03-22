@@ -14,7 +14,6 @@
 namespace Zepluf\Bundle\StoreBundle\Component\Payment\Method;
 
 use \Doctrine\Common\Collections\Collection;
-
 /**
 *
 */
@@ -24,7 +23,6 @@ class PaypalStandard extends PaymentMethodAbstract implements PaymentMethodInter
      * @var [type]
      */
     protected $settings;
-
 
     protected $templating;
 
@@ -147,7 +145,6 @@ class PaypalStandard extends PaymentMethodAbstract implements PaymentMethodInter
         }
 
         return $this->templating->render('StoreBundle:fontend/component/payment/paypal_standard.html.php', $data);
-
     }
 
     /**

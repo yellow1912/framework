@@ -8,6 +8,7 @@
  * file that was distributed with this source code.
  */
 
+
 namespace Zepluf\Bundle\StoreBundle\Component\Invoice;
 
 use \Doctrine\ORM\EntityManager;

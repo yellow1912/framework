@@ -47,11 +47,6 @@
         <parameter key="storebundle.cart_factory.class">Zepluf\Bundle\StoreBundle\Component\Cart\CartFactory</parameter>
         <parameter key="storebundle.array_storage_handler.class">Zepluf\Bundle\StoreBundle\Component\Cart\StorageHandler\ArrayStorageHandler</parameter>
         <parameter key="storebundle.session_storage_handler.class">Zepluf\Bundle\StoreBundle\Component\Cart\StorageHandler\SessionStorageHandler</parameter>
-
-        <!-- shipment -->
-        <parameter key="storebundle.shipment.class">Zepluf\Bundle\StoreBundle\Component\Shipment\Shipment</parameter>
-        <!-- carrier -->
-        <parameter key="storebundle.shipment.freeshipping.class">Zepluf\Bundle\StoreBundle\Component\Shipment\Carrier\FreeShipping</parameter>
     </parameters>
 
     <services>
@@ -198,16 +193,5 @@
             <argument type="service" id="storebundle.array_storage_handler"/>
             <argument type="service" id="storebundle.session_storage_handler"/>
         </service>
-
-        <!-- shipment -->
-        <service id="storebundle.shipment" class="%storebundle.shipment.class%">
-            <argument type="service" id="doctrine"/>
-        </service>
-
-        <!-- carrier -->
-        <service id="storebundle.shipment.freeshipping" class="%storebundle.shipment.freeshipping.class%">
-            <tag name="storebundle.shipment.carrier" alias="freeshipping" />
-        </service>
-
     </services>
 </container>
