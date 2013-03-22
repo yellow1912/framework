@@ -39,7 +39,6 @@ class PaymentMethods
         }
     }
 
-
     /**
      * get available payment methods by code or all
      *

@@ -13,7 +13,7 @@ namespace Zepluf\Bundle\StoreBundle\Component\Price;
 /**
  * This class is responsible for calculating price for anything that uses priceComponent
  */
-class Pricing extends \Symfony\Component\DependencyInjection\ContainerAware
+class PriceComponent
 {
     /**
      * an array of handlers
@@ -26,22 +26,25 @@ class Pricing extends \Symfony\Component\DependencyInjection\ContainerAware
      * Get the product price
      *
      * @param \Zepluf\Bundle\StoreBundle\Entity\Product $product
-     * @param array $features
+     * @param array $featureApplicationIds
      * @return float
      */
-    public function getProductPrice(\Zepluf\Bundle\StoreBundle\Entity\Product $product, $features = array())
+    public function getProductPrice(\Zepluf\Bundle\StoreBundle\Entity\Product $product, $featureApplicationIds = array())
     {
         $productPrice = new Price();
         // loop through the base price component
-        $productPrice = $this->getPrice($productPrice, $product->getPriceComponent());
+        $productPrice = $this->getPrice($productPrice, $product->getPriceComponent(), $product);
 
         // get the total of features price
         foreach ($product->getProductFeatureApplication() as $productFeatureApplication) {
-            $productPrice = $this->getPrice($productPrice, $productFeatureApplication->getPriceComponent());
+            // TODO: we may need to improve benchmark performance here
+            if(in_array($productFeatureApplication->getId(), $featureApplicationIds)) {
+                $productPrice = $this->getPrice($productPrice, $productFeatureApplication->getPriceComponent(), $productFeatureApplication);
+            }
         }
 
         // loop through the additional price component
-        $productPrice = $this->getPrice($productPrice, $this->findTaggedHandlers('product_global'));
+        $productPrice = $this->getPrice($productPrice, $this->findTaggedHandlers('product_global'), null);
 
         return $productPrice;
     }
@@ -54,7 +57,7 @@ class Pricing extends \Symfony\Component\DependencyInjection\ContainerAware
      */
     public function getProductFeatureApplicationPrice(\Zepluf\Bundle\StoreBundle\Entity\ProductFeatureApplication $productFeatureApplication)
     {
-        return $this->getPrice(new Price(), $productFeatureApplication->getPriceComponent());
+        return $this->getPrice(new Price(), $productFeatureApplication->getPriceComponent(), $productFeatureApplication);
     }
 
     /**
@@ -65,7 +68,7 @@ class Pricing extends \Symfony\Component\DependencyInjection\ContainerAware
      */
     public function getOrderPrice(\Zepluf\Bundle\StoreBundle\Entity\Order $order)
     {
-        return $this->getPrice(new Price(), $this->findTaggedHandlers('order_global'));
+        return $this->getPrice(new Price(), $this->findTaggedHandlers('order_global'), $order);
     }
 
     /**
@@ -103,7 +106,7 @@ class Pricing extends \Symfony\Component\DependencyInjection\ContainerAware
      * @param $priceComponents
      * @return \Zepluf\Bundle\StoreBundle\Component\Price\Price
      */
-    public function getPrice(\Zepluf\Bundle\StoreBundle\Component\Price\Price $price, $priceComponents)
+    public function getPrice(Price $price, $priceComponents, $object)
     {
         foreach ($priceComponents as $priceComponent) {
             $handlerCode = $priceComponent->getHandler();
@@ -112,7 +115,7 @@ class Pricing extends \Symfony\Component\DependencyInjection\ContainerAware
                     $this->handlers[$handlerCode]->getCode(),
                     $this->handlers[$handlerCode]->getTag(),
                     $priceComponent->getName(),
-                    $this->handlers[$handlerCode]->getPrice($price->getTotal(), $priceComponent));
+                    $this->handlers[$handlerCode]->getPrice($price->getTotal(), $priceComponent, $object));
             }
         }
 

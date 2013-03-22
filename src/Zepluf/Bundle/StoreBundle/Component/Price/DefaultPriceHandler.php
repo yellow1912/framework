@@ -10,6 +10,8 @@
 
 namespace Zepluf\Bundle\StoreBundle\Component\Price;
 
+use Zepluf\Bundle\StoreBundle\Entity\PriceComponent;
+
 class DefaultPriceHandler implements PriceHandlerInterface
 {
     public function getCode()
@@ -22,7 +24,7 @@ class DefaultPriceHandler implements PriceHandlerInterface
         return 'default';
     }
 
-    public function getPrice($currentPrice, \Zepluf\Bundle\StoreBundle\Entity\PriceComponent $priceComponent)
+    public function getPrice($currentPrice, PriceComponent $priceComponent)
     {
         return $priceComponent->getValue();
     }
