@@ -47,6 +47,7 @@
         <parameter key="storebundle.cart_factory.class">Zepluf\Bundle\StoreBundle\Component\Cart\CartFactory</parameter>
         <parameter key="storebundle.array_storage_handler.class">Zepluf\Bundle\StoreBundle\Component\Cart\StorageHandler\ArrayStorageHandler</parameter>
         <parameter key="storebundle.session_storage_handler.class">Zepluf\Bundle\StoreBundle\Component\Cart\StorageHandler\SessionStorageHandler</parameter>
+
     </parameters>
 
     <services>
@@ -193,5 +194,6 @@
             <argument type="service" id="storebundle.array_storage_handler"/>
             <argument type="service" id="storebundle.session_storage_handler"/>
         </service>
+
     </services>
 </container>

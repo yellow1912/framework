@@ -113,12 +113,12 @@ class PriceComponent
         $this->productFeatureApplication = new \Doctrine\Common\Collections\ArrayCollection();
         $this->product = new \Doctrine\Common\Collections\ArrayCollection();
     }
-    
+
 
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -134,14 +134,14 @@ class PriceComponent
     public function setFromDate($fromDate)
     {
         $this->fromDate = $fromDate;
-    
+
         return $this;
     }
 
     /**
      * Get fromDate
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getFromDate()
     {
@@ -157,14 +157,14 @@ class PriceComponent
     public function setThroughDate($throughDate)
     {
         $this->throughDate = $throughDate;
-    
+
         return $this;
     }
 
     /**
      * Get throughDate
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getThroughDate()
     {
@@ -180,14 +180,14 @@ class PriceComponent
     public function setName($name)
     {
         $this->name = $name;
-    
+
         return $this;
     }
 
     /**
      * Get name
      *
-     * @return string 
+     * @return string
      */
     public function getName()
     {
@@ -203,14 +203,14 @@ class PriceComponent
     public function setValue($value)
     {
         $this->value = $value;
-    
+
         return $this;
     }
 
     /**
      * Get value
      *
-     * @return float 
+     * @return float
      */
     public function getValue()
     {
@@ -226,14 +226,14 @@ class PriceComponent
     public function setTag($tag)
     {
         $this->tag = $tag;
-    
+
         return $this;
     }
 
     /**
      * Get tag
      *
-     * @return string 
+     * @return string
      */
     public function getTag()
     {
@@ -249,14 +249,14 @@ class PriceComponent
     public function setComment($comment)
     {
         $this->comment = $comment;
-    
+
         return $this;
     }
 
     /**
      * Get comment
      *
-     * @return string 
+     * @return string
      */
     public function getComment()
     {
@@ -272,14 +272,14 @@ class PriceComponent
     public function setHandler($handler)
     {
         $this->handler = $handler;
-    
+
         return $this;
     }
 
     /**
      * Get handler
      *
-     * @return string 
+     * @return string
      */
     public function getHandler()
     {
@@ -295,7 +295,7 @@ class PriceComponent
     public function addProductFeatureApplication(\Zepluf\Bundle\StoreBundle\Entity\ProductFeatureApplication $productFeatureApplication)
     {
         $this->productFeatureApplication[] = $productFeatureApplication;
-    
+
         return $this;
     }
 
@@ -312,7 +312,7 @@ class PriceComponent
     /**
      * Get productFeatureApplication
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getProductFeatureApplication()
     {
@@ -328,7 +328,7 @@ class PriceComponent
     public function addProduct(\Zepluf\Bundle\StoreBundle\Entity\Product $product)
     {
         $this->product[] = $product;
-    
+
         return $this;
     }
 
@@ -345,7 +345,7 @@ class PriceComponent
     /**
      * Get product
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getProduct()
     {
@@ -405,18 +405,5 @@ class PriceComponent
     public function getSettings()
     {
         return $this->settings;
-    }
-
-    /**
-     * Set settings
-     *
-     * @param array $settings
-     * @return PriceComponent
-     */
-    public function setSettings($settings)
-    {
-        $this->settings = $settings;
-    
-        return $this;
     }
 }

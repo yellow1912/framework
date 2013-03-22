@@ -51,20 +51,18 @@ class PaypalStandard extends PaymentMethodAbstract implements PaymentMethodInter
             'status' => 1,
             'sort_order' => 20,
             'order_status' => array(
-                'pp_standard_canceled_reversal_status_id' => 9,
-                'pp_standard_completed_status_id'         => 5,
-                'pp_standard_denied_status_id'            => 8,
-                'pp_standard_expired_status_id'           => 14,
-                'pp_standard_failed_status_id'            => 10,
-                'pp_standard_pending_status_id'           => 1,
-                'pp_standard_processed_status_id'         => 15,
-                'pp_standard_refunded_status_id'          => 11,
-                'pp_standard_reversed_status_id'          => 12,
-                'pp_standard_voided_status_id'            => 16
+                'Canceled_Reversal' => 1,
+                'Completed'         => 1,
+                'Denied'            => 1,
+                'Expired'           => 1,
+                'Failed'            => 1,
+                'Pending'           => 1,
+                'Processed'         => 1,
+                'Refunded'          => 1,
+                'Reversed'          => 1,
+                'Voided'            => 1
             )
         );
-
-        $this->templating = $templating;
 
         // echo '<strong>Paypal Standard</strong> loaded!<br />';
 
@@ -190,6 +188,8 @@ class PaypalStandard extends PaymentMethodAbstract implements PaymentMethodInter
 
     public function callback($data)
     {
+        // TODO: dispatch start "Paypal Standard Callback" event
+
         if (true === isset($data['custom'])) {
             $paymentId = $data['custom'];
         } else {
@@ -276,6 +276,8 @@ class PaypalStandard extends PaymentMethodAbstract implements PaymentMethodInter
                 // $this->model_checkout_order->confirm($order_id, $this->config->get('config_order_status_id'));
             }
 
+            // TODO: dispatch end "Paypal Standard Callback" event
+            $this->eventDispatcher->dispatch(ComponentEvents::onInventoryAdjust, $orderStatusId);
         }
     }
 }

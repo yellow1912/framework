@@ -28,5 +28,5 @@ interface InventoryStrategyInterface {
      * @param int $inventoryItemStatusType
      * @return array
      */
-    public function getInventories(EntityManager $entityManager, $productId, $featureValueIds, $quantity, $inventoryItemStatusType);
+    public function getInventoryAdjustments(EntityManager $entityManager, $productId, $featureValueIds, $quantity, $inventoryItemStatusType);
 }

@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Zepluf\Bundle\StoreBundle\Component\Price;
+namespace Zepluf\Bundle\StoreBundle\Component\Price\Handler;
 
 interface ProductPriceHandlerInterface
 {
