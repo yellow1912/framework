@@ -2,12 +2,13 @@
 
 namespace Zepluf\Bundle\StoreBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Order
  *
- * @ORM\Table(name="order")
+ * @ORM\Table(name="`order`")
  * @ORM\Entity
  */
 class Order
@@ -42,8 +43,18 @@ class Order
      */
     private $entryDate;
 
+    /**
+     * @var OrderItem|array
+     *
+     * @ORM\OneToMany(targetEntity="OrderItem", mappedBy="order", cascade={"persist", "remove"})
+     */
+    private $orderItems;
 
 
+    public function __construct()
+    {
+        $this->orderItems = new ArrayCollection();
+    }
     /**
      * Get id
      *
@@ -122,4 +133,38 @@ class Order
     {
         return $this->entryDate;
     }
+
+    /**
+     * Add orderItem
+     *
+     * @param \Zepluf\Bundle\StoreBundle\Entity\OrderItem $orderItem
+     * @return Shipment
+     */
+    public function addOrderItem(\Zepluf\Bundle\StoreBundle\Entity\OrderItem $orderItem)
+    {
+        $this->orderItems[] = $orderItem;
+
+        return $this;
+    }
+
+    /**
+     * Remove orderItem
+     *
+     * @param \Zepluf\Bundle\StoreBundle\Entity\OrderItem $orderItem
+     */
+    public function removeOrderItem(\Zepluf\Bundle\StoreBundle\Entity\OrderItem $orderItem)
+    {
+        $this->orderItems->removeElement($orderItem);
+    }
+
+    /**
+     * Get OrderItems
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getOrderItems()
+    {
+        return $this->orderItems;
+    }
+
 }

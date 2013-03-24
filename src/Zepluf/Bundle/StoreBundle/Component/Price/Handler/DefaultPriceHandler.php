@@ -16,12 +16,12 @@ class DefaultPriceHandler implements PriceHandlerInterface
 {
     public function getCode()
     {
-        return 'default';
+        return 'product_default';
     }
 
     public function getTag()
     {
-        return 'default';
+        return 'product';
     }
 
     public function getPrice($currentPrice, PriceEntity $priceComponent)

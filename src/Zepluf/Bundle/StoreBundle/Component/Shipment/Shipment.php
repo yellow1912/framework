@@ -68,16 +68,6 @@ class Shipment
         return $shipment;
     }
 
-    private function generateRandomString($length = 10)
-    {
-        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        $randomString = '';
-        for ($i = 0; $i < $length; $i++) {
-            $randomString .= $characters[rand(0, strlen($characters) - 1)];
-        }
-        return $randomString;
-    }
-
     /**
      * Create shipment
      * @param array $data ('shipment' => array(), 'shipment_item' => array(). ...)
@@ -99,7 +89,6 @@ class Shipment
                 ->setDescription($item['description'])
                 ->setProduct($this->entityManager->getReference('StoreBundle:Product', (int)$item['productId']))
                 ->setShipment($shipment);
-
             $this->entityManager->persist($shipmentItem);
 
             /**
@@ -150,4 +139,15 @@ class Shipment
             }
         }
     }
+
+    private function generateRandomString($length = 10)
+    {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $randomString = '';
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[rand(0, strlen($characters) - 1)];
+        }
+        return $randomString;
+    }
+
 }

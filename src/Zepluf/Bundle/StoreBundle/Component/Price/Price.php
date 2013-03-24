@@ -26,7 +26,7 @@ class Price
      */
     public function addComponent($code, $tag, $name, $value)
     {
-        $this->components[] = array(
+        $this->components[$code] = array(
             'name' => $name,
             'code' => $code,
             'tag' => $tag,
@@ -55,7 +55,7 @@ class Price
         $tags = array();
         foreach ($this->components as $component) {
             if ($component['tag'] == $tag) {
-                $tags[] = $component;
+                $tags[$component['code']] = $component;
             }
         }
 

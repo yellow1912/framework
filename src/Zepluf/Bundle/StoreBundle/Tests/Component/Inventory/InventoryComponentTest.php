@@ -17,7 +17,6 @@ class InventoryComponentTest extends \Zepluf\Bundle\StoreBundle\Tests\BaseTestCa
     public function testGetProductQuantity()
     {
         // TODO: setup the fixtures to test?
-
 //        $inventoryComponent = new \Zepluf\Bundle\StoreBundle\Component\Inventory\InventoryComponent($this->_container->get('doctrine'));
 //        $this->assertEquals(0, $inventoryComponent->getProductQuantity(1, array(1,2,3)));
 //

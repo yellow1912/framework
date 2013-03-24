@@ -213,14 +213,14 @@ class ProductCategory
     public function setLevel($level)
     {
         $this->level = $level;
-
+    
         return $this;
     }
 
     /**
      * Get level
      *
-     * @return integer
+     * @return integer 
      */
     public function getLevel()
     {
@@ -236,18 +236,64 @@ class ProductCategory
     public function setRoot($root)
     {
         $this->root = $root;
-
+    
         return $this;
     }
 
     /**
      * Get root
      *
-     * @return integer
+     * @return integer 
      */
     public function getRoot()
     {
         return $this->root;
+    }
+
+    /**
+     * Set children
+     *
+     * @param integer $children
+     * @return ProductCategory
+     */
+    public function setChildren($children)
+    {
+        $this->children = $children;
+    
+        return $this;
+    }
+
+    /**
+     * Get children
+     *
+     * @return integer 
+     */
+    public function getChildren()
+    {
+        return $this->children;
+    }
+
+    /**
+     * Set sort
+     *
+     * @param integer $sort
+     * @return ProductCategory
+     */
+    public function setSort($sort)
+    {
+        $this->sort = $sort;
+    
+        return $this;
+    }
+
+    /**
+     * Get sort
+     *
+     * @return integer 
+     */
+    public function getSort()
+    {
+        return $this->sort;
     }
 
     /**
@@ -259,14 +305,14 @@ class ProductCategory
     public function setStatus($status)
     {
         $this->status = $status;
-
+    
         return $this;
     }
 
     /**
      * Get status
      *
-     * @return boolean
+     * @return boolean 
      */
     public function getStatus()
     {
@@ -282,57 +328,17 @@ class ProductCategory
     public function setParent(\Zepluf\Bundle\StoreBundle\Entity\ProductCategory $parent = null)
     {
         $this->parent = $parent;
-
+    
         return $this;
     }
 
     /**
-     * Get sort
+     * Get parent
      *
-     * @return integer
-     */
-    public function getSort()
-    {
-        return $this->sort;
-    }
-
-    /**
-     * Set status
-     *
-     * @return \Zepluf\Bundle\StoreBundle\Entity\ProductCategory
+     * @return \Zepluf\Bundle\StoreBundle\Entity\ProductCategory 
      */
     public function getParent()
     {
         return $this->parent;
-    }
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->children = new \Doctrine\Common\Collections\ArrayCollection();
-    }
-
-    /**
-     * Add children
-     *
-     * @param \Zepluf\Bundle\StoreBundle\Entity\productCategory $children
-     * @return ProductCategory
-     */
-    public function addChildren(\Zepluf\Bundle\StoreBundle\Entity\productCategory $children)
-    {
-        $this->children[] = $children;
-
-        return $this;
-    }
-
-    /**
-     * Remove children
-     *
-     * @param \Zepluf\Bundle\StoreBundle\Entity\productCategory $children
-     */
-    public function removeChildren(\Zepluf\Bundle\StoreBundle\Entity\productCategory $children)
-    {
-        $this->children->removeElement($children);
     }
 }

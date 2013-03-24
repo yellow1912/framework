@@ -14,15 +14,29 @@ class ProductCollection
 {
     protected $productCollection = array();
 
-    public function get($key = null)
+    /**
+     * Get the specific product
+     *
+     * @param string $key
+     * @return mixed
+     */
+    public function get($key)
     {
-        if (empty($key)) {
-            return $this->productCollection;
-        } elseif (isset($this->productCollection[$key])) {
+        if (isset($this->productCollection[$key])) {
             return $this->productCollection[$key];
         } else {
             return false;
         }
+    }
+
+    /**
+     * Get all product collection
+     *
+     * @return array
+     */
+    public function getAll()
+    {
+        return $this->productCollection;
     }
 
     /**

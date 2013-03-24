@@ -10,10 +10,15 @@
 
 namespace Zepluf\Bundle\StoreBundle\Component\Price;
 
+
+use Zepluf\Bundle\StoreBundle\Component\Price\Handler\PriceHandlerInterface;
+use Zepluf\Bundle\StoreBundle\Entity\Product as ProductEntity;
+use Zepluf\Bundle\StoreBundle\Entity\ProductFeatureApplication as ProductFeatureApplicationEntity;
+
 /**
  * This class is responsible for calculating price for anything that uses priceComponent
  */
-class Price
+class Pricing
 {
     /**
      * an array of handlers
@@ -29,7 +34,7 @@ class Price
      * @param array $featureApplicationIds
      * @return float
      */
-    public function getProductPrice(\Zepluf\Bundle\StoreBundle\Entity\Product $product, $featureApplicationIds = array())
+    public function getProductPrice(ProductEntity $product, $featureApplicationIds = array())
     {
         $productPrice = new Price();
         // loop through the base price component
@@ -55,7 +60,7 @@ class Price
      * @param \Zepluf\Bundle\StoreBundle\Entity\ProductFeatureApplication $productFeatureApplication
      * @return float
      */
-    public function getProductFeatureApplicationPrice(\Zepluf\Bundle\StoreBundle\Entity\ProductFeatureApplication $productFeatureApplication)
+    public function getProductFeatureApplicationPrice(ProductFeatureApplicationEntity $productFeatureApplication)
     {
         return $this->getPrice(new Price(), $productFeatureApplication->getPriceComponent(), $productFeatureApplication);
     }
@@ -76,7 +81,7 @@ class Price
      *
      * @param \Zepluf\Bundle\StoreBundle\Component\Price\PriceHandlerInterface $handler
      */
-    public function addHandler(\Zepluf\Bundle\StoreBundle\Component\Price\PriceHandlerInterface $handler)
+    public function addHandler(PriceHandlerInterface $handler)
     {
         $this->handlers[$handler->getCode()] = $handler;
     }

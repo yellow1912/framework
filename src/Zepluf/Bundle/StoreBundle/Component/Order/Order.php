@@ -52,11 +52,16 @@ class Order
         $this->order = $order;
     }
 
+    public function getOrder()
+    {
+        return $this->order;
+    }
+
     /**
      * @param ProductCollection $productCollection
      * @param $type
      */
-    public function create(ProductCollection $productCollection, $type = \OrderType::ORDER_TYPE)
+    public function create(ProductCollection $productCollection, $type = OrderType::ORDER_TYPE)
     {
         $this->order = new OrderEntity();
 
@@ -64,10 +69,10 @@ class Order
         $this->order->setType($type);
 
         // set the order timestamp
-        $this->order->setOrderDate(new \DateTime());
+        $this->order->setOrderDate(new \DateTime("now"));
 
         // set the entry timestamp
-        $this->order->setEntryDate(new \DateTime());
+        $this->order->setEntryDate(new \DateTime("now"));
 
         // insert new order item
         $this->addOrderItems($productCollection);
@@ -80,7 +85,6 @@ class Order
 
         // add order role
 
-
     }
 
     /**
@@ -90,14 +94,19 @@ class Order
      */
     public function addOrderItems(ProductCollection $productCollection)
     {
-        if (false !== ($products = $productCollection->get())) {
+        // TODO: we can use 1 single query to get the info we want to optimize performance
+        if (false !== ($products = $productCollection->getAll())) {
             foreach ($products as $key => $product) {
                 $orderItem = new OrderItem();
 
-                $productEntity = $this->entityManager->find('Product', $product['id']);
+                $productEntity = $this->entityManager->find('StoreBundle:Product', $product['productId']);
 
                 // set price
-                $orderItem->setUnitPrice($this->pricing->getProductPrice($productEntity, $product['features']));
+                $orderItem->setUnitPrice($this->pricing->getProductPrice($productEntity, $product['features'])->getTotal());
+
+                $orderItem->setType($productEntity->getType());
+
+                $orderItem->setProduct($productEntity);
 
                 // set quantity
                 $orderItem->setQuantity($product['quantity']);
@@ -109,6 +118,8 @@ class Order
                 $orderItem->setOrder($this->order);
             }
         }
+
+        $this->order->addOrderItem($orderItem);
     }
 
     public function addInvoice()
