@@ -73,12 +73,19 @@ class Payment
      */
     private $paymentMethodType;
 
+    /**
+     * @var PaymentApplication|array
+     *
+     * @ORM\OneToMany(targetEntity="PaymentApplication", mappedBy="payment")
+     */
+    private $paymentApplications;
+
 
 
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -94,14 +101,14 @@ class Payment
     public function setSequenceId($sequenceId)
     {
         $this->sequenceId = $sequenceId;
-    
+
         return $this;
     }
 
     /**
      * Get sequenceId
      *
-     * @return string 
+     * @return string
      */
     public function getSequenceId()
     {
@@ -117,14 +124,14 @@ class Payment
     public function setEffectiveDate($effectiveDate)
     {
         $this->effectiveDate = $effectiveDate;
-    
+
         return $this;
     }
 
     /**
      * Get effectiveDate
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getEffectiveDate()
     {
@@ -140,14 +147,14 @@ class Payment
     public function setReferenceNumber($referenceNumber)
     {
         $this->referenceNumber = $referenceNumber;
-    
+
         return $this;
     }
 
     /**
      * Get referenceNumber
      *
-     * @return string 
+     * @return string
      */
     public function getReferenceNumber()
     {
@@ -163,14 +170,14 @@ class Payment
     public function setAmount($amount)
     {
         $this->amount = $amount;
-    
+
         return $this;
     }
 
     /**
      * Get amount
      *
-     * @return float 
+     * @return float
      */
     public function getAmount()
     {
@@ -186,14 +193,14 @@ class Payment
     public function setComment($comment)
     {
         $this->comment = $comment;
-    
+
         return $this;
     }
 
     /**
      * Get comment
      *
-     * @return string 
+     * @return string
      */
     public function getComment()
     {
@@ -209,14 +216,14 @@ class Payment
     public function setType($type)
     {
         $this->type = $type;
-    
+
         return $this;
     }
 
     /**
      * Get type
      *
-     * @return boolean 
+     * @return boolean
      */
     public function getType()
     {
@@ -232,17 +239,57 @@ class Payment
     public function setPaymentMethodType(\Zepluf\Bundle\StoreBundle\Entity\PaymentMethodType $paymentMethodType = null)
     {
         $this->paymentMethodType = $paymentMethodType;
-    
+
         return $this;
     }
 
     /**
      * Get paymentMethodType
      *
-     * @return \Zepluf\Bundle\StoreBundle\Entity\PaymentMethodType 
+     * @return \Zepluf\Bundle\StoreBundle\Entity\PaymentMethodType
      */
     public function getPaymentMethodType()
     {
         return $this->paymentMethodType;
+    }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->paymentApplications = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+    
+    /**
+     * Add paymentApplications
+     *
+     * @param \Zepluf\Bundle\StoreBundle\Entity\PaymentApplication $paymentApplications
+     * @return Payment
+     */
+    public function addPaymentApplication(\Zepluf\Bundle\StoreBundle\Entity\PaymentApplication $paymentApplications)
+    {
+        $this->paymentApplications[] = $paymentApplications;
+    
+        return $this;
+    }
+
+    /**
+     * Remove paymentApplications
+     *
+     * @param \Zepluf\Bundle\StoreBundle\Entity\PaymentApplication $paymentApplications
+     */
+    public function removePaymentApplication(\Zepluf\Bundle\StoreBundle\Entity\PaymentApplication $paymentApplications)
+    {
+        $this->paymentApplications->removeElement($paymentApplications);
+    }
+
+    /**
+     * Get paymentApplications
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getPaymentApplications()
+    {
+        return $this->paymentApplications;
     }
 }

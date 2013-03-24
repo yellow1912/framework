@@ -10,22 +10,37 @@
 
 namespace Zepluf\Bundle\StoreBundle\Tests\Stories;
 
-class SimpleCheckoutTest extends \PHPUnit_Framework_TestCase
-{
+use Zepluf\Bundle\StoreBundle\Component\Invoice\Invoice;
 
-    protected $cart;
+class SimplePaymentTest extends \Zepluf\Bundle\StoreBundle\Tests\BaseTestCase
+{
+    protected $invoice;
+
+    protected $orderItemCollection;
 
     public function setUp()
     {
-        // $this->cart = new \Zepluf\Bundle\StoreBundle\Component\Cart\Cart();
+        $this->invoice = new Invoice($this->_container->get('doctrine')->getEntityManager(), $this->_container->get('event_dispatcher'));
+
+        $this->orderItemCollection = $this->getMock('Doctrine\Common\Collections\ArrayCollection');
     }
 
     public function testProductCollection()
     {
     }
 
-    public function testSimpleCheckout()
+    public function testSimplePayment()
     {
+        if (method_exists($this->orderItemCollection, 'isEmpty')) {
+            echo 'true';
+        } else {
+            echo 'false';
+        }
+        exit();
+        $this->assertTrue(false, $this->invoice->create($this->orderItemCollection));
+
+        // echo 'jkMedia';
+
         // add product to cart
         // $productCollection = $this->getProductCollection();
         // $productCollection->expects($this->once())->method('add');
@@ -71,10 +86,5 @@ class SimpleCheckoutTest extends \PHPUnit_Framework_TestCase
     public function tearDown()
     {
         // unset($this->cart);
-    }
-
-    protected function getProductCollection()
-    {
-        // return $this->getMock('Zepluf\Bundle\StoreBundle\Component\Product\ProductCollection');
     }
 }

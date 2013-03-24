@@ -13,6 +13,15 @@
 
 namespace Zepluf\Bundle\StoreBundle\Component\Payment\Method;
 
+use \Doctrine\ORM\EntityManager;
+use \Doctrine\Common\Collections\Collection;
+
+use Zepluf\Bundle\StoreBundle\Events\PaymentEvents;
+
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+
+use Zepluf\Bundle\StoreBundle\Entity\Payment as PaymentEntity;
+
 /**
 *
 */
@@ -23,26 +32,59 @@ class PaypalStandard extends PaymentMethodAbstract implements PaymentMethodInter
      */
     protected $settings;
 
-    function __construct()
+    protected $templating;
+
+    protected $entityManager;
+
+    protected $eventDispatcher;
+
+    function __construct($templating, EntityManager $entityManager, EventDispatcherInterface $eventDispatcher)
     {
-        parent::__construct();
+        $this->templating = $templating;
+
+        $this->entityManager = $entityManager;
+
+        $this->eventDispatcher = $eventDispatcher;
+
+        /**
+         * @todo get current payment method settings from it's storage handler
+         */
+        $this->settings = array(
+            'code' => 'paypal_standard',
+            'sandbox_mode' => 0,
+            'email' => 'seller.1314@yahoo.com',
+            'status' => 1,
+            'sort_order' => 20,
+            'order_status' => array(
+                'Canceled_Reversal' => 1,
+                'Completed'         => 1,
+                'Denied'            => 1,
+                'Expired'           => 1,
+                'Failed'            => 1,
+                'Pending'           => 1,
+                'Processed'         => 1,
+                'Refunded'          => 1,
+                'Reversed'          => 1,
+                'Voided'            => 1
+            )
+        );
     }
 
     /**
-     * get current settings from this payment method
+     * get settings from this payment method
      *
-     * @return array
+     * @param   string|null  $key  setting key | null
+     * @return  mixed              setting values | false
      */
-    public function getSettings()
+    public function getSettings($key = null)
     {
-        /**
-         * @todo get current payment method settings from this storage handler
-         */
-        return array(
-            'code' => 'paypal_standard',
-            'status' => 1,
-            'sort_order' => 10
-        );
+        if (null === $key) {
+            return $this->settings;
+        } else if (isset($this->settings[$key])) {
+            return $this->settings[$key];
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -87,9 +129,42 @@ class PaypalStandard extends PaymentMethodAbstract implements PaymentMethodInter
      *
      * @return [type] [description]
      */
-    public function renderForm()
+    public function renderForm(Collection $invoiceItems)
     {
-        return null;
+        if ($invoiceItems->isEmpty()) {
+            // TODO: redirect to home page
+            throw new Exception('No items available..', 1);
+        }
+
+        $data['sandbox_mode'] = $this->settings['sandbox_mode'];
+        $data['sandbox_notify'] = 'Sandbox notify';
+
+        if ($data['sandbox_mode']) {
+            $data['action'] = 'https://www.sandbox.paypal.com/cgi-bin/webscr';
+        } else {
+            $data['action'] = 'https://www.paypal.com/cgi-bin/webscr';
+        }
+
+        $data['business'] = $this->settings['email'];
+
+        $data['products'] = array();
+        while (false !== ($invoiceItem = $invoiceItems->next())) {
+            $featuresId = $invoiceItem->getInventoryItem()->getFeatureValueIds();
+            $features = $this->entityManager->createQueryBuilder()
+               ->select(array('pf.name', 'pfv.value'))
+               ->from('Zepluf\Bundle\StoreBundle\Entity\ProductFeatureValue', 'pfv')
+               ->leftJoin('Zepluf\Bundle\StoreBundle\Entity\ProductFeature', 'pf', 'WITH', 'pfv.product_feature_id = pf.id')
+               ->where('pfv.id IN (' . $featuresId . ')');
+
+            $data['products'][] = array(
+                'name'       => $invoiceItem->getItemDescription(),
+                'price'      => $invoiceItem->getAmount(),
+                'quantity'   => $invoiceItem->getQuantity(),
+                'features'   => $features
+            );
+        }
+
+        return $this->templating->render('StoreBundle:fontend/component/payment/paypal_standard.html.php', $data);
     }
 
     /**
@@ -112,8 +187,68 @@ class PaypalStandard extends PaymentMethodAbstract implements PaymentMethodInter
         return true;
     }
 
-    public function process()
+    /**
+     * [callback description]
+     * @param  [type]   $data [description]
+     * @return function       [description]
+     */
+    public function callback($data)
     {
+        $this->eventDispatcher->dispatch(PaymentEvents::onPaypalStandardCallbackStart, $orderStatusId);
 
+        if (true === isset($data['custom']) && true === ($paymentEntity = $this->entityManager->find('Zepluf\Bundle\StoreBundle\Entity\Payment', $data['custom']))) {
+            $request['cmd'] = '_notify-validate';
+
+            foreach ($data as $key => $value) {
+                $request[$key] = $value;
+            }
+
+            if ($data['sandbox_mode']) {
+                $curl = curl_init('https://www.sandbox.paypal.com/cgi-bin/webscr');
+            } else {
+                $curl = curl_init('https://www.paypal.com/cgi-bin/webscr');
+            }
+
+            curl_setopt($curl, CURLOPT_POST, true);
+            curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($request));
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($curl, CURLOPT_HEADER, false);
+            curl_setopt($curl, CURLOPT_TIMEOUT, 30);
+            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+
+            try {
+                $response = curl_exec($curl);
+            } catch (\Exception $e) {
+                throw $e;
+            }
+
+            curl_close($curl);
+
+
+            if ((0 === strcmp($response, 'VERIFIED') || 0 === strcmp($response, 'UNVERIFIED')) && true === isset($this->request->post['payment_status'])) {
+                if (true === in_array($data['payment_status'], array_keys($this->settings['order_status']))) {
+                    $orderStatusId = $this->settings['order_status'][$data['payment_status']];
+                } else {
+                    $orderStatusId = 1;
+                }
+
+                // if payment status is completed, recheck receiver email and amount
+                // to make sure everything completely matched
+                if (strtolower(trim($data['receiver_email'])) !== strtolower(trim($this->settings['email'])) || (float)$data['mc_gross'] !== $paymentEntity->getAmount()) {
+                    throw new Exception('Paypal Standard :: Receiver email mismatch!');
+                }
+
+                // if (!$order_info['order_status_id']) {
+                //     $this->model_checkout_order->confirm($order_id, $orderStatusId);
+                // } else {
+                //     $this->model_checkout_order->update($order_id, $orderStatusId);
+                // }
+            } else {
+                // $this->model_checkout_order->confirm($order_id, $this->config->get('config_order_status_id'));
+            }
+
+            // TODO: dispatch end "Paypal Standard Callback" event
+            $this->eventDispatcher->dispatch(PaymentEvents::onPaypalStandardCallbackEnd, $orderStatusId);
+        }
     }
 }

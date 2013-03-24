@@ -145,12 +145,12 @@ class Product
         $this->productFeatureApplication = new \Doctrine\Common\Collections\ArrayCollection();
         $this->productCategory = new \Doctrine\Common\Collections\ArrayCollection();
     }
-    
+
 
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -166,14 +166,14 @@ class Product
     public function setType($type)
     {
         $this->type = $type;
-    
+
         return $this;
     }
 
     /**
      * Get type
      *
-     * @return boolean 
+     * @return boolean
      */
     public function getType()
     {
@@ -189,14 +189,14 @@ class Product
     public function setName($name)
     {
         $this->name = $name;
-    
+
         return $this;
     }
 
     /**
      * Get name
      *
-     * @return string 
+     * @return string
      */
     public function getName()
     {
@@ -212,14 +212,14 @@ class Product
     public function setDescription($description)
     {
         $this->description = $description;
-    
+
         return $this;
     }
 
     /**
      * Get description
      *
-     * @return string 
+     * @return string
      */
     public function getDescription()
     {
@@ -235,14 +235,14 @@ class Product
     public function setIntroductionDate($introductionDate)
     {
         $this->introductionDate = $introductionDate;
-    
+
         return $this;
     }
 
     /**
      * Get introductionDate
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getIntroductionDate()
     {
@@ -258,14 +258,14 @@ class Product
     public function setSalesDiscontinuationDate($salesDiscontinuationDate)
     {
         $this->salesDiscontinuationDate = $salesDiscontinuationDate;
-    
+
         return $this;
     }
 
     /**
      * Get salesDiscontinuationDate
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getSalesDiscontinuationDate()
     {
@@ -281,14 +281,14 @@ class Product
     public function setAvailableDate($availableDate)
     {
         $this->availableDate = $availableDate;
-    
+
         return $this;
     }
 
     /**
      * Get availableDate
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getAvailableDate()
     {
@@ -304,7 +304,7 @@ class Product
     public function addPriceComponent(\Zepluf\Bundle\StoreBundle\Entity\PriceComponent $priceComponent)
     {
         $this->priceComponent[] = $priceComponent;
-    
+
         return $this;
     }
 
@@ -321,7 +321,7 @@ class Product
     /**
      * Get priceComponent
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getPriceComponent()
     {
@@ -337,7 +337,7 @@ class Product
     public function addTermType(\Zepluf\Bundle\StoreBundle\Entity\TermType $termType)
     {
         $this->termType[] = $termType;
-    
+
         return $this;
     }
 
@@ -354,7 +354,7 @@ class Product
     /**
      * Get termType
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getTermType()
     {
@@ -370,14 +370,14 @@ class Product
     public function setManufacturer(\Zepluf\Bundle\StoreBundle\Entity\Organization $manufacturer = null)
     {
         $this->manufacturer = $manufacturer;
-    
+
         return $this;
     }
 
     /**
      * Get manufacturer
      *
-     * @return \Zepluf\Bundle\StoreBundle\Entity\Organization 
+     * @return \Zepluf\Bundle\StoreBundle\Entity\Organization
      */
     public function getManufacturer()
     {
@@ -393,14 +393,14 @@ class Product
     public function setUnitOfMeasurement(\Zepluf\Bundle\StoreBundle\Entity\UnitOfMeasurement $unitOfMeasurement = null)
     {
         $this->unitOfMeasurement = $unitOfMeasurement;
-    
+
         return $this;
     }
 
     /**
      * Get unitOfMeasurement
      *
-     * @return \Zepluf\Bundle\StoreBundle\Entity\UnitOfMeasurement 
+     * @return \Zepluf\Bundle\StoreBundle\Entity\UnitOfMeasurement
      */
     public function getUnitOfMeasurement()
     {
@@ -425,5 +425,51 @@ class Product
     public function getProductCategory()
     {
         return $this->productCategory;
+    }
+
+    /**
+     * Add productFeatureApplication
+     *
+     * @param \Zepluf\Bundle\StoreBundle\Entity\ProductFeatureApplication $productFeatureApplication
+     * @return Product
+     */
+    public function addProductFeatureApplication(\Zepluf\Bundle\StoreBundle\Entity\ProductFeatureApplication $productFeatureApplication)
+    {
+        $this->productFeatureApplication[] = $productFeatureApplication;
+
+        return $this;
+    }
+
+    /**
+     * Remove productFeatureApplication
+     *
+     * @param \Zepluf\Bundle\StoreBundle\Entity\ProductFeatureApplication $productFeatureApplication
+     */
+    public function removeProductFeatureApplication(\Zepluf\Bundle\StoreBundle\Entity\ProductFeatureApplication $productFeatureApplication)
+    {
+        $this->productFeatureApplication->removeElement($productFeatureApplication);
+    }
+
+    /**
+     * Add productCategory
+     *
+     * @param \Zepluf\Bundle\StoreBundle\Entity\ProductCategory $productCategory
+     * @return Product
+     */
+    public function addProductCategory(\Zepluf\Bundle\StoreBundle\Entity\ProductCategory $productCategory)
+    {
+        $this->productCategory[] = $productCategory;
+
+        return $this;
+    }
+
+    /**
+     * Remove productCategory
+     *
+     * @param \Zepluf\Bundle\StoreBundle\Entity\ProductCategory $productCategory
+     */
+    public function removeProductCategory(\Zepluf\Bundle\StoreBundle\Entity\ProductCategory $productCategory)
+    {
+        $this->productCategory->removeElement($productCategory);
     }
 }

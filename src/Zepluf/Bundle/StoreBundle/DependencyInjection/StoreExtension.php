@@ -81,6 +81,7 @@ class StoreExtension extends Extension
         // register payment configurations
         $this->registerPaymentConfiguration(array(), $container, $loader);
 
+
         // register shipment configurations
         $this->registerShipmentConfiguration(array(), $container, $loader);
     }

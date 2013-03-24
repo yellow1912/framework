@@ -9,7 +9,6 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="shipment")
  * @ORM\Entity
- * @ORM\HasLifecycleCallbacks()
  */
 class Shipment
 {
@@ -83,7 +82,7 @@ class Shipment
      *
      * @ORM\ManyToOne(targetEntity="ShipmentType")
      * @ORM\JoinColumns({
-     * @ORM\JoinColumn(name="shipment_type_id", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="shipment_type_id", referencedColumnName="id")
      * })
      */
     private $shipmentType;
@@ -93,7 +92,7 @@ class Shipment
      *
      * @ORM\ManyToOne(targetEntity="Party")
      * @ORM\JoinColumns({
-     * @ORM\JoinColumn(name="shipped_from_party_id", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="shipped_from_party_id", referencedColumnName="id")
      * })
      */
     private $shippedFromParty;
@@ -103,7 +102,7 @@ class Shipment
      *
      * @ORM\ManyToOne(targetEntity="Party")
      * @ORM\JoinColumns({
-     * @ORM\JoinColumn(name="shipped_to_party_id", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="shipped_to_party_id", referencedColumnName="id")
      * })
      */
     private $shippedToParty;
@@ -113,7 +112,7 @@ class Shipment
      *
      * @ORM\ManyToOne(targetEntity="ContactMechanism")
      * @ORM\JoinColumns({
-     * @ORM\JoinColumn(name="shipped_from_contact_mechanism_id", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="shipped_from_contact_mechanism_id", referencedColumnName="id")
      * })
      */
     private $shippedFromContactMechanism;
@@ -123,10 +122,19 @@ class Shipment
      *
      * @ORM\ManyToOne(targetEntity="ContactMechanism")
      * @ORM\JoinColumns({
-     * @ORM\JoinColumn(name="shipped_to_contact_mechanism_id", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="shipped_to_contact_mechanism_id", referencedColumnName="id")
      * })
      */
     private $shippedToContactMechanism;
+
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->shipmentItems = new \Doctrine\Common\Collections\ArrayCollection();
+    }
 
     /**
      * Get id

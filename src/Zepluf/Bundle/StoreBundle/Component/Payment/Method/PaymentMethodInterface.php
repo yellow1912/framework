@@ -13,6 +13,8 @@
 
 namespace Zepluf\Bundle\StoreBundle\Component\Payment\Method;
 
+use \Doctrine\Common\Collections\Collection;
+
 interface PaymentMethodInterface
 {
     public function isAvailable();
@@ -21,11 +23,11 @@ interface PaymentMethodInterface
 
     public function renderSelection();
 
-    public function renderForm();
+    public function renderForm(Collection $invoiceItems);
 
     public function renderSubmit();
 
     public function validation();
 
-    public function process();
+    public function process($data, $amount, Collection $invoiceItems);
 }

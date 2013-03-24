@@ -99,6 +99,7 @@ class Shipment
                 ->setDescription($item['description'])
                 ->setProduct($this->entityManager->getReference('StoreBundle:Product', (int)$item['productId']))
                 ->setShipment($shipment);
+
             $this->entityManager->persist($shipmentItem);
 
             /**
