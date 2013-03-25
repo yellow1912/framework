@@ -20,6 +20,7 @@ class Order
 {
     protected $entityManager;
 
+
     /**
      * @var \Zepluf\Bundle\StoreBundle\Entity\Order
      */
@@ -52,34 +53,43 @@ class Order
         $this->order = $order;
     }
 
+    public function getOrder()
+    {
+        return $this->order;
+    }
+
     /**
      * @param ProductCollection $productCollection
      * @param $type
      */
-    public function create(ProductCollection $productCollection, $type = \OrderType::ORDER_TYPE)
+    public function create(ProductCollection $productCollection, $type = OrderType::ORDER_TYPE)
     {
-        $this->order = new OrderEntity();
+        $this->entityManager->getConnection()->beginTransaction(); // suspend auto-commit
+        try {
+            $this->order = new OrderEntity();
 
-        // sets the order type
-        $this->order->setType($type);
+            // sets the order type
+            $this->order->setType($type);
 
-        // set the order timestamp
-        $this->order->setOrderDate(new \DateTime());
+            // set the order timestamp
+            $this->order->setOrderDate(new \DateTime("now"));
 
-        // set the entry timestamp
-        $this->order->setEntryDate(new \DateTime());
+            // set the entry timestamp
+            $this->order->setEntryDate(new \DateTime("now"));
 
-        // insert new order item
-        $this->addOrderItems($productCollection);
+            // insert new order item
+            $this->addOrderItems($productCollection);
 
-        // persists the order
-        $this->entityManager->persist($this->order);
-        $this->entityManager->flush();
-
-        // add order contact mechanism
-
-        // add order role
-
+            // persists the order
+            $this->entityManager->persist($this->order);
+            $this->entityManager->flush();
+            $this->entityManager->getConnection()->commit();
+        }
+        catch (Exception $e) {
+            $this->entityManager->getConnection()->rollback();
+            $this->entityManager->close();
+            throw $e;
+        }
 
     }
 
@@ -90,14 +100,19 @@ class Order
      */
     public function addOrderItems(ProductCollection $productCollection)
     {
-        if (false !== ($products = $productCollection->get())) {
+        // TODO: we can use 1 single query to get the info we want to optimize performance
+        if (false !== ($products = $productCollection->getAll())) {
             foreach ($products as $key => $product) {
                 $orderItem = new OrderItem();
 
-                $productEntity = $this->entityManager->find('Product', $product['id']);
+                $productEntity = $this->entityManager->find('StoreBundle:Product', $product['productId']);
 
                 // set price
-                $orderItem->setUnitPrice($this->pricing->getProductPrice($productEntity, $product['features']));
+                $orderItem->setUnitPrice($this->pricing->getProductPrice($productEntity, $product['features'])->getTotal());
+
+                $orderItem->setType($productEntity->getType());
+
+                $orderItem->setProduct($productEntity);
 
                 // set quantity
                 $orderItem->setQuantity($product['quantity']);
@@ -109,6 +124,8 @@ class Order
                 $orderItem->setOrder($this->order);
             }
         }
+
+        $this->order->addOrderItem($orderItem);
     }
 
     public function addInvoice()

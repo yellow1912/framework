@@ -19,7 +19,6 @@ use Symfony\Bundle\FrameworkBundle\DependencyInjection\Compiler\TemplatingPass;
 use Symfony\Component\Yaml\Yaml;
 use Zepluf\Bundle\StoreBundle\DependencyInjection\Compiler\PaymentPass;
 use Zepluf\Bundle\StoreBundle\DependencyInjection\Compiler\ZeplufPass;
-use Zepluf\Bundle\StoreBundle\DependencyInjection\Compiler\StorePass;
 use Zepluf\Bundle\StoreBundle\DependencyInjection\Compiler\ShipmentPass;
 
 /**
