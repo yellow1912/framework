@@ -224,7 +224,6 @@ class PaypalStandard extends PaymentMethodAbstract implements PaymentMethodInter
 
             curl_close($curl);
 
-
             if ((0 === strcmp($response, 'VERIFIED') || 0 === strcmp($response, 'UNVERIFIED')) && true === isset($this->request->post['payment_status'])) {
                 if (true === in_array($data['payment_status'], array_keys($this->settings['order_status']))) {
                     $orderStatusId = $this->settings['order_status'][$data['payment_status']];

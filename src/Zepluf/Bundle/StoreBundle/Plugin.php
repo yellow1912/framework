@@ -496,7 +496,7 @@ class Plugin
             $this->sysSettings = $collectionUtility->arrayMergeWithReplace($this->sysSettings, $settings);
         }
         $this->settings->saveLocal($this->appDir . '/config/sys_' . $this->environment->getEnvironment() . '.yml', $this->sysSettings);
-        
+
         // remove the container cache
         $utilityFile->sureRemoveDir($this->appDir . '/cache/' . $this->environment->getEnvironment());
     }

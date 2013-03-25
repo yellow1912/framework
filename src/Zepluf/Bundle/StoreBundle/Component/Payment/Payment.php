@@ -30,7 +30,7 @@ class Payment
 {
     protected $entityManager;
 
-    protected $dispatcher;
+    protected $eventDispatcher;
 
     /**
      * payment entity
@@ -42,11 +42,11 @@ class Payment
      * constructor
      * @param EntityManager $entityManager
      */
-    public function __construct(EntityManager $entityManager, EventDispatcherInterface $dispatcher)
+    public function __construct(EntityManager $entityManager, EventDispatcherInterface $eventDispatcher)
     {
         $this->entityManager = $entityManager;
 
-        $this->dispatcher = $dispatcher;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
