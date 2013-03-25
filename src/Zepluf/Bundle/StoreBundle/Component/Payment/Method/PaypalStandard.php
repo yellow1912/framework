@@ -149,12 +149,12 @@ class PaypalStandard extends PaymentMethodAbstract implements PaymentMethodInter
 
         $data['products'] = array();
         while (false !== ($invoiceItem = $invoiceItems->next())) {
-            $featuresId = $invoiceItem->getInventoryItem()->getFeatureValueIds();
+            $featuresValueIds = $invoiceItem->getInventoryItem()->getFeatureValueIds();
             $features = $this->entityManager->createQueryBuilder()
                ->select(array('pf.name', 'pfv.value'))
                ->from('Zepluf\Bundle\StoreBundle\Entity\ProductFeatureValue', 'pfv')
                ->leftJoin('Zepluf\Bundle\StoreBundle\Entity\ProductFeature', 'pf', 'WITH', 'pfv.product_feature_id = pf.id')
-               ->where('pfv.id IN (' . $featuresId . ')');
+               ->where('pfv.id IN (' . $featuresValueIds . ')');
 
             $data['products'][] = array(
                 'name'       => $invoiceItem->getItemDescription(),

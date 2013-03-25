@@ -59,7 +59,7 @@ class InvoiceItem
     /**
      * @var \Invoice
      *
-     * @ORM\ManyToOne(targetEntity="Invoice", inversedBy="invoiceItems")
+     * @ORM\ManyToOne(targetEntity="Invoice", inversedBy="invoiceItems", cascade={"persist"})
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="invoice_id", referencedColumnName="id")
      * })
@@ -69,7 +69,7 @@ class InvoiceItem
     /**
      * @var \AdjustmentType
      *
-     * @ORM\ManyToOne(targetEntity="AdjustmentType")
+     * @ORM\ManyToOne(targetEntity="AdjustmentType", cascade={"persist"})
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="adjustment_type_id", referencedColumnName="id")
      * })
@@ -79,7 +79,7 @@ class InvoiceItem
     /**
      * @var \InvoiceItemType
      *
-     * @ORM\ManyToOne(targetEntity="InvoiceItemType")
+     * @ORM\ManyToOne(targetEntity="InvoiceItemType", cascade={"persist"})
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="invoice_item_type_id", referencedColumnName="id")
      * })
@@ -89,7 +89,7 @@ class InvoiceItem
     /**
      * @var \InventoryItem
      *
-     * @ORM\ManyToOne(targetEntity="InventoryItem")
+     * @ORM\ManyToOne(targetEntity="InventoryItem", cascade={"persist"})
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="inventory_item_id", referencedColumnName="id")
      * })

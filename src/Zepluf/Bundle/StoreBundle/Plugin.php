@@ -13,7 +13,7 @@
 
 namespace Zepluf\Bundle\StoreBundle;
 
-use Zepluf\Bundle\StoreBundle\PluginEvents;
+use Zepluf\Bundle\StoreBundle\Events\PluginEvents;
 use Zepluf\Bundle\StoreBundle\Event\PluginEvent;
 use Symfony\Component\Yaml\Yaml;
 

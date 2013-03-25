@@ -14,7 +14,7 @@
 namespace Zepluf\Bundle\StoreBundle\Tests\Templating;
 
 use Zepluf\Bundle\StoreBundle\Tests\BaseTestCase;
-use Zepluf\Bundle\StoreBundle\HoldersHelperEvents;
+use Zepluf\Bundle\StoreBundle\Events\HoldersHelperEvents;
 use Zepluf\Bundle\StoreBundle\Event\HoldersHelperEvent;
 
 class HoldersHelperTest extends BaseTestCase

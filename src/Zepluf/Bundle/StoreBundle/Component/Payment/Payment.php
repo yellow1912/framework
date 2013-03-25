@@ -22,7 +22,6 @@ use Zepluf\Bundle\StoreBundle\Entity\Payment as PaymentEntity;
 use Zepluf\Bundle\StoreBundle\Entity\PaymentMethodType as PaymentMethodTypeEntity;
 use Zepluf\Bundle\StoreBundle\Entity\PaymentApplication as PaymentApplicationEntity;
 use Zepluf\Bundle\StoreBundle\Entity\Invoice as InvoiceEntity;
-use Zepluf\Bundle\StoreBundle\Entity\InvoiceItem as InvoiceItemEntity;
 
 /**
 *
@@ -51,7 +50,7 @@ class Payment
     }
 
     /**
-     * @param array $data ('payment_method' => array(), 'invoice_items' => array(). ...)
+     * @param array $data ('payment_method' => array(), 'invoiceItems' => array(). ...)
      * @throws \Exception
      */
     public function create($data = array())
@@ -85,7 +84,7 @@ class Payment
                 ->setAmountApplied($item['amountApplied'])
                 ->setSequenceId($item['sequenceId'])
                 ->setPayment($this->payment)
-                ->setInvoiceItem($this->entityManager->getReference('StoreBundle:InvoiceItem'), (int)$item['invoiceItemId']);
+                ->setInvoice($this->entityManager->getReference('StoreBundle:Invoice'), (int)$item['invoiceItemId']);
 
             $this->payment->addPaymentApplication($paymentApplication);
 
