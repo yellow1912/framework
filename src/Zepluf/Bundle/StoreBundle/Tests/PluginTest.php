@@ -17,7 +17,7 @@ namespace Zepluf\Bundle\StoreBundle\Tests;
 use \Zepluf\Bundle\StoreBundle\Plugin;
 use Symfony\Component\Yaml\Yaml;
 use \Zepluf\Bundle\StoreBundle\Settings;
-use Zepluf\Bundle\StoreBundle\PluginEvents;
+use Zepluf\Bundle\StoreBundle\Events\PluginEvents;
 use Zepluf\Bundle\StoreBundle\Event\PluginEvent;
 use Symfony\Component\ClassLoader\UniversalClassLoader;
 

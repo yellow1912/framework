@@ -14,7 +14,7 @@
 namespace Zepluf\Bundle\StoreBundle\Templating\Helper;
 
 use Symfony\Component\Templating\Helper\Helper;
-use Zepluf\Bundle\StoreBundle\HoldersHelperEvents;
+use Zepluf\Bundle\StoreBundle\Events\HoldersHelperEvents;
 use Zepluf\Bundle\StoreBundle\Event\HoldersHelperEvent;
 
 /**

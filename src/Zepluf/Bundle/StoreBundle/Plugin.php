@@ -13,7 +13,7 @@
 
 namespace Zepluf\Bundle\StoreBundle;
 
-use Zepluf\Bundle\StoreBundle\PluginEvents;
+use Zepluf\Bundle\StoreBundle\Events\PluginEvents;
 use Zepluf\Bundle\StoreBundle\Event\PluginEvent;
 use Symfony\Component\Yaml\Yaml;
 
@@ -496,7 +496,7 @@ class Plugin
             $this->sysSettings = $collectionUtility->arrayMergeWithReplace($this->sysSettings, $settings);
         }
         $this->settings->saveLocal($this->appDir . '/config/sys_' . $this->environment->getEnvironment() . '.yml', $this->sysSettings);
-        
+
         // remove the container cache
         $utilityFile->sureRemoveDir($this->appDir . '/cache/' . $this->environment->getEnvironment());
     }

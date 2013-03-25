@@ -43,14 +43,12 @@ class Invoice
 
         $this->dispatcher = $dispatcher;
 
+        // cleanup database;
+        // $fixtures = new Fixtures($doctrine);
         // $this->templating = $templating;
 
-        // $fixtures = new Fixtures($doctrine);
-
         // $paypalStandard = new PaypalStandard();
-
         // $paypalStandard->renderForm(null, array());
-
         // $this->create();
     }
 
@@ -93,15 +91,15 @@ class Invoice
             $invoiceItem = new InvoiceItemEntity();
 
             $invoiceItem
-                ->setItemDescription($item['itemDescription'])
-                ->setType($item['type'])
-                ->setQuantity($item['quantity'])
-                ->setAmount($item['amount'])
-                ->setIsTaxable($item['isTaxable'])
+                ->setItemDescription($item->getItemDescription())
+                ->setType($item->getType())
+                ->setQuantity($item->getQuantity())
+                ->setAmount(0)      // TODO: Set amount applied for this item.
+                ->setIsTaxable(0)   // TODO: Set taxable for this item.
                 ->setInvoice($this->invoice)
-                ->setInventoryItem($this->entityManager->getReference('StoreBundle:InventoryItem', (int)$item['inventoryItemId']))
-                ->setAdjustmentType($this->entityManager->getReference('StoreBundle:AdjustmentType'), (int)$item['adjustmentTypeId'])
-                ->setInvoiceItemType($this->entityManager->getReference('StoreBundle:InvoiceItemType'), (int)$item['invoiceItemTypeId']);
+                ->setInventoryItem($this->entityManager->getReference('StoreBundle:InventoryItem', 1))
+                ->setAdjustmentType($this->entityManager->getReference('StoreBundle:AdjustmentType', 1))
+                ->setInvoiceItemType($this->entityManager->getReference('StoreBundle:InvoiceItemType', 1));
 
             $this->invoice->addInvoiceItem($invoiceItem);
 

@@ -14,7 +14,7 @@
 namespace Zepluf\Bundle\StoreBundle\EventListener;
 
 use Zepluf\Bundle\StoreBundle\Events;
-use Zepluf\Bundle\StoreBundle\HoldersHelperEvents;
+use Zepluf\Bundle\StoreBundle\Events\HoldersHelperEvents;
 use Zepluf\Bundle\StoreBundle\Event\CoreEvent;
 use Zepluf\Bundle\StoreBundle\Event\HoldersHelperEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;

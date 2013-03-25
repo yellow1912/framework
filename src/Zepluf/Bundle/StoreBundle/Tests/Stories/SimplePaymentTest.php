@@ -20,9 +20,9 @@ class SimplePaymentTest extends \Zepluf\Bundle\StoreBundle\Tests\BaseTestCase
 
     public function setUp()
     {
-        $this->invoice = new Invoice($this->_container->get('doctrine')->getEntityManager(), $this->_container->get('event_dispatcher'));
+        // $this->invoice = new Invoice($this->_container->get('doctrine')->getEntityManager(), $this->_container->get('event_dispatcher'));
 
-        $this->orderItemCollection = $this->getMock('Doctrine\Common\Collections\ArrayCollection');
+        // $this->orderItemCollection = $this->getMock('Doctrine\Common\Collections\ArrayCollection');
     }
 
     public function testProductCollection()
@@ -31,13 +31,13 @@ class SimplePaymentTest extends \Zepluf\Bundle\StoreBundle\Tests\BaseTestCase
 
     public function testSimplePayment()
     {
-        if (method_exists($this->orderItemCollection, 'isEmpty')) {
-            echo 'true';
-        } else {
-            echo 'false';
-        }
-        exit();
-        $this->assertTrue(false, $this->invoice->create($this->orderItemCollection));
+        // if (method_exists($this->orderItemCollection, 'isEmpty')) {
+        //     echo 'true';
+        // } else {
+        //     echo 'false';
+        // }
+        // exit();
+        // $this->assertTrue(false, $this->invoice->create($this->orderItemCollection));
 
         // echo 'jkMedia';
 
