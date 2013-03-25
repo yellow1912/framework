@@ -78,16 +78,6 @@ class Shipment
     private $updatedAt;
 
     /**
-     * @var \ShipmentType
-     *
-     * @ORM\ManyToOne(targetEntity="ShipmentType")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="shipment_type_id", referencedColumnName="id")
-     * })
-     */
-    private $shipmentType;
-
-    /**
      * @var \Party
      *
      * @ORM\ManyToOne(targetEntity="Party")
@@ -316,29 +306,6 @@ class Shipment
     public function getShipmentItems()
     {
         return $this->shipmentItems;
-    }
-
-    /**
-     * Set shipmentType
-     *
-     * @param \Zepluf\Bundle\StoreBundle\Entity\ShipmentType $shipmentType
-     * @return Shipment
-     */
-    public function setShipmentType(\Zepluf\Bundle\StoreBundle\Entity\ShipmentType $shipmentType = null)
-    {
-        $this->shipmentType = $shipmentType;
-
-        return $this;
-    }
-
-    /**
-     * Get shipmentType
-     *
-     * @return \Zepluf\Bundle\StoreBundle\Entity\ShipmentType
-     */
-    public function getShipmentType()
-    {
-        return $this->shipmentType;
     }
 
     /**
