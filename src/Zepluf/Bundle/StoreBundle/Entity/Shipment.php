@@ -133,6 +133,7 @@ class Shipment
      */
     public function __construct()
     {
+        $this->shipmentStatuses = new \Doctrine\Common\Collections\ArrayCollection();
         $this->shipmentItems = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
@@ -480,14 +481,5 @@ class Shipment
     public function getShipmentStatuses()
     {
         return $this->shipmentStatuses;
-    }
-
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->shipmentStatuses = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->shipmentItems = new \Doctrine\Common\Collections\ArrayCollection();
     }
 }

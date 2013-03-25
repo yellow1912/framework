@@ -20,6 +20,7 @@ class Order
 {
     protected $entityManager;
 
+
     /**
      * @var \Zepluf\Bundle\StoreBundle\Entity\Order
      */
@@ -63,27 +64,32 @@ class Order
      */
     public function create(ProductCollection $productCollection, $type = OrderType::ORDER_TYPE)
     {
-        $this->order = new OrderEntity();
+        $this->entityManager->getConnection()->beginTransaction(); // suspend auto-commit
+        try {
+            $this->order = new OrderEntity();
 
-        // sets the order type
-        $this->order->setType($type);
+            // sets the order type
+            $this->order->setType($type);
 
-        // set the order timestamp
-        $this->order->setOrderDate(new \DateTime("now"));
+            // set the order timestamp
+            $this->order->setOrderDate(new \DateTime("now"));
 
-        // set the entry timestamp
-        $this->order->setEntryDate(new \DateTime("now"));
+            // set the entry timestamp
+            $this->order->setEntryDate(new \DateTime("now"));
 
-        // insert new order item
-        $this->addOrderItems($productCollection);
+            // insert new order item
+            $this->addOrderItems($productCollection);
 
-        // persists the order
-        $this->entityManager->persist($this->order);
-        $this->entityManager->flush();
-
-        // add order contact mechanism
-
-        // add order role
+            // persists the order
+            $this->entityManager->persist($this->order);
+            $this->entityManager->flush();
+            $this->entityManager->getConnection()->commit();
+        }
+        catch (Exception $e) {
+            $this->entityManager->getConnection()->rollback();
+            $this->entityManager->close();
+            throw $e;
+        }
 
     }
 
