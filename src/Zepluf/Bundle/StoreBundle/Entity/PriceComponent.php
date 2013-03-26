@@ -406,4 +406,17 @@ class PriceComponent
     {
         return $this->settings;
     }
+
+    /**
+     * Set settings
+     *
+     * @param array $settings
+     * @return PriceComponent
+     */
+    public function setSettings($settings)
+    {
+        $this->settings = $settings;
+    
+        return $this;
+    }
 }
