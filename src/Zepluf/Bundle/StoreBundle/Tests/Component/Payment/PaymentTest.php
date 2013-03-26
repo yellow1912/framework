@@ -21,23 +21,23 @@ class PaymentTest extends BaseTestCase
     protected $payment;
     protected $invoice;
 
-    public function setup()
-    {
-        $this->fixtures = new Fixtures($this->_container->get('doctrine'));
-        $this->fixtures->setup();
-
-        $this->payment = new PaymentComponent($this->_container->get('doctrine')->getEntityManager(), $this->_container->get('event_dispatcher'));
-
-        // $this->invoice = $this->getMock('StoreBundle:Invoice');
-    }
-
-    public function tearDown()
-    {
-        $this->fixtures->tearDown();
-    }
-
-    public function testCreatePayment()
-    {
-
-    }
+//    public function setup()
+//    {
+//        $this->fixtures = new Fixtures($this->_container->get('doctrine'));
+//        $this->fixtures->setup();die("eeee");
+//
+//        $this->payment = new PaymentComponent($this->_container->get('doctrine')->getEntityManager(), $this->_container->get('event_dispatcher'));
+//
+//        // $this->invoice = $this->getMock('StoreBundle:Invoice');
+//    }
+//
+//    public function tearDown()
+//    {
+//        $this->fixtures->tearDown();
+//    }
+//
+//    public function testCreatePayment()
+//    {
+//
+//    }
 }

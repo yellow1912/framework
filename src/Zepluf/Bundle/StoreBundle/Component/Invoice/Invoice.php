@@ -46,35 +46,28 @@ class Invoice
         $this->dispatcher = $dispatcher;
     }
 
+    public function getEntity()
+    {
+        return $this->invoice;
+    }
+
+    public function setEntity(InvoiceEntity $invoice)
+    {
+        $this->invoice = $invoice;
+        return $this;
+    }
     /**
      * create new invoice from order items collection
      *
-     * @param   array    $data
      * @return  \Zepluf\Bundle\StoreBundle\Entity\Invoice
      */
-    public function create($data = array())
+    public function save()
     {
         // begin transaction before flush anything into database
         $this->entityManager->getConnection()->beginTransaction();
         try {
-            $this->invoice = new InvoiceEntity();
 
-            $billedTo    = $this->entityManager->getReference('StoreBundle:Party', (int)$data['billedTo']);
-            $billedFrom  = $this->entityManager->getReference('StoreBundle:Party', (int)$data['billedFrom']);
-            $addressedTo = $this->entityManager->getReference('StoreBundle:ContactMechanism', (int)$data['addressedTo']);
-            $sendTo      = $this->entityManager->getReference('StoreBundle:ContactMechanism', (int)$data['sendTo']);
-
-            $this->invoice
-                ->setBilledTo($billedTo)
-                ->setBilledFrom($billedFrom)
-                ->setAddressedTo($addressedTo)
-                ->setSentTo($sendTo)
-                ->setEntryDate(new \DateTime())
-                ->setMessage($data['message'])
-                ->setDescription($data['description']);
-
-            $this->addInvoiceItems($data['orderItems']);
-
+            $this->entityManager->persist($this->invoice);
             $this->entityManager->flush();
             $this->entityManager->getConnection()->commit();
 
@@ -93,9 +86,9 @@ class Invoice
      * @param  ArrayCollection  $orderItems  a doctrine collection of order items
      * @return void
      */
-    public function addInvoiceItems(ArrayCollection $orderItems)
+    public function addInvoiceItems(ArrayCollection $invoiceItems)
     {
-        foreach ($orderItems->getIterator() as $item) {
+        foreach ($invoiceItems as $item) {
             $invoiceItem = new InvoiceItemEntity();
 
             $invoiceItem
@@ -111,6 +104,8 @@ class Invoice
 
             $this->invoice->addInvoiceItem($invoiceItem);
         }
+
+        return $this;
     }
 
     /**

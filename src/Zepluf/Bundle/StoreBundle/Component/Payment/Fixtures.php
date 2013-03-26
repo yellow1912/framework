@@ -38,7 +38,7 @@ class Fixtures {
     public function setup()
     {
         foreach (get_class_methods($this) as $method) {
-            if (0 === strpos($method, 'generate_')) {
+            if (0 === strpos($method, 'generate_')) {echo $method;
                 $this->{$method}();
             }
         }
@@ -80,20 +80,6 @@ class Fixtures {
         }
     }
 
-//    private function generate_payment_method_type()
-//    {
-//        for ($i = 1; $i <= 5; $i++) {
-//            $paymentMethodType = new PaymentMethodType();
-//
-//            $paymentMethodType->setDescription('Payment Method Type ' . $i);
-//
-//            $this->entityManager->persist($paymentMethodType);
-//        }
-//
-//        $this->entityManager->flush();
-//    }
-
-
     private function generate_invoice_item_type()
     {
         for ($i = 1; $i <= 5; $i++) {
@@ -105,6 +91,7 @@ class Fixtures {
         }
 
         $this->entityManager->flush();
+        $this->entityManager->clear();
     }
 
 
@@ -119,6 +106,7 @@ class Fixtures {
         }
 
         $this->entityManager->flush();
+        $this->entityManager->clear();
     }
 
 
@@ -133,6 +121,7 @@ class Fixtures {
         }
 
         $this->entityManager->flush();
+        $this->entityManager->clear();
     }
 
 
@@ -151,6 +140,7 @@ class Fixtures {
         }
 
         $this->entityManager->flush();
+        $this->entityManager->clear();
     }
 
 
@@ -167,13 +157,14 @@ class Fixtures {
         }
 
         $this->entityManager->flush();
+        $this->entityManager->clear();
     }
 
     private function generate_party()
     {
         for ($i = 1; $i <= 5; $i++) {
             $party = new Party();
-            $person = $this->entityManager->find('Zepluf\Bundle\StoreBundle\Entity\Person', $i + 1);
+            $person = $this->entityManager->find('Zepluf\Bundle\StoreBundle\Entity\Person', $i);
 
             $party->setPerson($person);
             $party->setDescription('Party description ' . $i);
@@ -183,6 +174,7 @@ class Fixtures {
         }
 
         $this->entityManager->flush();
+        $this->entityManager->clear();
     }
 
 
@@ -198,6 +190,7 @@ class Fixtures {
         }
 
         $this->entityManager->flush();
+        $this->entityManager->clear();
     }
 
 
@@ -215,6 +208,7 @@ class Fixtures {
         }
 
         $this->entityManager->flush();
+        $this->entityManager->clear();
     }
 
 
@@ -227,6 +221,7 @@ class Fixtures {
         }
 
         $this->entityManager->flush();
+        $this->entityManager->clear();
     }
 
 
@@ -239,6 +234,7 @@ class Fixtures {
         }
 
         $this->entityManager->flush();
+        $this->entityManager->clear();
     }
 
 
@@ -252,6 +248,7 @@ class Fixtures {
         }
 
         $this->entityManager->flush();
+        $this->entityManager->clear();
     }
 
 
@@ -266,6 +263,7 @@ class Fixtures {
         }
 
         $this->entityManager->flush();
+        $this->entityManager->clear();
     }
 
 
@@ -281,6 +279,7 @@ class Fixtures {
         }
 
         $this->entityManager->flush();
+        $this->entityManager->clear();
     }
 
 

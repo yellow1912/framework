@@ -15,6 +15,7 @@ use Zepluf\Bundle\StoreBundle\Entity\Order as OrderEntity;
 use Doctrine\ORM\EntityManager;
 use Zepluf\Bundle\StoreBundle\Entity\OrderItem;
 use Zepluf\Bundle\StoreBundle\Component\Price\Pricing;
+use Zepluf\Bundle\StoreBundle\Exceptions\ProductException;
 
 class Order
 {
@@ -85,7 +86,7 @@ class Order
             $this->entityManager->flush();
             $this->entityManager->getConnection()->commit();
         }
-        catch (Exception $e) {
+        catch (\Exception $e) {
             $this->entityManager->getConnection()->rollback();
             $this->entityManager->close();
             throw $e;
@@ -106,6 +107,9 @@ class Order
                 $orderItem = new OrderItem();
 
                 $productEntity = $this->entityManager->find('StoreBundle:Product', $product['productId']);
+                if( NULL == $productEntity->getId()) {
+                    throw new ProductException(sprintf('Product with id %s not found', $product['productId']), ProductException::NOT_FOUND);
+                }
 
                 // set price
                 $orderItem->setUnitPrice($this->pricing->getProductPrice($productEntity, $product['features'])->getTotal());

@@ -1,0 +1,6 @@
+model: Zepluf\Bundle\StoreBundle\Entity\PriceComponent
+tags: [ test, dev ] # optional parameter
+fixtures:
+  default_product_price_component:
+    unitOfMeasurement: default_unit
+    handler: product_default
