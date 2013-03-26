@@ -64,6 +64,6 @@ class InvoiceTest extends BaseTestCase
             'orderItems' => $this->orderItems
         );
 
-        $this->assertTrue($this->invoice->create($invoiceData));
+        $this->invoice->create($invoiceData);
     }
 }

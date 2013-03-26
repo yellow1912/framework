@@ -37,53 +37,61 @@ class Invoice
 
     protected $invoice;
 
+    protected $total = 0;
+
     public function __construct(EntityManager $entityManager, EventDispatcherInterface $dispatcher)
     {
         $this->entityManager = $entityManager;
 
         $this->dispatcher = $dispatcher;
-
-        // cleanup database;
-        // $fixtures = new Fixtures($doctrine);
-        // $this->templating = $templating;
-
-        // $paypalStandard = new PaypalStandard();
-        // $paypalStandard->renderForm(null, array());
-        // $this->create();
     }
 
     /**
      * create new invoice from order items collection
      *
      * @param   array    $data
-     * @return  boolean
+     * @return  \Zepluf\Bundle\StoreBundle\Entity\Invoice
      */
     public function create($data = array())
     {
-        $this->invoice = new InvoiceEntity();
+        // begin transaction before flush anything into database
+        $this->entityManager->getConnection()->beginTransaction();
+        try {
+            $this->invoice = new InvoiceEntity();
 
-        $billedTo    = $this->entityManager->getReference('StoreBundle:Party', (int)$data['billedTo']);
-        $billedFrom  = $this->entityManager->getReference('StoreBundle:Party', (int)$data['billedFrom']);
-        $addressedTo = $this->entityManager->getReference('StoreBundle:ContactMechanism', (int)$data['addressedTo']);
-        $sendTo      = $this->entityManager->getReference('StoreBundle:ContactMechanism', (int)$data['sendTo']);
+            $billedTo    = $this->entityManager->getReference('StoreBundle:Party', (int)$data['billedTo']);
+            $billedFrom  = $this->entityManager->getReference('StoreBundle:Party', (int)$data['billedFrom']);
+            $addressedTo = $this->entityManager->getReference('StoreBundle:ContactMechanism', (int)$data['addressedTo']);
+            $sendTo      = $this->entityManager->getReference('StoreBundle:ContactMechanism', (int)$data['sendTo']);
 
-        $this->invoice
-            ->setBilledTo($billedTo)
-            ->setBilledFrom($billedFrom)
-            ->setAddressedTo($addressedTo)
-            ->setSentTo($sendTo)
-            ->setEntryDate(new \DateTime())
-            ->setMessage($data['message'])
-            ->setDescription($data['description']);
+            $this->invoice
+                ->setBilledTo($billedTo)
+                ->setBilledFrom($billedFrom)
+                ->setAddressedTo($addressedTo)
+                ->setSentTo($sendTo)
+                ->setEntryDate(new \DateTime())
+                ->setMessage($data['message'])
+                ->setDescription($data['description']);
 
-        return $this->addInvoiceItems($data['orderItems']);
+            $this->addInvoiceItems($data['orderItems']);
+
+            $this->entityManager->flush();
+            $this->entityManager->getConnection()->commit();
+
+        } catch (\Exception $e) {
+            $this->entityManager->getConnection()->rollback();
+
+            throw $e;
+        }
+
+        return $this->invoice;
     }
 
     /**
      * create invoice items from order items collection
      *
      * @param  ArrayCollection  $orderItems  a doctrine collection of order items
-     * @return boolean
+     * @return void
      */
     public function addInvoiceItems(ArrayCollection $orderItems)
     {
@@ -102,23 +110,18 @@ class Invoice
                 ->setInvoiceItemType($this->entityManager->getReference('StoreBundle:InvoiceItemType', 1));
 
             $this->invoice->addInvoiceItem($invoiceItem);
-
-            $this->entityManager->persist($invoiceItem);
         }
+    }
 
-        // begin transaction before flush anything into database
-        $this->entityManager->getConnection()->beginTransaction();
-        try {
-            $this->entityManager->flush();
-            $this->entityManager->getConnection()->commit();
-
-            return true;
-        } catch (\Exception $e) {
-            $this->entityManager->getConnection()->rollback();
-
-            throw $e;
+    /**
+     * calculate total invoice items amount
+     *
+     * @return  float
+     */
+    public function getTotal()
+    {
+        foreach ($this->invoice->getInvoiceItems() as $invoiceItem) {
+            $this->total += $invoiceItem->getAmount() * $invoiceItem->getQuantity();
         }
-
-        return false;
     }
 }

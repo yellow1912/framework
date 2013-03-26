@@ -28,7 +28,7 @@ class PaymentTest extends BaseTestCase
 
         $this->payment = new PaymentComponent($this->_container->get('doctrine')->getEntityManager(), $this->_container->get('event_dispatcher'));
 
-        $this->invoice = $this->getMock('StoreBundle:Invoice');
+        // $this->invoice = $this->getMock('StoreBundle:Invoice');
     }
 
     public function tearDown()

@@ -79,13 +79,6 @@ class Shipment
     private $updatedAt;
 
     /**
-     * @var int
-     *
-     * @ORM\Column(name="shipment_type_id", type="integer", nullable=false)
-     */
-    private $shipmentType;
-
-    /**
      * @var \Party
      *
      * @ORM\ManyToOne(targetEntity="Party")
@@ -456,15 +449,6 @@ class Shipment
     public function getShipmentStatuses()
     {
         return $this->shipmentStatuses;
-    }
-
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->shipmentStatuses = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->shipmentItems = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**

@@ -80,18 +80,18 @@ class Fixtures {
         }
     }
 
-    private function generate_payment_method_type()
-    {
-        for ($i = 1; $i <= 5; $i++) {
-            $paymentMethodType = new PaymentMethodType();
-
-            $paymentMethodType->setDescription('Payment Method Type ' . $i);
-
-            $this->entityManager->persist($paymentMethodType);
-        }
-
-        $this->entityManager->flush();
-    }
+//    private function generate_payment_method_type()
+//    {
+//        for ($i = 1; $i <= 5; $i++) {
+//            $paymentMethodType = new PaymentMethodType();
+//
+//            $paymentMethodType->setDescription('Payment Method Type ' . $i);
+//
+//            $this->entityManager->persist($paymentMethodType);
+//        }
+//
+//        $this->entityManager->flush();
+//    }
 
 
     private function generate_invoice_item_type()

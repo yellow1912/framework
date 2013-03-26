@@ -19,7 +19,6 @@ use Zepluf\Bundle\StoreBundle\Component\Payment\Method\Cheque;
 use Zepluf\Bundle\StoreBundle\Component\Invoice\Invoice;
 
 use Zepluf\Bundle\StoreBundle\Entity\Payment as PaymentEntity;
-use Zepluf\Bundle\StoreBundle\Entity\PaymentMethodType as PaymentMethodTypeEntity;
 use Zepluf\Bundle\StoreBundle\Entity\PaymentApplication as PaymentApplicationEntity;
 use Zepluf\Bundle\StoreBundle\Entity\Invoice as InvoiceEntity;
 
@@ -28,19 +27,32 @@ use Zepluf\Bundle\StoreBundle\Entity\Invoice as InvoiceEntity;
 */
 class Payment
 {
+    /**
+     * $entityManager a Doctrine entity manager
+     *
+     * @var Doctrine\ORM\EntityManager
+     */
     protected $entityManager;
 
+    /**
+     * $eventDispatcher Symfony event dispatcher
+     *
+     * @var Symfony\Component\EventDispatcher\EventDispatcherInterface
+     */
     protected $eventDispatcher;
 
     /**
-     * payment entity
-     * @var PaymentEntity
+     * $payment payment entity
+     *
+     * @var Zepluf\Bundle\StoreBundle\Entity\Payment
      */
     protected $payment;
 
     /**
      * constructor
-     * @param EntityManager $entityManager
+     *
+     * @param Doctrine\ORM\EntityManager $entityManager
+     * @param Symfony\Component\EventDispatcher\EventDispatcherInterface $eventDispatcher
      */
     public function __construct(EntityManager $entityManager, EventDispatcherInterface $eventDispatcher)
     {
@@ -50,60 +62,61 @@ class Payment
     }
 
     /**
-     * @param array $data ('payment_method' => array(), 'invoiceItems' => array(). ...)
-     * @throws \Exception
+     * [create description]
+     *
+     * @param  array  $data
+     *
+     * @return Zepluf\Bundle\StoreBundle\Component\Payment\Payment
      */
     public function create($data = array())
     {
-        $this->payment = new PaymentEntity();
-
-        $this->payment
-            ->setPaymentMethodType()
-            ->setEffectiveDate(new \DateTime())
-            ->setSequenceId($data['sequenceId'])
-            ->setReferenceNumber($data['referenceNumber'])
-            ->setAmount($data['amount'])
-            ->setComment($data['comment'])
-            ->setType($data['type']);
-
-        return $this->addPaymentApplication($data['invoiceItems']);
-    }
-
-
-    /**
-     * create payment application from invoice items collection
-     *
-     * @param ArrayCollection $invoiceItems [description]
-     */
-    public function addPaymentApplication(ArrayCollection $invoiceItems)
-    {
-        foreach ($invoiceItems->getIterator() as $item) {
-            $paymentApplication = new PaymentApplicationEntity();
-
-            $paymentApplication
-                ->setAmountApplied($item['amountApplied'])
-                ->setSequenceId($item['sequenceId'])
-                ->setPayment($this->payment)
-                ->setInvoice($this->entityManager->getReference('StoreBundle:Invoice'), (int)$item['invoiceItemId']);
-
-            $this->payment->addPaymentApplication($paymentApplication);
-
-            $this->entityManager->persist($paymentApplication);
-        }
-
         // begin transaction before flush anything into database
         $this->entityManager->getConnection()->beginTransaction();
         try {
+            $this->payment = new PaymentEntity();
+
+            $this->payment
+                ->setEffectiveDate(new \DateTime())
+                ->setSequenceId($data['sequenceId'])
+                ->setReferenceNumber($data['referenceNumber'])
+                ->setAmount($data['amount'])
+                ->setComment($data['comment'])
+                ->setType($data['type']);
+
+            $this->addPaymentApplication($data['invoices']);
+
             $this->entityManager->flush();
             $this->entityManager->getConnection()->commit();
-
-            return true;
         } catch (\Exception $e) {
             $this->entityManager->getConnection()->rollback();
 
             throw $e;
         }
 
-        return false;
+        return $this->payment;
+    }
+
+
+    /**
+     * create payment application from invoices list
+     *
+     * @param Zepluf\Bundle\StoreBundle\Entity\Invoice $invoices
+     */
+    public function addPaymentApplication(InvoiceEntity $invoices)
+    {
+        // TODO: loop invoice items
+        foreach ($invoices as $invoice) {
+            $paymentApplication = new PaymentApplicationEntity();
+
+            $paymentApplication
+                ->setAmountApplied($invoice->amountApplied)
+                ->setSequenceId($this->payment->getSequenceId())
+                ->setPayment($this->payment)
+                ->setInvoice($invoice);
+
+            $this->payment->addPaymentApplication($paymentApplication);
+
+            $this->entityManager->persist($paymentApplication);
+        }
     }
 }

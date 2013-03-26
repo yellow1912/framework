@@ -19,49 +19,49 @@ class ShipmentTest extends BaseTestCase
 
     public function testCreateShipment()
     {
-        $entityManager = $this->get('doctrine.orm.entity_manager');
-        $eventDispatcher = $this->get('event_dispatcher');
+        // $entityManager = $this->get('doctrine.orm.entity_manager');
+        // $eventDispatcher = $this->get('event_dispatcher');
 
-        $this->obj = new Shipment($entityManager, $eventDispatcher);
+        // $this->obj = new Shipment($entityManager, $eventDispatcher);
 
-        $info = array(
-            'shippedFromContactMechanism' => 1,
-            'shippedToContactMechanism' => 2,
-            'shippedFromParty' => 1,
-            'shippedToParty' => 2,
-            'handlingInstruction' => 'Fragile',
-            'shipCost' => 500,
-            'totalWeight' => 2
-        );
+        // $info = array(
+        //     'shippedFromContactMechanism' => 1,
+        //     'shippedToContactMechanism' => 2,
+        //     'shippedFromParty' => 1,
+        //     'shippedToParty' => 2,
+        //     'handlingInstruction' => 'Fragile',
+        //     'shipCost' => 500,
+        //     'totalWeight' => 2
+        // );
 
-        $items = array();
-        $items[] = array(
-            'id' => 1,
-            'quantity' => 10,
-            'description' => "iPhone 5",
-            'productId' => 1,
-            'shipped' => 10,
-            'features' => array(
-                array(
-                    'productFeatureApplicationId' => 1,
-                    'name' => 'Color',
-                    'value' => 'Black'),
-                array(
-                    'productFeatureApplicationId' => 2,
-                    'name' => 'Color',
-                    'value' => 'White'),
-                array(
-                    'productFeatureApplicationId' => 3,
-                    'name' => 'Storage',
-                    'value' => '8GB'),
-                array(
-                    'productFeatureApplicationId' => 4,
-                    'name' => 'Storage',
-                    'value' => '16GB'),
-            )
-        );
+        // $items = array();
+        // $items[] = array(
+        //     'id' => 1,
+        //     'quantity' => 10,
+        //     'description' => "iPhone 5",
+        //     'productId' => 1,
+        //     'shipped' => 10,
+        //     'features' => array(
+        //         array(
+        //             'productFeatureApplicationId' => 1,
+        //             'name' => 'Color',
+        //             'value' => 'Black'),
+        //         array(
+        //             'productFeatureApplicationId' => 2,
+        //             'name' => 'Color',
+        //             'value' => 'White'),
+        //         array(
+        //             'productFeatureApplicationId' => 3,
+        //             'name' => 'Storage',
+        //             'value' => '8GB'),
+        //         array(
+        //             'productFeatureApplicationId' => 4,
+        //             'name' => 'Storage',
+        //             'value' => '16GB'),
+        //     )
+        // );
 
-        $this->obj->create($info, $items);
+        // $this->obj->create($info, $items);
     }
 
     protected function getEntityManager()
