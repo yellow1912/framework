@@ -15,6 +15,7 @@ namespace Zepluf\Bundle\StoreBundle\Component\Payment\Method;
 
 use \Doctrine\ORM\EntityManager;
 use \Doctrine\Common\Collections\ArrayCollection;
+use Zepluf\Bundle\StoreBundle\Exceptions\PaymentException;
 
 use Zepluf\Bundle\StoreBundle\Events\PaymentEvents;
 
@@ -136,10 +137,18 @@ class PaypalStandard extends PaymentMethodAbstract implements PaymentMethodInter
      */
     public function renderForm(Payment $payment)
     {
-        $data['business']      = $this->getConfig('business');
-        $data['currency_code'] = $this->getConfig('currency_code');
-        $data['notify_url']    = $this->getConfig('notify_url');
-        $data['cancel_return'] = $this->getConfig('cancel_return');
+        // $data['business']      = $this->getConfig('business');
+        // $data['currency_code'] = $this->getConfig('currency_code');
+        // $data['notify_url']    = $this->getConfig('notify_url');
+        // $data['return_url']    = $this->getConfig('return_url');
+        // $data['cancel_return'] = $this->getConfig('cancel_return');
+
+        $data = array();
+        foreach ($this->getConfig() as $key => $value) {
+            if (is_string($value)) {
+                $data[$key] = $value;
+            }
+        }
 
         if ($this->getConfig('sandbox_mode')) {
             $data['action'] = 'https://www.sandbox.paypal.com/cgi-bin/webscr';
@@ -173,9 +182,9 @@ class PaypalStandard extends PaymentMethodAbstract implements PaymentMethodInter
                     // TODO: get features list
 
                     $data['items'][] = array(
-                        'item_name_' . $index => $invoiceItem->getItemDescription(),
-                        'amount_' . $index => $invoiceItem->getAmount(),
-                        'quantity_' . $index => $invoiceItem->getQuantity()
+                        'item_name_' . ($index + 1) => $invoiceItem->getItemDescription(),
+                        'amount_' . ($index + 1) => $invoiceItem->getAmount(),
+                        'quantity_' . ($index + 1) => $invoiceItem->getQuantity()
                     );
                 }
             }
@@ -205,7 +214,8 @@ class PaypalStandard extends PaymentMethodAbstract implements PaymentMethodInter
         // TODO: render paypal_standard template
         // return $this->templating->render('StoreBundle::fontend/component/payment:paypal_standard.html.php', $data);
 
-        file_put_contents('/xampp/htdocs/framework/cart_info.txt', serialize($data));
+        // this content for test only
+        file_put_contents(str_replace('Component', 'Tests/Component', __DIR__) . '/DataTest/cart_info.txt', serialize($data));
         return $data;
 
         // $data['sandbox_mode'] = $this->settings['sandbox_mode'];
@@ -248,14 +258,14 @@ class PaypalStandard extends PaymentMethodAbstract implements PaymentMethodInter
      */
     public function callback(array $data)
     {
-        if (true === isset($data['custom']) && true === ($paymentEntity = $this->entityManager->find('Zepluf\Bundle\StoreBundle\Entity\Payment', $data['custom']))) {
+        if (isset($data['custom']) && true == ($paymentEntity = $this->entityManager->find('Zepluf\Bundle\StoreBundle\Entity\Payment', $data['custom']))) {
             $request['cmd'] = '_notify-validate';
 
             foreach ($data as $key => $value) {
                 $request[$key] = $value;
             }
 
-            if ($data['sandbox_mode']) {
+            if ($this->getConfig('sandbox_mode')) {
                 $curl = curl_init('https://www.sandbox.paypal.com/cgi-bin/webscr');
             } else {
                 $curl = curl_init('https://www.paypal.com/cgi-bin/webscr');
@@ -276,30 +286,28 @@ class PaypalStandard extends PaymentMethodAbstract implements PaymentMethodInter
 
             curl_close($curl);
 
-            if ((0 === strcmp($response, 'VERIFIED') || 0 === strcmp($response, 'UNVERIFIED')) && true === isset($this->request->post['payment_status'])) {
-                if (true === in_array($data['payment_status'], array_keys($this->settings['order_status']))) {
-                    $orderStatusId = $this->settings['order_status'][$data['payment_status']];
-                } else {
-                    $orderStatusId = 1;
+            if (0 === strcmp($response, 'VERIFIED')) {
+                // recheck total amount to make sure everything completely matched
+                if ((float)$data['mc_gross'] !== (float)$paymentEntity->getAmount()) {
+                    throw new PaymentException('Paypal Standard :: Total amount mismatch!', PaymentException::AMOUNT_MISMATCH);
                 }
 
-                // if payment status is completed, recheck receiver email and amount
-                // to make sure everything completely matched
-                if (strtolower(trim($data['receiver_email'])) !== strtolower(trim($this->settings['email'])) || (float)$data['mc_gross'] !== $paymentEntity->getAmount()) {
-                    throw new Exception('Paypal Standard :: Receiver email mismatch!');
+                // recheck receiver email to make sure everything completely matched
+                if (strtolower(trim($data['receiver_email'])) !== strtolower(trim($this->getConfig('business')))) {
+                    throw new PaymentException('Paypal Standard :: Receiver email mismatch!', PaymentException::EMAIL_MISMATCH);
                 }
-
-                // if (!$order_info['order_status_id']) {
-                //     $this->model_checkout_order->confirm($order_id, $orderStatusId);
-                // } else {
-                //     $this->model_checkout_order->update($order_id, $orderStatusId);
-                // }
+            } else if (0 === strcmp($response, 'UNVERIFIED')) {
+                return false;
             } else {
-                // $this->model_checkout_order->confirm($order_id, $this->config->get('config_order_status_id'));
+                throw new PaymentException('Paypal Standard :: Invalied response...', PaymentException::INVALID_RESPONSE);
             }
 
             // TODO: dispatch end "Paypal Standard Callback" event
-            $this->eventDispatcher->dispatch(PaymentEvents::onPaypalStandardCallbackEnd, $orderStatusId);
+            // $this->eventDispatcher->dispatch(PaymentEvents::onPaypalStandardCallbackEnd, $orderStatusId);
+        } else {
+            throw new PaymentException('Paypal Standard :: Invalid request...', PaymentException::INVALID_REQUEST);
         }
+
+        return true;
     }
 }

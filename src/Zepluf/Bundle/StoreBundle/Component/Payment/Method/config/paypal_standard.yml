@@ -1,14 +1,14 @@
 order_status:
-  Canceled_Reversal : 1
-  Completed         : 1
-  Denied            : 1
-  Expired           : 1
-  Failed            : 1
-  Pending           : 1
-  Processed         : 1
-  Refunded          : 1
-  Reversed          : 1
-  Voided            : 1
+  Canceled_Reversal : 10
+  Completed         : 20
+  Denied            : 30
+  Expired           : 40
+  Failed            : 50
+  Pending           : 60
+  Processed         : 70
+  Refunded          : 80
+  Reversed          : 90
+  Voided            : 100
 
 
 # Defines the currency in which the monetary variables
@@ -24,6 +24,30 @@ sandbox_mode : 1
 
 # Email address on your PayPal account
 business : seller.1314@yahoo.com
+
+# It can be "Order", "Authorization", and "Sale"
+#
+# Why would I use an "Authorization"?
+# An Authorization is used to put a hold on the funds. When you submit an
+# Authorization you are asking PayPal to see if the funds are available,
+# and if they are to place a hold on them for 3 days. You can capture an
+# Authorization for up to 29 days, however the funds are only on hold for
+# 3 days, these 3 days are known as the "honor period".
+#
+# Why would I use an "ORDER"?
+# An "Order" is used when you are possibly looking at a backorder situation.
+# Where you may or may not have all of the items from the buyers cart in
+# stock or readily available. An order is (like the Authorization) valid
+# for 29 days, however the big difference here is that the Order does NOT
+# place a hold on the funds. It simply allows you to place a hold on the
+# funds via an Authorization at a later time.
+#
+# Why would I use a PaymentAction of "Sale"?
+# A PaymentAction of "Sale" is very straight forward. There is no hold on
+# the funds, the payment is processed right then and there. This would be
+# used for something that is delivered right away such as for Digital Goods,
+# or if your product ships as soon as you receive the order.
+paymentaction : sale
 
 # ...
 return_url : 'http://vinhtrinh.no-ip.org/framework/PaypalStandardCallbackTest.php'

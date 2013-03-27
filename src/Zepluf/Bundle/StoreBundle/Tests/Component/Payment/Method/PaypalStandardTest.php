@@ -10,6 +10,7 @@
 
 namespace Zepluf\Bundle\StoreBundle\Tests\Component\Payment\Method;
 
+use Zepluf\Bundle\StoreBundle\Exceptions\PaymentException;
 use Symfony\Component\Yaml\Parser;
 use \Zepluf\Bundle\StoreBundle\Tests\BaseTestCase;
 use \Doctrine\Common\Collections\ArrayCollection;
@@ -17,6 +18,8 @@ use \Doctrine\Common\Collections\ArrayCollection;
 use Zepluf\Bundle\StoreBundle\Component\Payment\Fixtures;
 
 use Zepluf\Bundle\StoreBundle\Component\Payment\Method\PaypalStandard;
+
+
 
 
 class PaypalStandardTest extends BaseTestCase
@@ -29,25 +32,24 @@ class PaypalStandardTest extends BaseTestCase
 
     public function setup()
     {
-        $this->entityManager = $this->_container->get('doctrine')->getEntityManager();
-        $this->eventDispatcher = $this->_container->get('event_dispatcher');
+        // $this->entityManager = $this->_container->get('doctrine')->getEntityManager();
+        // $this->eventDispatcher = $this->_container->get('event_dispatcher');
 
-
+        $this->entityManager = $this->getMockBuilder('\Doctrine\ORM\EntityManager')->disableOriginalConstructor()->getMock();
+        $this->eventDispatcher = $this->getMock('Symfony\Component\EventDispatcher\EventDispatcherInterface');
 
         $this->paypal = new PaypalStandard($this->entityManager, $this->eventDispatcher);
 
         $parser = new Parser();
 
-        $yamlFile = 'D:/xampp/htdocs/framework/src/Zepluf/Bundle/StoreBundle/Component/Payment/Method/config/paypal_standard.yml';
+        $yamlFile = str_replace('Tests\Component', 'Component', __DIR__) . '/config/paypal_standard.yml';
 
         if (file_exists($yamlFile)) {
             $this->yaml = new Parser();
             $this->yaml = $this->yaml->parse(file_get_contents($yamlFile));
         } else {
-            echo "\r\n\r\n--------------------------------------------------------------------------------\r\n";
-            echo 'Paypal Standard config file "' . $yamlFile . '" can not be found!' . "\r\n\r\n";
-
-            exit('Please correct this path and try again... or disable this test in: ' . __FILE__);
+            $this->fail('Please correct this path and try again... or disable this test in: ' . __FILE__ . ' at line: ' . __LINE__);
+            return;
         }
     }
 
@@ -102,8 +104,8 @@ class PaypalStandardTest extends BaseTestCase
         $paymentApplications = new ArrayCollection();
         $invoiceItems = new ArrayCollection();
 
-        $total = 0;
-        for ($i = 1; $i <= 5; $i++) {
+        $total = 0; $invoices = mt_rand(2, 8);
+        for ($i = 1; $i <= $invoices; $i++) {
             $amount = mt_rand(10, 100);
             $quantity = mt_rand(1, 10);
             $total += $amount * $quantity;
@@ -160,14 +162,15 @@ class PaypalStandardTest extends BaseTestCase
         $this->assertEquals($this->yaml['business'], $formData['business']);
         $this->assertEquals($this->yaml['notify_url'], $formData['notify_url']);
         $this->assertEquals($this->yaml['cancel_return'], $formData['cancel_return']);
+        $this->assertEquals($paymentEntityId, $formData['custom']);
 
         $this->assertEquals('_cart', $formData['cmd']);
-        $this->assertEquals(5, count($formData['items']));
+        $this->assertEquals($invoices, count($formData['items']));
 
         foreach ($invoiceItems as $index => $invoiceItem) {
-            $this->assertEquals($invoiceItem->getItemDescription(), $formData['items'][$index]['item_name_' . $index]);
-            $this->assertEquals($invoiceItem->getAmount(), $formData['items'][$index]['amount_' . $index]);
-            $this->assertEquals($invoiceItem->getQuantity(), $formData['items'][$index]['quantity_' . $index]);
+            $this->assertEquals($invoiceItem->getItemDescription(), $formData['items'][$index]['item_name_' . ($index + 1)]);
+            $this->assertEquals($invoiceItem->getAmount(), $formData['items'][$index]['amount_' . ($index + 1)]);
+            $this->assertEquals($invoiceItem->getQuantity(), $formData['items'][$index]['quantity_' . ($index + 1)]);
 
             $this->assertEquals($total, $formData['total_amount']);
         }
@@ -190,5 +193,126 @@ class PaypalStandardTest extends BaseTestCase
     {
     }
 
+    /**
+     * valid callback
+     */
+    public function testCallback_1()
+    {
+        $dataCallbackCompleted = __DIR__ . '/DataTest/dataCallbackCompleted.txt';
 
+        if (!file_exists($dataCallbackCompleted)) {
+            $this->fail('Please correct this path and try again... or disable this test in: ' . __FILE__);
+            return;
+        }
+
+        try {
+            $dataCallbackCompleted = unserialize(file_get_contents($dataCallbackCompleted));
+        } catch (\Exception $e) {
+            $this->fail('Invalid data callback resource...');
+            return;
+        }
+
+        $paymentEntity = $this->getMock('Zepluf\Bundle\StoreBundle\Entity\Payment');
+
+
+        $paymentEntity->expects($this->any())
+            ->method('getAmount')
+            ->will($this->returnCallback(array($this, 'getAmountCallback')));
+
+        $this->entityManager->expects($this->any())
+            ->method('find')
+            ->will($this->returnValue($paymentEntity));
+
+
+        // test valid payment
+        $this->test = null;
+        $this->assertTrue($this->paypal->callback($dataCallbackCompleted));
+
+        // test invalid requrest
+        try {
+            $this->assertTrue($this->paypal->callback(array()));
+        } catch (PaymentException $pe) {
+            $this->assertEquals(PaymentException::INVALID_REQUEST, $pe->getCode());
+            return;
+        }
+
+        // test amount mismatch
+        $this->test = 'amount mismatch';
+        try {
+            $this->assertTrue($this->paypal->callback($dataCallbackCompleted));
+        } catch (PaymentException $pe) {
+            $this->assertEquals(PaymentException::AMOUNT_MISMATCH, $pe->getCode());
+            return;
+        }
+
+        // test invalid response
+        try {
+            $this->assertTrue($this->paypal->callback($dataCallbackCompleted));
+        } catch (PaymentException $pe) {
+            $this->assertEquals(PaymentException::INVALID_RESPONSE, $pe->getCode());
+            return;
+        }
+
+        // test email mismatch
+        $dataCallbackCompleted['receiver_email'] = null;
+        try {
+            $this->assertTrue($this->paypal->callback($dataCallbackCompleted));
+        } catch (PaymentException $pe) {
+            $this->assertEquals(PaymentException::EMAIL_MISMATCH, $pe->getCode());
+            return;
+        }
+    }
+
+    public function getAmountCallback()
+    {
+        if ('amount mismatch' === $this->test) {
+            return -1;
+        } else {
+            return 2685.00;
+        }
+    }
+
+    /**
+     * invalid callback - total amount mismatch
+     */
+    public function testCallback_2()
+    {
+        // $dataCallbackCompleted = __DIR__ . '/DataTest/dataCallbackCompleted.txt';
+
+        // if (!file_exists($dataCallbackCompleted)) {
+        //     $this->fail('Please correct this path and try again... or disable this test in: ' . __FILE__);
+        //     return;
+        // }
+
+        // try {
+        //     $dataCallbackCompleted = unserialize(file_get_contents($dataCallbackCompleted));
+        // } catch (\Exception $e) {
+        //     $this->fail('Invalid data callback resource...');
+        //     return;
+        // }
+
+        // $paymentEntity = $this->getMock('Zepluf\Bundle\StoreBundle\Entity\Payment');
+
+        // $paymentEntity->expects($this->any())
+        //     ->method('getAmount')
+        //     ->will($this->returnValue(-1));
+
+        // $this->entityManager->expects($this->any())
+        //     ->method('find')
+        //     ->will($this->returnValue($paymentEntity));
+
+        // try {
+        //     $this->assertTrue($this->paypal->callback($dataCallbackCompleted));
+        // } catch (PaymentException $pe) {
+        //     $this->assertEquals(PaymentException::AMOUNT_MISMATCH, $pe->getCode());
+        //     return;
+        // }
+
+        // try {
+        //     $this->assertTrue($this->paypal->callback(array()));
+        // } catch (PaymentException $pe) {
+        //     $this->assertEquals(PaymentException::INVALID_REQUEST, $pe->getCode());
+        //     return;
+        // }
+    }
 }
