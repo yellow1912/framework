@@ -1,0 +1,38 @@
+order_status:
+  Canceled_Reversal : 1
+  Completed         : 1
+  Denied            : 1
+  Expired           : 1
+  Failed            : 1
+  Pending           : 1
+  Processed         : 1
+  Refunded          : 1
+  Reversed          : 1
+  Voided            : 1
+
+
+# Defines the currency in which the monetary variables
+# (amount, shipping, shipping2, handling, tax) are denoted.
+#
+# Possible values are "USD", "EUR", "GBP", "CAD", "JPY"
+currency_code : USD
+
+# Active PayPal Sandbox mode
+# Use the PayPal Sandbox to test and debug routines that make use of the PayPal APIs.
+# If the payment gateway in "Sandbox Mode". Your account will not be charged.
+sandbox_mode : 1
+
+# Email address on your PayPal account
+business : seller.1314@yahoo.com
+
+# ...
+return_url : 'http://vinhtrinh.no-ip.org/framework/PaypalStandardCallbackTest.php'
+
+# Only used with IPN. An internet URL where IPN form posts will be sent
+notify_url : 'http://vinhtrinh.no-ip.org/framework/PaypalStandardCallbackTest.php'
+
+# An internet URL where your customer will be returned after cancelling payment
+cancel_return : 'http://vinhtrinh.no-ip.org/framework/PaypalStandardCallbackTest.php'
+
+# Active status
+status : 1

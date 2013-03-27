@@ -341,4 +341,34 @@ class ProductCategory
     {
         return $this->parent;
     }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->children = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+    
+    /**
+     * Add children
+     *
+     * @param \Zepluf\Bundle\StoreBundle\Entity\productCategory $children
+     * @return ProductCategory
+     */
+    public function addChildren(\Zepluf\Bundle\StoreBundle\Entity\productCategory $children)
+    {
+        $this->children[] = $children;
+    
+        return $this;
+    }
+
+    /**
+     * Remove children
+     *
+     * @param \Zepluf\Bundle\StoreBundle\Entity\productCategory $children
+     */
+    public function removeChildren(\Zepluf\Bundle\StoreBundle\Entity\productCategory $children)
+    {
+        $this->children->removeElement($children);
+    }
 }
