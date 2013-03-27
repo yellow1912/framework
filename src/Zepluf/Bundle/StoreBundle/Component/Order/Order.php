@@ -49,12 +49,12 @@ class Order
      * @param \Zepluf\Bundle\StoreBundle\Entity\Order $order
      */
 
-    public function setOrder($order)
+    public function setEntity($order)
     {
         $this->order = $order;
     }
 
-    public function getOrder()
+    public function getEntity()
     {
         return $this->order;
     }
