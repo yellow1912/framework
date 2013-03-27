@@ -20,7 +20,7 @@ $fileName =  basename($PHP_SELF);
 
 require('../zepluf_config.php');
 
-$environment = "dev";
+$env = "dev";
 require(APP_DIR . '/bootstrap.php');
 
 // some hacks for zencart

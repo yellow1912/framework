@@ -21,9 +21,3 @@ parameters:
   store.frontend.templates_dir: "%kernel.root_dir%/templates/"
 
   web.dir: "%kernel.root_dir%/../webDir"
-
-khepin_yaml_fixtures:
-  directory: Resources/fixtures
-  resources:
-    - StoreBundle/unit_of_measurement
-    - StoreBundle/product

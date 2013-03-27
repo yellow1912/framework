@@ -88,7 +88,7 @@ class UPS
     }
 
 
-    public function getAllowMethods()
+    public function getEnabledMethods()
     {
         // TODO: Implement getAllowMethods() method.
     }

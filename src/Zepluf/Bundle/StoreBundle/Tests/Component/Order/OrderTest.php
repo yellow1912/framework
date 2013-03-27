@@ -11,6 +11,7 @@
 namespace Zepluf\Bundle\StoreBundle\Tests\Component\Order;
 
 
+use Doctrine\DBAL\DBALException;
 use Zepluf\Bundle\StoreBundle\Component\Order\Order;
 use Zepluf\Bundle\StoreBundle\Component\Price\Pricing;
 use Zepluf\Bundle\StoreBundle\Exceptions\ProductException;
@@ -78,26 +79,51 @@ class OrderTest extends BaseTestCase
     public function testCreate()
     {
 
-//
-//        $price = $this->getMock('Zepluf\Bundle\StoreBundle\Component\Price\Price');
-//        $price->expects($this->any())
-//            ->method('getTotal')
-//            ->will($this->returnValue(10));
-//
-//        $pricing = $this->getMock('Zepluf\Bundle\StoreBundle\Component\Price\Pricing');
-//        $pricing->expects($this->any())
-//            ->method('getProductPrice')
-//            ->will($this->returnValue($price));
-//
-//        $orderComponent = new Order($entityManager, $pricing);
-//
-//        $orderComponent->create($productCollection);
+        $em = $this->_container->get('doctrine.orm.entity_manager');
 
-    }
+        $loader = new \Nelmio\Alice\Loader\Yaml();
 
-    public function testAddOrderItems()
-    {
+        $objects = $loader->load(__DIR__ . '/../../../Resources/fixtures/product.yml', $em);
+        $persister = new \Nelmio\Alice\ORM\Doctrine($em);
+        $persister->persist($objects);
 
+        $orderComponent = new Order($em, $this->pricing);
+
+        $productCollection = $this->getMock('Zepluf\Bundle\StoreBundle\Component\Product\ProductCollection');
+
+        //Get the first $amount users starting from a random point
+        $query = $em->createQuery('
+                SELECT DISTINCT p
+                FROM StoreBundle:Product p')
+            ->setMaxResults(4);
+
+        $result = $query->getResult();
+
+        $productCollectionData = array();
+        foreach ($result as $product) {
+            $productCollectionData[$product->getId()] = array(
+                'productId' => $product->getId(),
+                'quantity' => 1,
+                'features' => array()
+            );
+        }
+
+        $productCollection->expects($this->any())
+            ->method('getAll')
+            ->will($this->returnValue($productCollectionData));
+
+        try {
+            $orderComponent->create($productCollection);
+        } catch (DBALException $pe) {
+            $this->fail('Unexpected exception ' . $pe->getMessage());
+            return;
+        }
+
+        foreach ($objects as $object) {
+            $em->remove($object);
+        }
+
+        $em->flush();
     }
 
     public function testAddNotExistOrderItems()

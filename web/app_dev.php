@@ -11,6 +11,6 @@
 
 require('zepluf_config.php');
 
-$environment = "dev";
+$env = "test";
 
 require('main_app.php');

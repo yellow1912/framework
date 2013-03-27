@@ -107,7 +107,7 @@ class Order
                 $orderItem = new OrderItem();
 
                 $productEntity = $this->entityManager->find('StoreBundle:Product', $product['productId']);
-                if( NULL == $productEntity->getId()) {
+                if( NULL == $productEntity || NULL == $productEntity->getId()) {
                     throw new ProductException(sprintf('Product with id %s not found', $product['productId']), ProductException::NOT_FOUND);
                 }
 
@@ -126,10 +126,10 @@ class Order
 
                 // set order
                 $orderItem->setOrder($this->order);
+
+                $this->order->addOrderItem($orderItem);
             }
         }
-
-        $this->order->addOrderItem($orderItem);
     }
 
     public function addInvoice()

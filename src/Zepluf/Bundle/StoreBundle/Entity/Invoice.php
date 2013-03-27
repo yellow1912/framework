@@ -100,7 +100,7 @@ class Invoice
     /**
      * @var InvoiceItem|array
      *
-     * @ORM\OneToMany(targetEntity="InvoiceItem", mappedBy="invoice")
+     * @ORM\OneToMany(targetEntity="InvoiceItem", mappedBy="invoice", cascade={"persist", "remove"})
      */
     private $invoiceItems;
 

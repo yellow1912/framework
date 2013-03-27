@@ -7,8 +7,8 @@
  * includes the global functions that we need
  */
 
-if(!isset($environment)) {
-    $environment = "prod";
+if(!isset($env)) {
+    $env = "test";
 }
 
 use Symfony\Component\ClassLoader\ApcClassLoader;
@@ -29,7 +29,6 @@ $kernel->loadClassCache();
 $kernel->boot();
 
 $container = $kernel->getContainer();
-
 
 // set the environment
 // TODO: remove constants
