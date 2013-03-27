@@ -66,7 +66,7 @@ class Payment
     /**
      * @var PaymentApplication|array
      *
-     * @ORM\OneToMany(targetEntity="PaymentApplication", mappedBy="payment")
+     * @ORM\OneToMany(targetEntity="PaymentApplication", mappedBy="payment", cascade={"persist", "remove"})
      */
     private $paymentApplications;
 

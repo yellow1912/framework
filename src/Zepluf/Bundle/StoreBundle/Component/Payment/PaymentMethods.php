@@ -18,13 +18,14 @@ use Zepluf\Bundle\StoreBundle\Component\Payment\Method\PaymentMethodInterface;
 class PaymentMethods
 {
     /**
-     * @var list of available payment methods
+     * list of available payment methods
+     *
+     * @var array $paymentMethods
      */
-    protected $paymentMethods = array();
+    protected $paymentMethods;
 
     public function __construct()
     {
-
     }
 
     /**
@@ -35,8 +36,10 @@ class PaymentMethods
     public function add(PaymentMethodInterface $method)
     {
         if (true === $method->isAvailable()) {
-            $this->methods[$method->getCode()] = $method;
+            $this->paymentMethods[$method->getCode()] = $method;
         }
+
+        return $this;
     }
 
     /**
@@ -48,9 +51,9 @@ class PaymentMethods
     public function get($code = null)
     {
         if (null === $code) {
-            return $this->methods;
-        } else if (true === isset($this->methods[$code])) {
-            return $this->methods[$code];
+            return $this->paymentMethods;
+        } else if (true === isset($this->paymentMethods[$code])) {
+            return $this->paymentMethods[$code];
         } else {
             return false;
         }

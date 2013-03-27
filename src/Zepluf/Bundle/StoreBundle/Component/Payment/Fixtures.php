@@ -2,6 +2,9 @@
 
 namespace Zepluf\Bundle\StoreBundle\Component\Payment;
 
+use Doctrine\ORM\EntityManager;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+
 use Zepluf\Bundle\StoreBundle\Entity\PaymentMethodType;
 use Zepluf\Bundle\StoreBundle\Entity\InvoiceItemType;
 use Zepluf\Bundle\StoreBundle\Entity\AdjustmentType;
@@ -11,6 +14,8 @@ use Zepluf\Bundle\StoreBundle\Entity\ContactMechanism;
 
 use Zepluf\Bundle\StoreBundle\Entity\Person;
 use Zepluf\Bundle\StoreBundle\Entity\Party;
+
+use Zepluf\Bundle\StoreBundle\Entity\Invoice;
 
 use Zepluf\Bundle\StoreBundle\Entity\UnitOfMeasurement;
 use Zepluf\Bundle\StoreBundle\Entity\Product;
@@ -28,17 +33,20 @@ use Zepluf\Bundle\StoreBundle\Entity\InventoryItem;
 
 class Fixtures {
     private $entityManager;
+    private $eventDispatcher;
 
-    public function __construct($doctrine)
+    public function __construct(EntityManager $entityManager, EventDispatcherInterface $eventDispatcher)
     {
-        $this->entityManager = $doctrine->getEntityManager();
+        $this->entityManager = $entityManager;
+
+        $this->eventDispatcher = $eventDispatcher;
     }
 
 
     public function setup()
     {
         foreach (get_class_methods($this) as $method) {
-            if (0 === strpos($method, 'generate_')) {echo $method;
+            if (0 === strpos($method, 'generate_')) {
                 $this->{$method}();
             }
         }
@@ -91,7 +99,6 @@ class Fixtures {
         }
 
         $this->entityManager->flush();
-        $this->entityManager->clear();
     }
 
 
@@ -106,7 +113,6 @@ class Fixtures {
         }
 
         $this->entityManager->flush();
-        $this->entityManager->clear();
     }
 
 
@@ -121,7 +127,6 @@ class Fixtures {
         }
 
         $this->entityManager->flush();
-        $this->entityManager->clear();
     }
 
 
@@ -140,7 +145,6 @@ class Fixtures {
         }
 
         $this->entityManager->flush();
-        $this->entityManager->clear();
     }
 
 
@@ -157,7 +161,6 @@ class Fixtures {
         }
 
         $this->entityManager->flush();
-        $this->entityManager->clear();
     }
 
     private function generate_party()
@@ -174,7 +177,24 @@ class Fixtures {
         }
 
         $this->entityManager->flush();
-        $this->entityManager->clear();
+    }
+
+
+    private function generate_invoice()
+    {
+        for ($i = 1; $i <= 5; $i++) {
+            $invoice = new Invoice($this->entityManager, $this->eventDispatcher);
+
+            $invoice->setBilledTo($this->entityManager->find('Zepluf\Bundle\StoreBundle\Entity\Party', $i));
+            $invoice->setBilledFrom($this->entityManager->find('Zepluf\Bundle\StoreBundle\Entity\Party', $i));
+            $invoice->setAddressedTo($this->entityManager->getReference('Zepluf\Bundle\StoreBundle\Entity\ContactMechanism', $i));
+            $invoice->setSentTo($this->entityManager->getReference('Zepluf\Bundle\StoreBundle\Entity\ContactMechanism', $i));
+            $invoice->setEntryDate(new \DateTime());
+
+            $this->entityManager->persist($invoice);
+        }
+
+        $this->entityManager->flush();
     }
 
 
@@ -190,7 +210,6 @@ class Fixtures {
         }
 
         $this->entityManager->flush();
-        $this->entityManager->clear();
     }
 
 
@@ -208,7 +227,6 @@ class Fixtures {
         }
 
         $this->entityManager->flush();
-        $this->entityManager->clear();
     }
 
 
@@ -221,7 +239,6 @@ class Fixtures {
         }
 
         $this->entityManager->flush();
-        $this->entityManager->clear();
     }
 
 
@@ -234,7 +251,6 @@ class Fixtures {
         }
 
         $this->entityManager->flush();
-        $this->entityManager->clear();
     }
 
 
@@ -248,7 +264,6 @@ class Fixtures {
         }
 
         $this->entityManager->flush();
-        $this->entityManager->clear();
     }
 
 
@@ -263,7 +278,6 @@ class Fixtures {
         }
 
         $this->entityManager->flush();
-        $this->entityManager->clear();
     }
 
 
@@ -279,7 +293,6 @@ class Fixtures {
         }
 
         $this->entityManager->flush();
-        $this->entityManager->clear();
     }
 
 

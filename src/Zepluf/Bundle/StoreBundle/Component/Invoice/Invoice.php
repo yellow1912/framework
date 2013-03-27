@@ -31,7 +31,7 @@ class Invoice
      */
     protected $entityManager;
 
-    protected $dispatcher;
+    protected $eventDispatcher;
 
     protected $templating;
 
@@ -39,11 +39,17 @@ class Invoice
 
     protected $total = 0;
 
-    public function __construct(EntityManager $entityManager, EventDispatcherInterface $dispatcher)
+    /**
+     * constructor
+     *
+     * @param EntityManager $entityManager
+     * @param EventDispatcherInterface $eventDispatcher
+     */
+    public function __construct(EntityManager $entityManager, EventDispatcherInterface $eventDispatcher)
     {
         $this->entityManager = $entityManager;
 
-        $this->dispatcher = $dispatcher;
+        $this->dispatcher = $eventDispatcher;
     }
 
     public function getEntity()
@@ -51,11 +57,17 @@ class Invoice
         return $this->invoice;
     }
 
+    /**
+     * @param InvoiceEntity $invoice
+     * @return $this
+     */
     public function setEntity(InvoiceEntity $invoice)
     {
         $this->invoice = $invoice;
+
         return $this;
     }
+
     /**
      * create new invoice from order items collection
      *
@@ -66,11 +78,9 @@ class Invoice
         // begin transaction before flush anything into database
         $this->entityManager->getConnection()->beginTransaction();
         try {
-
             $this->entityManager->persist($this->invoice);
             $this->entityManager->flush();
             $this->entityManager->getConnection()->commit();
-
         } catch (\Exception $e) {
             $this->entityManager->getConnection()->rollback();
 
@@ -92,15 +102,15 @@ class Invoice
             $invoiceItem = new InvoiceItemEntity();
 
             $invoiceItem
+                ->setInvoice($this->invoice)
                 ->setItemDescription($item->getItemDescription())
                 ->setType($item->getType())
                 ->setQuantity($item->getQuantity())
-                ->setAmount(0)      // TODO: Set amount applied for this item.
-                ->setIsTaxable(0)   // TODO: Set taxable for this item.
-                ->setInvoice($this->invoice)
-                ->setInventoryItem($this->entityManager->getReference('StoreBundle:InventoryItem', 1))
-                ->setAdjustmentType($this->entityManager->getReference('StoreBundle:AdjustmentType', 1))
-                ->setInvoiceItemType($this->entityManager->getReference('StoreBundle:InvoiceItemType', 1));
+                ->setAmount($item->getAmount())         // TODO: Set amount applied for this item.
+                ->setIsTaxable($item->getIsTaxable())   // TODO: Set taxable for this item.
+                ->setInventoryItem($item->getInventoryItem())
+                ->setAdjustmentType($item->getAdjustmentType())
+                ->setInvoiceItemType($item->getInvoiceItemType());
 
             $this->invoice->addInvoiceItem($invoiceItem);
         }
@@ -118,5 +128,7 @@ class Invoice
         foreach ($this->invoice->getInvoiceItems() as $invoiceItem) {
             $this->total += $invoiceItem->getAmount() * $invoiceItem->getQuantity();
         }
+
+        return $this->total;
     }
 }

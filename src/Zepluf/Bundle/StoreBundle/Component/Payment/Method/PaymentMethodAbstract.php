@@ -13,37 +13,57 @@
 
 namespace Zepluf\Bundle\StoreBundle\Component\Payment\Method;
 
+use Symfony\Component\Yaml\Parser;
+use \Doctrine\Common\Collections\ArrayCollection;
+use \Zepluf\Bundle\StoreBundle\Component\Payment\Payment;
+
 abstract class PaymentMethodAbstract
 {
     /**
      * @var [type]
      */
-    protected $settings;
+    protected $config;
+
+    /**
+     * @var string $code payment method identify code
+     */
+    protected $code = 'paypal_standard';
 
     function __construct()
     {
-        $this->settings = $this->getSettings();
-    }
+        $yamlFile = __DIR__ . '/config/' . $this->getCode() . '.yml';
 
-    public function getCode()
-    {
-        return $this->settings['code'];
+        if (file_exists($yamlFile)) {
+            $yaml = new Parser();
+            $this->config = $yaml->parse(file_get_contents($yamlFile));
+        }
     }
 
     /**
-     * get current settings from this payment method
+     * get payment method identify code
      *
-     * @return array
+     * @return string
      */
-    public function getSettings()
+    function getCode()
     {
-        /**
-         * @todo get current payment method settings from this storage handler
-         */
-        return array(
-            'status' => 1,
-            'sort_order' => 10
-        );
+        return $this->code;
+    }
+
+    /**
+     * get config from this payment method
+     *
+     * @param null $param
+     * @return bool|mixed
+     */
+    public function getConfig($param = null)
+    {
+        if (null === $param) {
+            return $this->config;
+        } else if (isset($this->config[$param])) {
+            return $this->config[$param];
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -53,7 +73,7 @@ abstract class PaymentMethodAbstract
      */
     public function isAvailable()
     {
-        if (isset($this->settings['status']) && $this->settings['status']) {
+        if ($this->getConfig('status')) {
             return true;
         } else {
             return false;
@@ -74,29 +94,21 @@ abstract class PaymentMethodAbstract
     }
 
     /**
-     * [renderSelection description]
      *
-     * @return [type] [description]
      */
     public function renderSelection()
     {
-
     }
 
     /**
-     * [renderSelection description]
-     *
-     * @return [type] [description]
+     * @param ArrayCollection $invoiceItems
      */
-    public function renderForm()
+    public function renderForm(Payment $payment)
     {
-        return null;
     }
 
     /**
-     * [renderSelection description]
      *
-     * @return [type] [description]
      */
     public function renderSubmit()
     {
@@ -111,15 +123,5 @@ abstract class PaymentMethodAbstract
     public function validation()
     {
         return true;
-    }
-
-    /**
-     * [process description]
-     *
-     * @return [type] [description]
-     */
-    public function process()
-    {
-
     }
 }

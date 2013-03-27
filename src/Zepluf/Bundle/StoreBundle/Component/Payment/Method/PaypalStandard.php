@@ -14,23 +14,20 @@
 namespace Zepluf\Bundle\StoreBundle\Component\Payment\Method;
 
 use \Doctrine\ORM\EntityManager;
-use \Doctrine\Common\Collections\Collection;
+use \Doctrine\Common\Collections\ArrayCollection;
 
 use Zepluf\Bundle\StoreBundle\Events\PaymentEvents;
 
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
-use Zepluf\Bundle\StoreBundle\Entity\Payment as PaymentEntity;
+use \Zepluf\Bundle\StoreBundle\Component\Payment\Payment;
 
 /**
 *
 */
 class PaypalStandard extends PaymentMethodAbstract implements PaymentMethodInterface
 {
-    /**
-     * @var [type]
-     */
-    protected $settings;
+    protected $code = 'paypal_standard';
 
     protected $templating;
 
@@ -38,164 +35,219 @@ class PaypalStandard extends PaymentMethodAbstract implements PaymentMethodInter
 
     protected $eventDispatcher;
 
-    function __construct($templating, EntityManager $entityManager, EventDispatcherInterface $eventDispatcher)
+    function __construct(EntityManager $entityManager, EventDispatcherInterface $eventDispatcher)
     {
-        $this->templating = $templating;
+        parent::__construct();
 
         $this->entityManager = $entityManager;
 
         $this->eventDispatcher = $eventDispatcher;
-
-        /**
-         * @todo get current payment method settings from it's storage handler
-         */
-        $this->settings = array(
-            'code' => 'paypal_standard',
-            'sandbox_mode' => 0,
-            'email' => 'seller.1314@yahoo.com',
-            'status' => 1,
-            'sort_order' => 20,
-            'order_status' => array(
-                'Canceled_Reversal' => 1,
-                'Completed'         => 1,
-                'Denied'            => 1,
-                'Expired'           => 1,
-                'Failed'            => 1,
-                'Pending'           => 1,
-                'Processed'         => 1,
-                'Refunded'          => 1,
-                'Reversed'          => 1,
-                'Voided'            => 1
-            )
-        );
     }
 
-    /**
-     * get settings from this payment method
-     *
-     * @param   string|null  $key  setting key | null
-     * @return  mixed              setting values | false
-     */
-    public function getSettings($key = null)
-    {
-        if (null === $key) {
-            return $this->settings;
-        } else if (isset($this->settings[$key])) {
-            return $this->settings[$key];
-        } else {
-            return false;
-        }
-    }
+    // /**
+    // * get identify code for this payment method
+    // *
+    // * @return string identify code
+    // */
+    // public function getCode()
+    // {
+    //     return $this->code;
+    // }
+
+    // /**
+    // * get settings from this payment method
+    // *
+    // * @param   string|null  $key  setting key | null
+    // * @return  mixed              setting values | false
+    // */
+    // public function getSettings($key = null)
+    // {
+    //     if (null === $key) {
+    //         return $this->settings;
+    //     } else if (isset($this->settings[$key])) {
+    //         return $this->settings[$key];
+    //     } else {
+    //         return false;
+    //     }
+    // }
+
+    // /**
+    // * check current payment method is active or inactive
+    // *
+    // * @return boolean
+    // */
+    // public function isAvailable()
+    // {
+    //     if (isset($this->settings['status']) && $this->settings['status']) {
+    //         return true;
+    //     } else {
+    //         return false;
+    //     }
+    // }
+
+    // /**
+    // * check all current payment method conditions are passed
+    // *
+    // * @return boolean
+    // */
+    // public function checkCondition()
+    // {
+    //     // TODO:
+    //     // get and check all conditions for this payment method are passed
+    //     // with contact mechanism, order items, shipping method
+    //     return true;
+    // }
+
+    // /**
+    // * [renderSelection description]
+    // *
+    // * @return [type] [description]
+    // */
+    // public function renderSelection()
+    // {
+
+    // }
+
+    // /**
+    //  * [renderSelection description]
+    //  *
+    //  * @return [type] [description]
+    //  */
+    // public function renderSubmit()
+    // {
+
+    // }
+
+    // /**
+    //  * validation form data
+    //  *
+    //  * @return boolean
+    //  */
+    // public function validation()
+    // {
+    //     return true;
+    // }
 
     /**
-     * check current payment method is active or inactive
+     * [renderForm description]
      *
-     * @return boolean
+     * @param  Payment $payment [description]
+     * @return array            [description]
      */
-    public function isAvailable()
+    public function renderForm(Payment $payment)
     {
-        if (isset($this->settings['status']) && $this->settings['status']) {
-            return true;
-        } else {
-            return false;
-        }
-    }
+        $data['business']      = $this->getConfig('business');
+        $data['currency_code'] = $this->getConfig('currency_code');
+        $data['notify_url']    = $this->getConfig('notify_url');
+        $data['cancel_return'] = $this->getConfig('cancel_return');
 
-    /**
-     * check all current payment method conditions are passed
-     *
-     * @return boolean
-     */
-    public function checkCondition()
-    {
-        // TODO:
-        // get and check all conditions for this payment method are passed
-        // with contact mechanism, order items, shipping method
-        return true;
-    }
-
-    /**
-     * [renderSelection description]
-     *
-     * @return [type] [description]
-     */
-    public function renderSelection()
-    {
-
-    }
-
-    /**
-     * [renderSelection description]
-     *
-     * @return [type] [description]
-     */
-    public function renderForm(Collection $invoiceItems)
-    {
-        if ($invoiceItems->isEmpty()) {
-            // TODO: redirect to home page
-            throw new Exception('No items available..', 1);
-        }
-
-        $data['sandbox_mode'] = $this->settings['sandbox_mode'];
-        $data['sandbox_notify'] = 'Sandbox notify';
-
-        if ($data['sandbox_mode']) {
+        if ($this->getConfig('sandbox_mode')) {
             $data['action'] = 'https://www.sandbox.paypal.com/cgi-bin/webscr';
         } else {
             $data['action'] = 'https://www.paypal.com/cgi-bin/webscr';
         }
 
-        $data['business'] = $this->settings['email'];
+        $paymentEntity = $payment->getEntity();
+        $paymentApplications = $paymentEntity->getPaymentApplications();
 
-        $data['products'] = array();
-        while (false !== ($invoiceItem = $invoiceItems->next())) {
-            $featuresValueIds = $invoiceItem->getInventoryItem()->getFeatureValueIds();
-            $features = $this->entityManager->createQueryBuilder()
-               ->select(array('pf.name', 'pfv.value'))
-               ->from('Zepluf\Bundle\StoreBundle\Entity\ProductFeatureValue', 'pfv')
-               ->leftJoin('Zepluf\Bundle\StoreBundle\Entity\ProductFeature', 'pf', 'WITH', 'pfv.product_feature_id = pf.id')
-               ->where('pfv.id IN (' . $featuresValueIds . ')');
+        $data['custom'] = $paymentEntity->getId();
 
-            $data['products'][] = array(
-                'name'       => $invoiceItem->getItemDescription(),
-                'price'      => $invoiceItem->getAmount(),
-                'quantity'   => $invoiceItem->getQuantity(),
-                'features'   => $features
-            );
+        // this payment applied for only 1 invoice
+        if (1 === $paymentApplications->count()) {
+            $invoice = $paymentApplications->current()->getInvoice();
+            $invoiceItems = $invoice->getInvoiceItems();
+
+            $totalAmount = 0;
+
+            foreach ($invoiceItems as $invoiceItem) {
+                $totalAmount += $invoiceItem->getAmount() * $invoiceItem->getQuantity();
+            }
+
+            $data['total_amount'] = $totalAmount;
+
+            // this invoice paid one time completely
+            if ($totalAmount === $paymentEntity->getAmount()) {
+                $data['cmd'] = '_cart';
+
+                foreach ($invoice->getInvoiceItems() as $index => $invoiceItem) {
+                    // TODO: get features list
+
+                    $data['items'][] = array(
+                        'item_name_' . $index => $invoiceItem->getItemDescription(),
+                        'amount_' . $index => $invoiceItem->getAmount(),
+                        'quantity_' . $index => $invoiceItem->getQuantity()
+                    );
+                }
+            }
+            // this invoice paid multi times
+            else {
+                $data['cmd'] = '_xclick';
+                $data['amount'] = $payment->getAmount();
+                $data['item_name'] = 'Paying for invoice ID: ' . $invoice->getId();
+            }
+        }
+        // this payment applied for multi invoices
+        else {
+            $data['cmd'] = '_cart';
+            $data['amount'] = $payment->getAmount();
+
+            foreach ($paymentApplications as $paymentApplication) {
+                $data['items'][] = array(
+                    'item_name_' . $index => 'Invoice ID (' . $paymentApplication->getInvoice()->getId() . ')',
+                    'amount_' . $index => $paymentApplication->getAmountApplied(),
+                    'quantity_' . $index => 1
+                );
+            }
         }
 
-        return $this->templating->render('StoreBundle:fontend/component/payment/paypal_standard.html.php', $data);
+        // TODO: Get infomation about customer: first_name, last_name, email, address, etc...
+
+        // TODO: render paypal_standard template
+        // return $this->templating->render('StoreBundle::fontend/component/payment:paypal_standard.html.php', $data);
+
+        file_put_contents('/xampp/htdocs/framework/cart_info.txt', serialize($data));
+        return $data;
+
+        // $data['sandbox_mode'] = $this->settings['sandbox_mode'];
+        // $data['sandbox_notify'] = 'Sandbox notify';
+
+        // if ($data['sandbox_mode']) {
+        //     $data['action'] = 'https://www.sandbox.paypal.com/cgi-bin/webscr';
+        // } else {
+        //     $data['action'] = 'https://www.paypal.com/cgi-bin/webscr';
+        // }
+
+        // $data['business'] = $this->settings['email'];
+
+        // $data['products'] = array();
+        // while (false !== ($invoiceItem = $invoiceItems->next())) {
+        //     $featuresValueIds = $invoiceItem->getInventoryItem()->getFeatureValueIds();
+        //     $features = $this->entityManager->createQueryBuilder()
+        //        ->select(array('pf.name', 'pfv.value'))
+        //        ->from('Zepluf\Bundle\StoreBundle\Entity\ProductFeatureValue', 'pfv')
+        //        ->leftJoin('Zepluf\Bundle\StoreBundle\Entity\ProductFeature', 'pf', 'WITH', 'pfv.product_feature_id = pf.id')
+        //        ->where('pfv.id IN (' . $featuresValueIds . ')');
+
+        //     $data['products'][] = array(
+        //         'name'       => $invoiceItem->getItemDescription(),
+        //         'price'      => $invoiceItem->getAmount(),
+        //         'quantity'   => $invoiceItem->getQuantity(),
+        //         'features'   => $features
+        //     );
+        // }
+
+        // return $this->templating->render('StoreBundle:fontend/component/payment/paypal_standard.html.php', $data);
     }
 
-    /**
-     * [renderSelection description]
-     *
-     * @return [type] [description]
-     */
-    public function renderSubmit()
-    {
 
-    }
-
-    /**
-     * validation form data
-     *
-     * @return boolean
-     */
-    public function validation()
-    {
-        return true;
-    }
 
     /**
      * [callback description]
      * @param  [type]   $data [description]
      * @return function       [description]
      */
-    public function callback($data)
+    public function callback(array $data)
     {
-        $this->eventDispatcher->dispatch(PaymentEvents::onPaypalStandardCallbackStart, $orderStatusId);
-
         if (true === isset($data['custom']) && true === ($paymentEntity = $this->entityManager->find('Zepluf\Bundle\StoreBundle\Entity\Payment', $data['custom']))) {
             $request['cmd'] = '_notify-validate';
 

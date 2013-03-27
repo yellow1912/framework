@@ -70,7 +70,7 @@ class Invoice
     /**
      * @var \Party
      *
-     * @ORM\ManyToOne(targetEntity="Party")
+     * @ORM\ManyToOne(targetEntity="Party", cascade={"persist"})
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="billed_from", referencedColumnName="id")
      * })
@@ -100,7 +100,7 @@ class Invoice
     /**
      * @var InvoiceItem|array
      *
-     * @ORM\OneToMany(targetEntity="InvoiceItem", mappedBy="invoice", cascade={"persist", "remove"})
+     * @ORM\OneToMany(targetEntity="InvoiceItem", mappedBy="invoice")
      */
     private $invoiceItems;
 
@@ -116,7 +116,7 @@ class Invoice
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -132,14 +132,14 @@ class Invoice
     public function setEntryDate($entryDate)
     {
         $this->entryDate = $entryDate;
-    
+
         return $this;
     }
 
     /**
      * Get entryDate
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getEntryDate()
     {
@@ -155,14 +155,14 @@ class Invoice
     public function setMessage($message)
     {
         $this->message = $message;
-    
+
         return $this;
     }
 
     /**
      * Get message
      *
-     * @return string 
+     * @return string
      */
     public function getMessage()
     {
@@ -178,14 +178,14 @@ class Invoice
     public function setDescription($description)
     {
         $this->description = $description;
-    
+
         return $this;
     }
 
     /**
      * Get description
      *
-     * @return string 
+     * @return string
      */
     public function getDescription()
     {
@@ -201,7 +201,7 @@ class Invoice
     public function addTermType(\Zepluf\Bundle\StoreBundle\Entity\TermType $termType)
     {
         $this->termType[] = $termType;
-    
+
         return $this;
     }
 
@@ -218,7 +218,7 @@ class Invoice
     /**
      * Get termType
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getTermType()
     {
@@ -234,14 +234,14 @@ class Invoice
     public function setBilledTo(\Zepluf\Bundle\StoreBundle\Entity\Party $billedTo = null)
     {
         $this->billedTo = $billedTo;
-    
+
         return $this;
     }
 
     /**
      * Get billedTo
      *
-     * @return \Zepluf\Bundle\StoreBundle\Entity\Party 
+     * @return \Zepluf\Bundle\StoreBundle\Entity\Party
      */
     public function getBilledTo()
     {
@@ -257,14 +257,14 @@ class Invoice
     public function setBilledFrom(\Zepluf\Bundle\StoreBundle\Entity\Party $billedFrom = null)
     {
         $this->billedFrom = $billedFrom;
-    
+
         return $this;
     }
 
     /**
      * Get billedFrom
      *
-     * @return \Zepluf\Bundle\StoreBundle\Entity\Party 
+     * @return \Zepluf\Bundle\StoreBundle\Entity\Party
      */
     public function getBilledFrom()
     {
@@ -280,14 +280,14 @@ class Invoice
     public function setAddressedTo(\Zepluf\Bundle\StoreBundle\Entity\ContactMechanism $addressedTo = null)
     {
         $this->addressedTo = $addressedTo;
-    
+
         return $this;
     }
 
     /**
      * Get addressedTo
      *
-     * @return \Zepluf\Bundle\StoreBundle\Entity\ContactMechanism 
+     * @return \Zepluf\Bundle\StoreBundle\Entity\ContactMechanism
      */
     public function getAddressedTo()
     {
@@ -303,14 +303,14 @@ class Invoice
     public function setSentTo(\Zepluf\Bundle\StoreBundle\Entity\ContactMechanism $sentTo = null)
     {
         $this->sentTo = $sentTo;
-    
+
         return $this;
     }
 
     /**
      * Get sentTo
      *
-     * @return \Zepluf\Bundle\StoreBundle\Entity\ContactMechanism 
+     * @return \Zepluf\Bundle\StoreBundle\Entity\ContactMechanism
      */
     public function getSentTo()
     {
@@ -326,7 +326,7 @@ class Invoice
     public function addInvoiceItem(\Zepluf\Bundle\StoreBundle\Entity\InvoiceItem $invoiceItems)
     {
         $this->invoiceItems[] = $invoiceItems;
-    
+
         return $this;
     }
 
@@ -343,7 +343,7 @@ class Invoice
     /**
      * Get invoiceItems
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getInvoiceItems()
     {

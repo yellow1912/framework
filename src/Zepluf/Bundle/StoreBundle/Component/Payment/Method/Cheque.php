@@ -13,51 +13,33 @@
 
 namespace Zepluf\Bundle\StoreBundle\Component\Payment\Method;
 
+use \Doctrine\ORM\EntityManager;
+use \Doctrine\Common\Collections\ArrayCollection;
+
+use Zepluf\Bundle\StoreBundle\Events\PaymentEvents;
+
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+
+use \Zepluf\Bundle\StoreBundle\Component\Payment\Payment;
+
 /**
 *
 */
 class Cheque extends PaymentMethodAbstract implements PaymentMethodInterface
 {
-    /**
-     * @var [type]
-     */
-    protected $settings;
+    protected $code = 'cheque';
+
+    protected $entityManager;
+
+    protected $eventDispatcher;
 
     function __construct()
     {
-        $this->settings = $this->getSettings();
+        $this->entityManager = $entityManager;
+
+        $this->eventDispatcher = $eventDispatcher;
     }
 
-    /**
-     * get current settings from this payment method
-     *
-     * @return array
-     */
-    public function getSettings()
-    {
-        /**
-         * @todo get current payment method settings from storage handler
-         */
-        return array(
-            'code' => 'cheque',
-            'status' => 1,
-            'sort_order' => 10
-        );
-    }
-
-    /**
-     * check current payment method is active or inactive
-     *
-     * @return boolean
-     */
-    public function isAvailable()
-    {
-        if (isset($this->settings['status']) && $this->settings['status']) {
-            return true;
-        } else {
-            return false;
-        }
-    }
 
     /**
      * check all current payment method conditions are passed
@@ -87,7 +69,7 @@ class Cheque extends PaymentMethodAbstract implements PaymentMethodInterface
      *
      * @return [type] [description]
      */
-    public function renderForm()
+    public function renderForm(Payment $payment)
     {
         return null;
     }
@@ -99,7 +81,6 @@ class Cheque extends PaymentMethodAbstract implements PaymentMethodInterface
      */
     public function renderSubmit()
     {
-
     }
 
     /**
@@ -110,10 +91,5 @@ class Cheque extends PaymentMethodAbstract implements PaymentMethodInterface
     public function validation()
     {
         return true;
-    }
-
-    public function process()
-    {
-
     }
 }
