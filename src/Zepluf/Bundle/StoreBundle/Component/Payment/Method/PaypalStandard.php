@@ -214,8 +214,6 @@ class PaypalStandard extends PaymentMethodAbstract implements PaymentMethodInter
         // TODO: render paypal_standard template
         // return $this->templating->render('StoreBundle::fontend/component/payment:paypal_standard.html.php', $data);
 
-        // this content for test only
-        file_put_contents(str_replace('Component', 'Tests/Component', __DIR__) . '/DataTest/cart_info.txt', serialize($data));
         return $data;
 
         // $data['sandbox_mode'] = $this->settings['sandbox_mode'];
@@ -250,6 +248,34 @@ class PaypalStandard extends PaymentMethodAbstract implements PaymentMethodInter
     }
 
 
+    public function curl($url, array $params = array())
+    {
+        $params = http_build_query($params);
+
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HEADER, false);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+
+        try {
+            $response = curl_exec($ch);
+        } catch (\Exception $e) {
+            throw $e;
+        }
+
+        if (true == ($error = curl_error($ch))) {
+            throw new PaymentException($error, PaymentException::CURL_EXCEPTION);
+        }
+
+        curl_close($ch);
+
+        return $response;
+    }
+
+
 
     /**
      * [callback description]
@@ -259,33 +285,19 @@ class PaypalStandard extends PaymentMethodAbstract implements PaymentMethodInter
     public function callback(array $data)
     {
         if (isset($data['custom']) && true == ($paymentEntity = $this->entityManager->find('Zepluf\Bundle\StoreBundle\Entity\Payment', $data['custom']))) {
-            $request['cmd'] = '_notify-validate';
-
-            foreach ($data as $key => $value) {
-                $request[$key] = $value;
-            }
+            $params['cmd'] = '_notify-validate';
 
             if ($this->getConfig('sandbox_mode')) {
-                $curl = curl_init('https://www.sandbox.paypal.com/cgi-bin/webscr');
+                $url = 'https://www.sandbox.paypal.com/cgi-bin/webscr';
             } else {
-                $curl = curl_init('https://www.paypal.com/cgi-bin/webscr');
+                $url = 'https://www.paypal.com/cgi-bin/webscr';
             }
 
-            curl_setopt($curl, CURLOPT_POST, true);
-            curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($request));
-            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($curl, CURLOPT_HEADER, false);
-            curl_setopt($curl, CURLOPT_TIMEOUT, 30);
-            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-
-            try {
-                $response = curl_exec($curl);
-            } catch (\Exception $e) {
-                throw $e;
+            foreach ($data as $key => $value) {
+                $params[$key] = $value;
             }
 
-            curl_close($curl);
-
+            $response = $this->curl($url, $params);
             if (0 === strcmp($response, 'VERIFIED')) {
                 // recheck total amount to make sure everything completely matched
                 if ((float)$data['mc_gross'] !== (float)$paymentEntity->getAmount()) {
@@ -296,7 +308,7 @@ class PaypalStandard extends PaymentMethodAbstract implements PaymentMethodInter
                 if (strtolower(trim($data['receiver_email'])) !== strtolower(trim($this->getConfig('business')))) {
                     throw new PaymentException('Paypal Standard :: Receiver email mismatch!', PaymentException::EMAIL_MISMATCH);
                 }
-            } else if (0 === strcmp($response, 'UNVERIFIED')) {
+            } else if (0 === strcmp($response, 'INVALID')) {
                 return false;
             } else {
                 throw new PaymentException('Paypal Standard :: Invalied response...', PaymentException::INVALID_RESPONSE);

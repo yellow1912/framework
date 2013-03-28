@@ -4,8 +4,9 @@ if (!empty($_POST)) {
     file_put_contents('request.txt', serialize($_POST));
     exit();
 } else {
-    $data = unserialize(file_get_contents('cart_info.txt'));
+    $data = unserialize(file_get_contents('src/Zepluf/Bundle/StoreBundle/Tests/Component/Payment/Method/DataTest/cart_info.txt'));
 }
+
 ?>
 <html>
 <head>
@@ -14,11 +15,17 @@ if (!empty($_POST)) {
 
 <body>
 <form action="<?php echo $data['action']; ?>" method="post">
-    <?php foreach($data as $name => $value): if (!is_array($value) && $name !== 'action'): ?>
-    <input type="hidden" name="<?php echo $name; ?>" value="<?php echo $value; ?>" />
-    <?php endif; endforeach; ?>
-
     <input type="hidden" name="upload" value="1" />
+
+<?php foreach($data as $name => $value): if (!is_array($value) && $name !== 'action'): ?>
+    <input type="hidden" name="<?php echo $name; ?>" value="<?php echo $value; ?>" />
+<?php endif; endforeach; ?>
+
+<?php foreach ($data['items'] as $index => $item): foreach ($item as $name => $value): ?>
+    <input type="hidden" name="<?php echo $name; ?>" value="<?php echo $value; ?>" />
+<?php endforeach; endforeach; ?>
+
+<!--
     <input type="hidden" name="first_name" value="Trinh" />
     <input type="hidden" name="last_name" value="Quang Vinh" />
     <input type="hidden" name="address1" value="Ho chi minh" />
@@ -34,10 +41,7 @@ if (!empty($_POST)) {
     <input type="hidden" name="rm" value="2" />
     <input type="hidden" name="no_note" value="1" />
     <input type="hidden" name="charset" value="utf-8" />
-
-    <?php foreach ($data['items'] as $index => $item): foreach ($item as $name => $value): ?>
-    <input type="hidden" name="<?php echo $name; ?>" value="<?php echo $value; ?>" />
-    <?php endforeach; endforeach; ?>
+-->
 
     <input type="submit" value="Confirm Order" />
 </form>

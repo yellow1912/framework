@@ -16,4 +16,5 @@ class PaymentException extends \Exception {
     const INVALID_RESPONSE = 2;
     const AMOUNT_MISMATCH  = 3;
     const EMAIL_MISMATCH   = 4;
+    const CURL_EXCEPTION   = 5;
 }

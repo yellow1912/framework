@@ -1,26 +1,20 @@
-order_status:
-  Canceled_Reversal : 10
-  Completed         : 20
-  Denied            : 30
-  Expired           : 40
-  Failed            : 50
-  Pending           : 60
-  Processed         : 70
-  Refunded          : 80
-  Reversed          : 90
-  Voided            : 100
 
-
-# Defines the currency in which the monetary variables
-# (amount, shipping, shipping2, handling, tax) are denoted.
-#
-# Possible values are "USD", "EUR", "GBP", "CAD", "JPY"
-currency_code : USD
+# Active status
+status : true
 
 # Active PayPal Sandbox mode
 # Use the PayPal Sandbox to test and debug routines that make use of the PayPal APIs.
 # If the payment gateway in "Sandbox Mode". Your account will not be charged.
-sandbox_mode : 1
+sandbox_mode : true
+
+# Defines the currency in which the monetary variables
+# (amount, shipping, shipping2, handling, tax) are denoted.
+#
+# Possible values are: AUD, CAD, EUR, GBP, JPY, USD, NZD, CHF, HKD,SGD,
+# SEK, DKK, PLN, NOK, HUF, CZK, ILS, MXN, BRL, MYR, PHP, TWD, THB, TRY
+#
+# More info: https://www.paypal.com/cgi-bin/webscr?cmd=p/sell/mc/mc_wa-outside
+currency_code : USD
 
 # Email address on your PayPal account
 business : seller.1314@yahoo.com
@@ -50,6 +44,9 @@ business : seller.1314@yahoo.com
 paymentaction : sale
 
 # ...
+return : 'http://vinhtrinh.no-ip.org/framework/PaypalStandardCallbackTest.php'
+
+# ...
 return_url : 'http://vinhtrinh.no-ip.org/framework/PaypalStandardCallbackTest.php'
 
 # Only used with IPN. An internet URL where IPN form posts will be sent
@@ -57,6 +54,3 @@ notify_url : 'http://vinhtrinh.no-ip.org/framework/PaypalStandardCallbackTest.ph
 
 # An internet URL where your customer will be returned after cancelling payment
 cancel_return : 'http://vinhtrinh.no-ip.org/framework/PaypalStandardCallbackTest.php'
-
-# Active status
-status : 1
