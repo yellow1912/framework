@@ -44,13 +44,13 @@ business : seller.1314@yahoo.com
 paymentaction : sale
 
 # ...
-return : 'http://vinhtrinh.no-ip.org/framework/PaypalStandardCallbackTest.php'
+return : 'http://vinhtrinh.no-ip.org/zeni/PaypalStandardCallbackTest.php'
 
 # ...
-return_url : 'http://vinhtrinh.no-ip.org/framework/PaypalStandardCallbackTest.php'
+return_url : 'http://vinhtrinh.no-ip.org/zeni/PaypalStandardCallbackTest.php'
 
 # Only used with IPN. An internet URL where IPN form posts will be sent
-notify_url : 'http://vinhtrinh.no-ip.org/framework/PaypalStandardCallbackTest.php'
+notify_url : 'http://vinhtrinh.no-ip.org/zeni/PaypalStandardCallbackTest.php'
 
 # An internet URL where your customer will be returned after cancelling payment
-cancel_return : 'http://vinhtrinh.no-ip.org/framework/PaypalStandardCallbackTest.php'
+cancel_return : 'http://vinhtrinh.no-ip.org/zeni/PaypalStandardCallbackTest.php'

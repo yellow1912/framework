@@ -17,6 +17,7 @@
     },
     "require": {
         "php": ">=5.3.3",
+        "phpunit/phpunit": "3.7.*",
         "composer/installers": "*",
         "zepluf/installer": "*",
         "symfony/symfony": "2.2.*",

@@ -14,7 +14,7 @@ use Zepluf\Bundle\StoreBundle\Component\Product\ProductCollection;
 use Zepluf\Bundle\StoreBundle\Entity\Order as OrderEntity;
 use Doctrine\ORM\EntityManager;
 use Zepluf\Bundle\StoreBundle\Entity\OrderItem;
-use Zepluf\Bundle\StoreBundle\Component\Price\Pricing;
+use Zepluf\Bundle\StoreBundle\Component\Pricing\Pricing;
 use Zepluf\Bundle\StoreBundle\Exceptions\ProductException;
 
 class Order
@@ -135,5 +135,25 @@ class Order
     public function addInvoice()
     {
 
+    }
+
+    public function calculateTotal()
+    {
+
+    }
+
+    public function calculateRemaining()
+    {
+
+        $total = 0;
+        // first we need to get the total of all order item
+        foreach ($this->order->getOrderItems() as $orderItem) {
+            $total += $orderItem->getUnitPrice() * $orderItem->getQuantity();
+        }
+
+        // get all the invoices
+        foreach ($orderItem->getInvoices() as $orderInvoice) {
+
+        }
     }
 }

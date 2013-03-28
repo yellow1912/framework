@@ -21,7 +21,7 @@ if (!empty($_POST)) {
     <input type="hidden" name="<?php echo $name; ?>" value="<?php echo $value; ?>" />
 <?php endif; endforeach; ?>
 
-<?php foreach ($data['items'] as $index => $item): foreach ($item as $name => $value): ?>
+<?php if (isset($data['items'])) foreach ($data['items'] as $index => $item): foreach ($item as $name => $value): ?>
     <input type="hidden" name="<?php echo $name; ?>" value="<?php echo $value; ?>" />
 <?php endforeach; endforeach; ?>
 

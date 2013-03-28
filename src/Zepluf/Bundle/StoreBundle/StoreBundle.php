@@ -20,6 +20,7 @@ use Symfony\Component\Yaml\Yaml;
 use Zepluf\Bundle\StoreBundle\DependencyInjection\Compiler\PaymentPass;
 use Zepluf\Bundle\StoreBundle\DependencyInjection\Compiler\ZeplufPass;
 use Zepluf\Bundle\StoreBundle\DependencyInjection\Compiler\ShipmentPass;
+use Zepluf\Bundle\StoreBundle\DependencyInjection\Compiler\PricingPass;
 
 /**
  * Bundle.
@@ -34,6 +35,7 @@ class StoreBundle extends Bundle
         $container->addCompilerPass(new ZeplufPass());
         $container->addCompilerPass(new ShipmentPass());
         $container->addCompilerPass(new PaymentPass());
+        $container->addCompilerPass(new PricingPass());
         $container->addCompilerPass(new TemplatingPass());
 
         // allow plugins to have their own compiler passes

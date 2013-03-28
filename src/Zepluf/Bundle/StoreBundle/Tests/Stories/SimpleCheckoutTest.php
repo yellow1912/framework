@@ -12,7 +12,7 @@ namespace Zepluf\Bundle\StoreBundle\Tests\Stories;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Zepluf\Bundle\StoreBundle\Component\Invoice\Invoice;
-use Zepluf\Bundle\StoreBundle\Component\Price\Handler\TaxPriceHandler;
+use Zepluf\Bundle\StoreBundle\Component\Pricing\Handler\TaxPriceHandler;
 
 class SimpleCheckoutTest extends \Zepluf\Bundle\StoreBundle\Tests\BaseTestCase
 {
@@ -30,6 +30,13 @@ class SimpleCheckoutTest extends \Zepluf\Bundle\StoreBundle\Tests\BaseTestCase
 
     public function testSimpleCheckout()
     {
+        $loader = new \Nelmio\Alice\Loader\Yaml();
+
+        $em = $this->_container->get('doctrine.orm.entity_manager');
+        $objects = $loader->load(__DIR__ . '/../../Resources/fixtures/product.yml', $em);
+        $persister = new \Nelmio\Alice\ORM\Doctrine($em);
+        $persister->persist($objects);
+
         // add product to cart
 //        $productCollection = $this->getProductCollection();
 //        $productCollection->expects($this->once())
@@ -142,6 +149,12 @@ class SimpleCheckoutTest extends \Zepluf\Bundle\StoreBundle\Tests\BaseTestCase
         // calculate tax
 
         //
+
+        // remove added fixtures
+        foreach ($objects as $object) {
+            $em->refresh($object);
+            $em->remove($object);
+        }
     }
 
     public function tearDown()

@@ -81,9 +81,11 @@ class StoreExtension extends Extension
         // register payment configurations
         $this->registerPaymentConfiguration(array(), $container, $loader);
 
-
         // register shipment configurations
         $this->registerShipmentConfiguration(array(), $container, $loader);
+
+        // register pricing configurations
+        $this->registerPricingConfiguration(array(), $container, $loader);
     }
 
     public function getConfiguration(array $config, ContainerBuilder $container)
@@ -129,5 +131,16 @@ class StoreExtension extends Extension
     private function registerShipmentConfiguration(array $config, ContainerBuilder $container, XmlFileLoader $loader)
     {
         $loader->load('shipment.xml');
+    }
+
+    /**
+     * Loads the pricing configuration.
+     *
+     * @param array         $config A proxy configuration array
+     * @param XmlFileLoader $loader An XmlFileLoader instance
+     */
+    private function registerPricingConfiguration(array $config, ContainerBuilder $container, XmlFileLoader $loader)
+    {
+        $loader->load('pricing.xml');
     }
 }

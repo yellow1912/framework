@@ -26,9 +26,9 @@ class ProductTest extends BaseTestCase
 //        $productComponent = new \Zepluf\Bundle\StoreBundle\Component\Product\ProductComponent($this->_container->get('doctrine')->getEntityManager());
 //
 //        var_dump($productComponent->setProduct($product)->isChildOf(2));die();
-//        $pricing = new \Zepluf\Bundle\StoreBundle\Component\Price\Pricing();
-//        $pricing->addHandler(new \Zepluf\Bundle\StoreBundle\Component\Price\DefaultPriceHandler());
-//        $pricing->addHandler(new \Zepluf\Bundle\StoreBundle\Component\Price\ProductDiscountPriceHandler());
+//        $pricing = new \Zepluf\Bundle\StoreBundle\Component\Pricing\Pricing();
+//        $pricing->addHandler(new \Zepluf\Bundle\StoreBundle\Component\Pricing\DefaultPriceHandler());
+//        $pricing->addHandler(new \Zepluf\Bundle\StoreBundle\Component\Pricing\ProductDiscountPriceHandler());
 //        var_dump($pricing->getProductPrice($product));
 //        die();
     }

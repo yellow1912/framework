@@ -45,90 +45,6 @@ class PaypalStandard extends PaymentMethodAbstract implements PaymentMethodInter
         $this->eventDispatcher = $eventDispatcher;
     }
 
-    // /**
-    // * get identify code for this payment method
-    // *
-    // * @return string identify code
-    // */
-    // public function getCode()
-    // {
-    //     return $this->code;
-    // }
-
-    // /**
-    // * get settings from this payment method
-    // *
-    // * @param   string|null  $key  setting key | null
-    // * @return  mixed              setting values | false
-    // */
-    // public function getSettings($key = null)
-    // {
-    //     if (null === $key) {
-    //         return $this->settings;
-    //     } else if (isset($this->settings[$key])) {
-    //         return $this->settings[$key];
-    //     } else {
-    //         return false;
-    //     }
-    // }
-
-    // /**
-    // * check current payment method is active or inactive
-    // *
-    // * @return boolean
-    // */
-    // public function isAvailable()
-    // {
-    //     if (isset($this->settings['status']) && $this->settings['status']) {
-    //         return true;
-    //     } else {
-    //         return false;
-    //     }
-    // }
-
-    // /**
-    // * check all current payment method conditions are passed
-    // *
-    // * @return boolean
-    // */
-    // public function checkCondition()
-    // {
-    //     // TODO:
-    //     // get and check all conditions for this payment method are passed
-    //     // with contact mechanism, order items, shipping method
-    //     return true;
-    // }
-
-    // /**
-    // * [renderSelection description]
-    // *
-    // * @return [type] [description]
-    // */
-    // public function renderSelection()
-    // {
-
-    // }
-
-    // /**
-    //  * [renderSelection description]
-    //  *
-    //  * @return [type] [description]
-    //  */
-    // public function renderSubmit()
-    // {
-
-    // }
-
-    // /**
-    //  * validation form data
-    //  *
-    //  * @return boolean
-    //  */
-    // public function validation()
-    // {
-    //     return true;
-    // }
-
     /**
      * [renderForm description]
      *
@@ -137,12 +53,6 @@ class PaypalStandard extends PaymentMethodAbstract implements PaymentMethodInter
      */
     public function renderForm(Payment $payment)
     {
-        // $data['business']      = $this->getConfig('business');
-        // $data['currency_code'] = $this->getConfig('currency_code');
-        // $data['notify_url']    = $this->getConfig('notify_url');
-        // $data['return_url']    = $this->getConfig('return_url');
-        // $data['cancel_return'] = $this->getConfig('cancel_return');
-
         $data = array();
         foreach ($this->getConfig() as $key => $value) {
             if (is_string($value)) {
@@ -191,14 +101,14 @@ class PaypalStandard extends PaymentMethodAbstract implements PaymentMethodInter
             // this invoice paid multi times
             else {
                 $data['cmd'] = '_xclick';
-                $data['amount'] = $payment->getAmount();
+                $data['amount'] = $paymentEntity->getAmount();
                 $data['item_name'] = 'Paying for invoice ID: ' . $invoice->getId();
             }
         }
         // this payment applied for multi invoices
         else {
             $data['cmd'] = '_cart';
-            $data['amount'] = $payment->getAmount();
+            $data['amount'] = $paymentEntity->getAmount();
 
             foreach ($paymentApplications as $paymentApplication) {
                 $data['items'][] = array(
@@ -215,36 +125,6 @@ class PaypalStandard extends PaymentMethodAbstract implements PaymentMethodInter
         // return $this->templating->render('StoreBundle::fontend/component/payment:paypal_standard.html.php', $data);
 
         return $data;
-
-        // $data['sandbox_mode'] = $this->settings['sandbox_mode'];
-        // $data['sandbox_notify'] = 'Sandbox notify';
-
-        // if ($data['sandbox_mode']) {
-        //     $data['action'] = 'https://www.sandbox.paypal.com/cgi-bin/webscr';
-        // } else {
-        //     $data['action'] = 'https://www.paypal.com/cgi-bin/webscr';
-        // }
-
-        // $data['business'] = $this->settings['email'];
-
-        // $data['products'] = array();
-        // while (false !== ($invoiceItem = $invoiceItems->next())) {
-        //     $featuresValueIds = $invoiceItem->getInventoryItem()->getFeatureValueIds();
-        //     $features = $this->entityManager->createQueryBuilder()
-        //        ->select(array('pf.name', 'pfv.value'))
-        //        ->from('Zepluf\Bundle\StoreBundle\Entity\ProductFeatureValue', 'pfv')
-        //        ->leftJoin('Zepluf\Bundle\StoreBundle\Entity\ProductFeature', 'pf', 'WITH', 'pfv.product_feature_id = pf.id')
-        //        ->where('pfv.id IN (' . $featuresValueIds . ')');
-
-        //     $data['products'][] = array(
-        //         'name'       => $invoiceItem->getItemDescription(),
-        //         'price'      => $invoiceItem->getAmount(),
-        //         'quantity'   => $invoiceItem->getQuantity(),
-        //         'features'   => $features
-        //     );
-        // }
-
-        // return $this->templating->render('StoreBundle:fontend/component/payment/paypal_standard.html.php', $data);
     }
 
 
@@ -274,7 +154,6 @@ class PaypalStandard extends PaymentMethodAbstract implements PaymentMethodInter
 
         return $response;
     }
-
 
 
     /**

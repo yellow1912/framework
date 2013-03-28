@@ -1,0 +1,28 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="nl.pricing.class">Zepluf\Bundle\StoreBundle\Component\Pricing\Pricing</parameter>
+        <parameter key="nl.default_price_handler.class">Zepluf\Bundle\StoreBundle\Component\Pricing\Handler\DefaultPriceHandler</parameter>
+        <parameter key="nl.product_discount_price_handler.class">Zepluf\Bundle\StoreBundle\Component\Pricing\Handler\ProductDiscountPriceHandler</parameter>
+
+    </parameters>
+
+    <services>
+
+        <service id="nl.pricing" class="%nl.pricing.class%">
+        </service>
+
+        <service id="nl.default_price_handler" class="%nl.default_price_handler.class%">
+            <tag name="nl.price_handler"/>
+        </service>
+
+        <service id="nl.product_discount_price_handler" class="%nl.product_discount_price_handler.class%">
+            <tag name="nl.price_handler"/>
+        </service>
+
+    </services>
+</container>

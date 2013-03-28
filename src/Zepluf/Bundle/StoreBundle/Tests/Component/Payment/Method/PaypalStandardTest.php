@@ -67,11 +67,9 @@ class PaypalStandardTest extends BaseTestCase
 
     public function testGetConfig()
     {
-        $paypalConfig = $this->paypal->getConfig();
-
         // test all valid config keys and values
         foreach ($this->yaml as $key => $value) {
-            $this->assertArrayHasKey($key, $paypalConfig);
+            $this->assertArrayHasKey($key, $this->paypal->getConfig());
             $this->assertEquals($value, $this->paypal->getConfig($key));
         }
 
@@ -85,7 +83,7 @@ class PaypalStandardTest extends BaseTestCase
      * test for payment applied for only 1 invoice
      * and this invoice paid one time completely
      */
-    public function testRenderForm()
+    public function testRenderForm_1()
     {
         $payment = $this->getMockBuilder('\Zepluf\Bundle\StoreBundle\Component\Payment\Payment')->disableOriginalConstructor()->getMock();
         $paymentEntity = $this->getMock('Zepluf\Bundle\StoreBundle\Entity\Payment');
@@ -146,7 +144,7 @@ class PaypalStandardTest extends BaseTestCase
             ->will($this->returnValue($paymentEntity));
 
         $formData = $this->paypal->renderForm($payment);
-        file_put_contents('DataTest/cart_info.txt', serialize($formData));
+        file_put_contents(__DIR__ . '/DataTest/cart_info.txt', serialize($formData));
 
         // important
         $this->assertEquals($paymentEntityId, $formData['custom']);
@@ -173,8 +171,89 @@ class PaypalStandardTest extends BaseTestCase
      * test for payment applied for only 1 invoice
      * and this invoice paid multi times
      */
-    public function testRenderFormWithSingleInvoiceMultiTimes()
+    public function testRenderForm_2()
     {
+        $payment = $this->getMockBuilder('\Zepluf\Bundle\StoreBundle\Component\Payment\Payment')->disableOriginalConstructor()->getMock();
+        $paymentEntity = $this->getMock('Zepluf\Bundle\StoreBundle\Entity\Payment');
+        $paymentApplication = $this->getMock('Zepluf\Bundle\StoreBundle\Entity\PaymentApplication');
+        $invoice = $this->getMock('Zepluf\Bundle\StoreBundle\Entity\Invoice');
+        $invoiceEntityId = mt_rand(1, 9999);
+        $paymentEntityId = mt_rand(1, 9999);
+
+        $paymentApplications = new ArrayCollection();
+        $invoiceItems = new ArrayCollection();
+
+        $total = 0; $items = mt_rand(2, 8);
+        for ($i = 1; $i <= $items; $i++) {
+            $amount = mt_rand(10, 100);
+            $quantity = mt_rand(1, 10);
+            $total += $amount * $quantity;
+
+            $invoiceItem = $this->getMock('Zepluf\Bundle\StoreBundle\Entity\InvoiceItem');
+
+            $invoiceItem->expects($this->any())
+                ->method('getAmount')
+                ->will($this->returnValue($amount));
+
+            $invoiceItem->expects($this->any())
+                ->method('getQuantity')
+                ->will($this->returnValue($quantity));
+
+            $invoiceItems->add($invoiceItem);
+        }
+
+        $invoice->expects($this->any())
+            ->method('getId')
+            ->will($this->returnValue($invoiceEntityId));
+
+        $invoice->expects($this->any())
+            ->method('getInvoiceItems')
+            ->will($this->returnValue($invoiceItems));
+
+        $paymentApplication->expects($this->any())
+            ->method('getInvoice')
+            ->will($this->returnValue($invoice));
+
+        $paymentApplications->add($paymentApplication);
+
+        $paymentEntity->expects($this->any())
+            ->method('getId')
+            ->will($this->returnValue($paymentEntityId));
+
+        $paymentEntity->expects($this->any())
+            ->method('getAmount')
+            ->will($this->returnValue(round($total / 2.73, 2)));
+
+        $paymentEntity->expects($this->any())
+            ->method('getPaymentApplications')
+            ->will($this->returnValue($paymentApplications));
+
+        $payment->expects($this->any())
+            ->method('getEntity')
+            ->will($this->returnValue($paymentEntity));
+
+        $formData = $this->paypal->renderForm($payment);
+        file_put_contents(__DIR__ . '/DataTest/cart_info.txt', serialize($formData));
+
+        // important
+        $this->assertEquals($paymentEntityId, $formData['custom']);
+
+        $this->assertEquals($this->yaml['currency_code'], $formData['currency_code']);
+        $this->assertEquals($this->yaml['business'], $formData['business']);
+        $this->assertEquals($this->yaml['notify_url'], $formData['notify_url']);
+        $this->assertEquals($this->yaml['cancel_return'], $formData['cancel_return']);
+        $this->assertEquals($paymentEntityId, $formData['custom']);
+
+        $this->assertEquals('_xclick', $formData['cmd']);
+        // $this->assertEquals(1, count($formData['items']));
+
+        // foreach ($invoiceItems as $index => $invoiceItem) {
+        //     $this->assertEquals($invoiceItem->getItemDescription(), $formData['items'][$index]['item_name_' . ($index + 1)]);
+        //     $this->assertEquals($invoiceItem->getAmount(), $formData['items'][$index]['amount_' . ($index + 1)]);
+        //     $this->assertEquals($invoiceItem->getQuantity(), $formData['items'][$index]['quantity_' . ($index + 1)]);
+
+        //     $this->assertEquals($total, $formData['total_amount']);
+        // }
     }
 
     /**

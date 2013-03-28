@@ -13,7 +13,7 @@ namespace Zepluf\Bundle\StoreBundle\Tests\Component\Order;
 
 use Doctrine\DBAL\DBALException;
 use Zepluf\Bundle\StoreBundle\Component\Order\Order;
-use Zepluf\Bundle\StoreBundle\Component\Price\Pricing;
+use Zepluf\Bundle\StoreBundle\Component\Pricing\Pricing;
 use Zepluf\Bundle\StoreBundle\Exceptions\ProductException;
 use Zepluf\Bundle\StoreBundle\Tests\BaseTestCase;
 
@@ -65,12 +65,12 @@ class OrderTest extends BaseTestCase
             ->method('find')
             ->will($this->returnValue($product));
 
-        $this->price = $this->getMock('Zepluf\Bundle\StoreBundle\Component\Price\Price');
+        $this->price = $this->getMock('Zepluf\Bundle\StoreBundle\Component\Pricing\Price');
         $this->price->expects($this->any())
             ->method('getTotal')
             ->will($this->returnValue(10));
 
-        $this->pricing = $this->getMock('Zepluf\Bundle\StoreBundle\Component\Price\Pricing');
+        $this->pricing = $this->getMock('Zepluf\Bundle\StoreBundle\Component\Pricing\Pricing');
         $this->pricing->expects($this->any())
             ->method('getProductPrice')
             ->will($this->returnValue($this->price));
@@ -119,7 +119,7 @@ class OrderTest extends BaseTestCase
             return;
         }
 
-        foreach ($result as $object) {
+        foreach ($objects as $object) {
             $em->refresh($object);
             $em->remove($object);
         }

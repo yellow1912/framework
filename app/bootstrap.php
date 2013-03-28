@@ -23,7 +23,7 @@ $loader->register(true);
 */
 
 require_once 'AppKernel.php';
-$kernel = new AppKernel($environment, false);
+$kernel = new AppKernel($env, false);
 $kernel->loadClassCache();
 
 $kernel->boot();
@@ -32,7 +32,7 @@ $container = $kernel->getContainer();
 
 // set the environment
 // TODO: remove constants
-$container->get("environment")->setEnvironment($environment);
+$container->get("environment")->setEnvironment($env);
 if (defined('IS_ADMIN_FLAG') && IS_ADMIN_FLAG == true) {
     $container->get("environment")->setSubEnvironment("backend");
     $container->get("environment")->setTemplate($container->getParameter('store.backend.current_template'));

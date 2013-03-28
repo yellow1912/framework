@@ -50,10 +50,17 @@ class Order
      */
     private $orderItems;
 
+    /**
+     * @var Invoices|array
+     *
+     * @ORM\OneToMany(targetEntity="Invoice", mappedBy="order", cascade={"remove"})
+     */
+    private $invoices;
 
     public function __construct()
     {
         $this->orderItems = new ArrayCollection();
+        $this->invoices = new ArrayCollection();
     }
     /**
      * Get id
@@ -138,7 +145,7 @@ class Order
      * Add orderItem
      *
      * @param \Zepluf\Bundle\StoreBundle\Entity\OrderItem $orderItem
-     * @return Shipment
+     * @return Order
      */
     public function addOrderItem(\Zepluf\Bundle\StoreBundle\Entity\OrderItem $orderItem)
     {
@@ -167,4 +174,37 @@ class Order
         return $this->orderItems;
     }
 
+    /**
+     * Add invoice
+     *
+     * @param \Zepluf\Bundle\StoreBundle\Entity\Invoice $invoice
+     * @return Shipment
+     */
+    public function addInvoice(\Zepluf\Bundle\StoreBundle\Entity\Invoice $invoice)
+    {
+        $this->invoices[] = $invoice;
+
+        return $this;
+    }
+
+    /**
+     * Remove invoice
+     *
+     * @param \Zepluf\Bundle\StoreBundle\Entity\Invoice $invoice
+     */
+    public function removeInvoice(\Zepluf\Bundle\StoreBundle\Entity\Invoice $invoice)
+    {
+        $this->invoices->removeElement($invoice);
+    }
+
+    /**
+     * Get Invoices
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getInvoices()
+    {
+        return $this->invoices;
+    }
+    
 }
