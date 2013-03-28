@@ -20,12 +20,14 @@ use \Zepluf\Bundle\StoreBundle\Component\Payment\Payment;
 abstract class PaymentMethodAbstract
 {
     /**
-     * @var [type]
+     * payment method config
+     * @var array
      */
     protected $config;
 
     /**
-     * @var string $code payment method identify code
+     * payment method identify code
+     * @var string
      */
     protected $code = 'paypal_standard';
 
