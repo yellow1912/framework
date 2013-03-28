@@ -1,0 +1,6 @@
+app/cache/
+app/logs/
+vendor/
+web/
+src/Zepluf/Bundle/StoreBundle/Resources/config/doctrine/metadata/orm
+src/Zepluf/Bundle/StoreBundle/Tests/Fixtures/appDir/cache

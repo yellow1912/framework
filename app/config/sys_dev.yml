@@ -1,0 +1,11 @@
+initialized: false
+installed:
+    - riCjLoader
+activated:
+    - riCjLoader
+core:
+    - riCjLoader
+backend:
+    - riCjLoader
+frontend:
+    - riCjLoader
