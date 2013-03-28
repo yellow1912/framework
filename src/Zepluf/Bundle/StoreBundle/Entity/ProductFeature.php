@@ -38,9 +38,9 @@ class ProductFeature
     /**
      * @var integer
      *
-     * @ORM\Column(name="order", type="integer", nullable=false)
+     * @ORM\Column(name="sort", type="integer", nullable=false)
      */
-    private $order;
+    private $sort;
 
     /**
      * @var \UnitOfMeasurement
@@ -121,26 +121,26 @@ class ProductFeature
     }
 
     /**
-     * Set order
+     * Set sort
      *
-     * @param integer $order
+     * @param integer $sort
      * @return ProductFeature
      */
-    public function setOrder($order)
+    public function setSort($sort)
     {
-        $this->order = $order;
+        $this->sort = $sort;
     
         return $this;
     }
 
     /**
-     * Get order
+     * Get sort
      *
      * @return integer 
      */
-    public function getOrder()
+    public function getSort()
     {
-        return $this->order;
+        return $this->sort;
     }
 
     /**

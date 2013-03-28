@@ -94,7 +94,7 @@ class OrderTest extends BaseTestCase
         //Get the first $amount users starting from a random point
         $query = $em->createQuery('
                 SELECT DISTINCT p
-                FROM StoreBundle:Product p')
+                FROM StoreBundle:Product p ORDER BY p.id DESC')
             ->setMaxResults(4);
 
         $result = $query->getResult();
@@ -119,9 +119,14 @@ class OrderTest extends BaseTestCase
             return;
         }
 
-        foreach ($objects as $object) {
+        foreach ($result as $object) {
+            $em->refresh($object);
             $em->remove($object);
         }
+
+        $em->flush();
+
+        $em->remove($orderComponent->getEntity());
 
         $em->flush();
     }

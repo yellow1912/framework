@@ -75,7 +75,7 @@ class OrderItem
      *
      * @ORM\ManyToOne(targetEntity="Product")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="product_id", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="product_id", referencedColumnName="id", nullable=true, onDelete="SET NULL")
      * })
      */
     private $product;
@@ -100,7 +100,21 @@ class OrderItem
      */
     private $orderItem;
 
+    /**
+     * @var OrderItemFeature|array
+     *
+     * @ORM\OneToMany(targetEntity="OrderItemFeature", mappedBy="OrderItem", cascade={"persist", "remove"})
+     */
+    private $features;
 
+    
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->features = new \Doctrine\Common\Collections\ArrayCollection();
+    }
 
     /**
      * Get id
@@ -340,5 +354,38 @@ class OrderItem
     public function getOrderItem()
     {
         return $this->orderItem;
+    }
+
+    /**
+     * Add features
+     *
+     * @param \Zepluf\Bundle\StoreBundle\Entity\OrderItemFeature $features
+     * @return OrderItem
+     */
+    public function addFeature(\Zepluf\Bundle\StoreBundle\Entity\OrderItemFeature $features)
+    {
+        $this->features[] = $features;
+
+        return $this;
+    }
+
+    /**
+     * Remove features
+     *
+     * @param \Zepluf\Bundle\StoreBundle\Entity\OrderItemFeature $features
+     */
+    public function removeFeature(\Zepluf\Bundle\StoreBundle\Entity\OrderItemFeature $features)
+    {
+        $this->features->removeElement($features);
+    }
+
+    /**
+     * Get features
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getFeatures()
+    {
+        return $this->features;
     }
 }

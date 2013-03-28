@@ -1,15 +1,47 @@
-model: Zepluf\Bundle\StoreBundle\Entity\Product
-tags: [ test, dev ] # optional parameter
-fixtures:
-  sampple_good_product:
+Zepluf\Bundle\StoreBundle\Entity\UnitOfMeasurement:
+  default_unit:
+    description: unit
+    abbreviation: unit
+
+Zepluf\Bundle\StoreBundle\Entity\PriceComponent:
+  default_product_price_component{1..20}:
+    unitOfMeasurement: @default_unit
+    handler: product_default
+    value: <randomNumber(100,1000)>
+    name: default
+    tag: default
+
+Zepluf\Bundle\StoreBundle\Entity\ProductFeature:
+  sample_product_featuref{1..10}:
+    name: <sentence(6)>
+    description: <sentence(7)>
+    sort: <randomNumber(1,1000)>
+
+Zepluf\Bundle\StoreBundle\Entity\ProductFeatureValue:
+  sample_product_feature_value{1..50}:
+    name: <sentence(6)>
+    description: <sentence(7)>
+    productFeature: @sample_product_featuref*
+
+Zepluf\Bundle\StoreBundle\Entity\Product:
+  sampple_good_product{1..10}:
     type: 1
-    name: sample good product name 1
-    description: sample good product description 1
-    introductionDate: "2013-11-11"
-    unitOfMeasurement: default_unit
-  sample_service_product:
+    name: sample good product <word()>
+    description: sample good product description <word()>
+    introductionDate: <dateTime()>
+    unitOfMeasurement: @default_unit
+    priceComponent: [@default_product_price_component*]
+  sample_service_product{1..10}:
+    type: 2
+    name: sample service product <word()>
+    description: sample service product description <word()>
+    introductionDate: <dateTime()>
+    unitOfMeasurement: @default_unit
+    priceComponent: [@default_product_price_component*]
+
+Zepluf\Bundle\StoreBundle\Entity\ProductFeatureApplication:
+  sample_product_feature_application{1..200}:
     type: 1
-    name: sample service product name 1
-    description: sample service product description 1
-    introductionDate: "2013-11-11"
-    unitOfMeasurement: default_unit
+    product: @sampple_good_product*
+    productFeatureValue: @sample_product_feature_value*
+    priceComponent: [@default_product_price_component*]

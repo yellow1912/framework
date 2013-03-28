@@ -62,7 +62,13 @@ class ShipmentItem
      */
     private $features;
 
-
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->features = new \Doctrine\Common\Collections\ArrayCollection();
+    }
 
     /**
      * Get id
@@ -164,13 +170,6 @@ class ShipmentItem
     public function getProduct()
     {
         return $this->product;
-    }
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->features = new \Doctrine\Common\Collections\ArrayCollection();
     }
     
     /**

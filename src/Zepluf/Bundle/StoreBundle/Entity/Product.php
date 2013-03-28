@@ -118,23 +118,16 @@ class Product
      *
      * @ORM\OneToMany(targetEntity="ProductFeatureApplication", mappedBy="product")
      */
-    private $productFeatureApplication;
+    private $productFeatureApplications;
 
     /**
-     * @var \Doctrine\Common\Collections\Collection
+     * @var \ProductFeatureApplication
      *
-     * @ORM\ManyToMany(targetEntity="ProductCategory", inversedBy="product")
-     * @ORM\JoinTable(name="product_category_classification",
-     *   joinColumns={
-     *     @ORM\JoinColumn(name="product_id", referencedColumnName="id")
-     *   },
-     *   inverseJoinColumns={
-     *     @ORM\JoinColumn(name="product_category_id", referencedColumnName="id")
-     *   }
-     * )
+     * @ORM\OneToMany(targetEntity="ProductCategoryClassification", mappedBy="product")
      */
-    private $productCategory;
+    private $productCategoryClassifications;
 
+    //...
     /**
      * Constructor
      */
@@ -142,8 +135,8 @@ class Product
     {
         $this->priceComponent = new \Doctrine\Common\Collections\ArrayCollection();
         $this->termType = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->productFeatureApplication = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->productCategory = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->productFeatureApplications = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->productCategoryClassifications = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
 
@@ -408,68 +401,68 @@ class Product
     }
 
     /**
-     * Get productFeatureApplication
+     * Add productFeatureApplications
      *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getProductFeatureApplication()
-    {
-        return $this->productFeatureApplication;
-    }
-
-    /**
-     * Get productCategory
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getProductCategory()
-    {
-        return $this->productCategory;
-    }
-
-    /**
-     * Add productFeatureApplication
-     *
-     * @param \Zepluf\Bundle\StoreBundle\Entity\ProductFeatureApplication $productFeatureApplication
+     * @param \Zepluf\Bundle\StoreBundle\Entity\ProductFeatureApplication $productFeatureApplications
      * @return Product
      */
-    public function addProductFeatureApplication(\Zepluf\Bundle\StoreBundle\Entity\ProductFeatureApplication $productFeatureApplication)
+    public function addProductFeatureApplication(\Zepluf\Bundle\StoreBundle\Entity\ProductFeatureApplication $productFeatureApplications)
     {
-        $this->productFeatureApplication[] = $productFeatureApplication;
+        $this->productFeatureApplications[] = $productFeatureApplications;
 
         return $this;
     }
 
     /**
-     * Remove productFeatureApplication
+     * Remove productFeatureApplications
      *
-     * @param \Zepluf\Bundle\StoreBundle\Entity\ProductFeatureApplication $productFeatureApplication
+     * @param \Zepluf\Bundle\StoreBundle\Entity\ProductFeatureApplication $productFeatureApplications
      */
-    public function removeProductFeatureApplication(\Zepluf\Bundle\StoreBundle\Entity\ProductFeatureApplication $productFeatureApplication)
+    public function removeProductFeatureApplication(\Zepluf\Bundle\StoreBundle\Entity\ProductFeatureApplication $productFeatureApplications)
     {
-        $this->productFeatureApplication->removeElement($productFeatureApplication);
+        $this->productFeatureApplications->removeElement($productFeatureApplications);
     }
 
     /**
-     * Add productCategory
+     * Get productFeatureApplications
      *
-     * @param \Zepluf\Bundle\StoreBundle\Entity\ProductCategory $productCategory
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getProductFeatureApplications()
+    {
+        return $this->productFeatureApplications;
+    }
+
+    /**
+     * Add productCategoryClassifications
+     *
+     * @param \Zepluf\Bundle\StoreBundle\Entity\ProductCategoryClassification $productCategoryClassifications
      * @return Product
      */
-    public function addProductCategory(\Zepluf\Bundle\StoreBundle\Entity\ProductCategory $productCategory)
+    public function addProductCategoryClassification(\Zepluf\Bundle\StoreBundle\Entity\ProductCategoryClassification $productCategoryClassifications)
     {
-        $this->productCategory[] = $productCategory;
+        $this->productCategoryClassifications[] = $productCategoryClassifications;
 
         return $this;
     }
 
     /**
-     * Remove productCategory
+     * Remove productCategoryClassifications
      *
-     * @param \Zepluf\Bundle\StoreBundle\Entity\ProductCategory $productCategory
+     * @param \Zepluf\Bundle\StoreBundle\Entity\ProductCategoryClassification $productCategoryClassifications
      */
-    public function removeProductCategory(\Zepluf\Bundle\StoreBundle\Entity\ProductCategory $productCategory)
+    public function removeProductCategoryClassification(\Zepluf\Bundle\StoreBundle\Entity\ProductCategoryClassification $productCategoryClassifications)
     {
-        $this->productCategory->removeElement($productCategory);
+        $this->productCategoryClassifications->removeElement($productCategoryClassifications);
+    }
+
+    /**
+     * Get productCategoryClassifications
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getProductCategoryClassifications()
+    {
+        return $this->productCategoryClassifications;
     }
 }

@@ -62,7 +62,7 @@ class ProductCategoryClassification
     /**
      * @var \Product
      *
-     * @ORM\ManyToOne(targetEntity="Product")
+     * @ORM\ManyToOne(targetEntity="Product", inversedBy="productCategoryClassification")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="product_id", referencedColumnName="id")
      * })
@@ -74,7 +74,7 @@ class ProductCategoryClassification
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -90,14 +90,14 @@ class ProductCategoryClassification
     public function setFromDate($fromDate)
     {
         $this->fromDate = $fromDate;
-    
+
         return $this;
     }
 
     /**
      * Get fromDate
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getFromDate()
     {
@@ -113,14 +113,14 @@ class ProductCategoryClassification
     public function setThroughDate($throughDate)
     {
         $this->throughDate = $throughDate;
-    
+
         return $this;
     }
 
     /**
      * Get throughDate
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getThroughDate()
     {
@@ -136,14 +136,14 @@ class ProductCategoryClassification
     public function setPrimaryFlag($primaryFlag)
     {
         $this->primaryFlag = $primaryFlag;
-    
+
         return $this;
     }
 
     /**
      * Get primaryFlag
      *
-     * @return boolean 
+     * @return boolean
      */
     public function getPrimaryFlag()
     {
@@ -159,14 +159,14 @@ class ProductCategoryClassification
     public function setComment($comment)
     {
         $this->comment = $comment;
-    
+
         return $this;
     }
 
     /**
      * Get comment
      *
-     * @return string 
+     * @return string
      */
     public function getComment()
     {
@@ -182,14 +182,14 @@ class ProductCategoryClassification
     public function setProductCategory(\Zepluf\Bundle\StoreBundle\Entity\ProductCategory $productCategory = null)
     {
         $this->productCategory = $productCategory;
-    
+
         return $this;
     }
 
     /**
      * Get productCategory
      *
-     * @return \Zepluf\Bundle\StoreBundle\Entity\ProductCategory 
+     * @return \Zepluf\Bundle\StoreBundle\Entity\ProductCategory
      */
     public function getProductCategory()
     {
@@ -205,14 +205,14 @@ class ProductCategoryClassification
     public function setProduct(\Zepluf\Bundle\StoreBundle\Entity\Product $product = null)
     {
         $this->product = $product;
-    
+
         return $this;
     }
 
     /**
      * Get product
      *
-     * @return \Zepluf\Bundle\StoreBundle\Entity\Product 
+     * @return \Zepluf\Bundle\StoreBundle\Entity\Product
      */
     public function getProduct()
     {
